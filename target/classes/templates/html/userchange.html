@@ -9,8 +9,8 @@
 <body>
     <div class="signup-container">
         <h2>정보 수정</h2>
-        <form action="/my/profile/changeAction" method="POST" id="signupForm">
-            <input type="password" id="password" name="pw" placeholder="비밀번호" required>
+        <form action="/my/profile/changeaction" method="POST" id="signupForm">
+            <input type="password" id="password" name="pw" placeholder="비밀번호" th:value="${userSelect[0]['pw']}" required>
             <input type="password" id="confirmPassword" placeholder="비밀번호 확인" required>
             <input type="text" id="nm" name="nm" placeholder="이름" th:value="${userSelect[0]['nm']}" required>
             <input type="hidden" id="birthDate" name="birthDate" th:value="${userSelect[0]['birth_date']}">
@@ -121,7 +121,7 @@
 
         function confirmAndNavigateToDelete() {
             if (confirm('정말로 회원을 삭제하시겠습니까?')) {
-                window.location.href = '/member/delete/action'; // 삭제하기 경로로 이동
+                window.location.href = '/my/profile/deleteaction'; // 삭제하기 경로로 이동
             }
         }
     </script>

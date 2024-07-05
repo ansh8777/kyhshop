@@ -34,18 +34,50 @@ public class UserController {
     @PostMapping("/login/action")
     public String loginAction(@RequestParam String id,
                               @RequestParam String pw,
-                              HttpSession session)
+                              HttpSession session,
+                              Model model)
     {
         // 아이디, 비밀번호가 DB와 일치하면 정보(아이디, 이름)를 loginResult 변수에 가져오기
         List<Map<String, Object>> loginResult = ud.login(id, pw);
+        int del_fg = ud.delFg(id, pw);
 
-        // 로그인 정보가 있으면(아이디, 비밀번호 일치 O)
-        if (loginResult.size() == 1) {
+        // 로그인 정보가 있으면(아이디, 비밀번호 일치 O, del_fg == 0)
+        if (loginResult.size() == 1 && del_fg == 0) {
             session.setAttribute("id", loginResult.get(0).get("id"));
             session.setAttribute("nm", loginResult.get(0).get("nm"));
             return "redirect:/";
+        } else if (loginResult.size() == 1 && del_fg == 1) {
+            model.addAttribute("link", "/login/resign");
+            model.addAttribute("msg", "탈퇴한 회원입니다. 탈퇴를 해제하시겠습니까?");
+            return "/html/alert";
         } else {
             return "redirect:/login";
+        }
+    }
+
+    // 탈퇴 회원 재가입 페이지
+    @GetMapping("/login/resign")
+    public String resignPage() {
+        return "html/resign";
+    }
+
+    // 탈퇴 회원 재가입 액션
+    @PostMapping("/login/resign/action")
+    public String resignAction(@RequestParam String id,
+                               @RequestParam String pw,
+                               @RequestParam String nm,
+                               Model model)
+    {
+        int delCheck = ud.delUserCheck(id, pw, nm);
+        if (delCheck == 1) {
+            ud.resign(id);
+            model.addAttribute("link", "/login");
+            model.addAttribute("msg", "회원 재가입 완료 되었습니다.");
+            return "/html/alert";
+        } else {
+            model.addAttribute("link", "/login/resign");
+            model.addAttribute("msg", "회원정보가 일치하지 않습니다.");
+            return "/html/alert";
         }
     }
 
@@ -80,7 +112,8 @@ public class UserController {
         // 월 or 일 은 예로들면 '7' 일 경우에 '07'로 만들어줌
         // 예) 2000년 2월 8일 = 20000208
         String birthDate = year + String.format("%02d", Integer.parseInt(month)) + String.format("%02d", Integer.parseInt(day));
-        ud.register(id, pw, nm, birthDate, email, phone, address, address_detail);
+        String formatPhone = phone.replaceAll("-", "");
+        ud.register(id, pw, nm, birthDate, email, formatPhone, address, address_detail);
 
         return "redirect:/login";
     }
@@ -139,6 +172,7 @@ public class UserController {
         return "html/passwordcheck";
     }
 
+    // 회원수정 페이지
     @PostMapping("my/profile/verify")
     public String userProfile(@RequestParam String id,
                               @RequestParam String pw,
@@ -165,7 +199,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("my/profile/changeAction")
+    // 회원수정하기 액션
+    @PostMapping("my/profile/changeaction")
     @ResponseBody
     public String userChangeAction(@RequestParam String pw,
                                    @RequestParam String nm,
@@ -184,10 +219,26 @@ public class UserController {
             String userId = (String)session.getAttribute("id");
 
             String birthDate = year + String.format("%02d", Integer.parseInt(month)) + String.format("%02d", Integer.parseInt(day));
-            ud.userProfileChange(userId, pw, nm, birthDate, email, phone, address, addressDetail);
+            String formatPhone = phone.replaceAll("-", "");     // 전화번호 010-0000-0000 입력받았을 때 01000000000 으로 변환
+            ud.userProfileChange(userId, pw, nm, birthDate, email, formatPhone, address, addressDetail);
         } else {
             return "<script>window.close();</script>";
         }
         return "<script>window.close(); alert('회원정보가 수정되었습니다.');</script>";
+    }
+    
+    // 회원삭제하기 액션
+    @GetMapping("my/profile/deleteaction")
+    @ResponseBody
+    public String userDeleteAction(HttpSession session,
+                                   Model model)
+    {
+        // 로그인 되어 있으면
+        if (session.getAttribute("id") != null) {
+            String userId = (String)session.getAttribute("id");
+            ud.userDelete(userId);
+            session.invalidate();
+        }
+        return "<script>window.close(); alert('회원정보가 삭제되었습니다.');</script>";
     }
 }

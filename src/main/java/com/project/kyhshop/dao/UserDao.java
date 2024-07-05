@@ -34,8 +34,26 @@ public class UserDao {
 
     // 로그인
     public List<Map<String, Object>> login(String id, String pw) {
-        String sqlStmt = "SELECT id, nm FROM tb_user_mst WHERE id = ? AND pw = ? AND del_fg = 0";
+        String sqlStmt = "SELECT id, nm FROM tb_user_mst WHERE id = ? AND pw = ?";
         return jt.queryForList(sqlStmt, id, pw);
+    }
+
+    // 삭제 유무(del_fg) 값 가져오기
+    public int delFg(String id, String pw) {
+        String sqlStmt = "SELECT del_fg FROM tb_user_mst WHERE id = ? AND pw = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, id, pw);
+    }
+
+    // 탈퇴 회원 정보 체크하기
+    public int delUserCheck(String id, String pw, String nm) {
+        String sqlStmt = "SELECT count(*) FROM tb_user_mst WHERE id = ? AND pw = ? AND nm = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, id, pw, nm);
+    }
+
+    // 탈퇴 회원 재가입
+    public void resign(String id) {
+        String sqlStmt = "UPDATE tb_user_mst SET del_fg = 0 WHERE id = ?";
+        jt.update(sqlStmt, id);
     }
 
     // 아이디 찾기
@@ -71,5 +89,12 @@ public class UserDao {
     {
         String sqlStmt = "UPDATE tb_user_mst SET pw = ?, nm = ?, birth_date = ?, email = ?, phone = ?, address = ?, address_detail = ? WHERE id = ?";
         jt.update(sqlStmt, pw, nm, birthDate, email, phone, address, address_detail, id);
+    }
+
+    // 유저 개인이 삭제 (del_fg == 1로 변경)
+    public void userDelete(String id)
+    {
+        String sqlStmt = "UPDATE tb_user_mst SET del_fg = 1 WHERE id = ?";
+        jt.update(sqlStmt, id);
     }
 }
