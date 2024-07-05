@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-KyhshopApplication<kyhshop>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.project.kyhshop.KyhshopApplication",
+            "projectName": "kyhshop",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

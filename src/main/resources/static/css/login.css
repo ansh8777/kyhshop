@@ -1,0 +1,79 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f9fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.signup-container {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    text-align: center;
+}
+
+.signup-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.signup-container input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.signup-container button {
+    width: 100%;
+    margin-top: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    height: 40px;
+    line-height: 40px;
+}
+
+.signup-container button:hover {
+    background-color: #0056b3;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    height: 12px;
+}
+
+.link-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.link-container a {
+    margin-left: 10px;
+    color: #4B0082;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.link-container a:hover {
+    text-decoration: underline;
+}
+
+.signup-link {
+    text-decoration: none; /* 밑줄 제거 */
+    color: #4B0082;
+}
+
+.signup-link:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="/css/register.css">
+</head>
+<body>
+    <div class="signup-container">
+        <h2>회원가입</h2>
+        <form action="/register/action" method="POST" id="signupForm">
+            <div class="row">
+                <input type="text" id="id" name="id" placeholder="아이디" autofocus>
+                <label id="label1"></label>
+                <button type="button" onclick="dupIdCheck()">중복 확인</button>
+            </div>
+            <input type="password" id="password" name="pw" placeholder="비밀번호" required>
+            <input type="password" id="confirmPassword" placeholder="비밀번호 확인" required>
+            <input type="text" id="nm" name="nm" placeholder="이름" required>
+            <div class="row">
+                <select id="year" name="year" required></select>
+                <select id="month" name="month" required></select>
+                <select id="day" name="day" required></select>
+            </div>
+            <input type="email" id="email" name="email" placeholder="이메일" required>
+            <input type="text" id="phone" name="phone" placeholder="전화번호" required>
+            <div class="address-container">
+                <input type="text" id="address" name="address" placeholder="주소" required disabled>
+                <button type="button" onclick="openDaumPostcode()">주소 찾기</button>
+            </div>
+            <input type="text" id="address_detail" name="address_detail" placeholder="상세주소">
+            <button type="submit">가입하기</button>
+        </form>
+    </div>
+
+    <!-- 다음 주소 API 스크립트 -->
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        let isIdChecked = false;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const birthYear = document.getElementById('year');
+            const birthMonth = document.getElementById('month');
+            const birthDay = document.getElementById('day');
+            
+            // 출생 연도 옵션 생성
+            for (let year = 1940; year <= 2022; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                birthYear.appendChild(option);
+            }
+
+            // 출생 월 옵션 생성
+            for (let month = 1; month <= 12; month++) {
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = month;
+                birthMonth.appendChild(option);
+            }
+
+            // 출생 일 옵션 생성 (31일까지 고려)
+            for (let day = 1; day <= 31; day++) {
+                const option = document.createElement('option');
+                option.value = day;
+                option.textContent = day;   
+                birthDay.appendChild(option);
+            }
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // 아이디 중복체크 확인
+            if (!isIdChecked) {
+                alert('아이디 중복 체크를 해주세요.');
+                return;
+            }
+
+            // 비밀번호 확인
+            let password = document.getElementById('password').value;
+            let confirmPassword = document.getElementById('confirmPassword').value;
+            if (password !== confirmPassword) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            // 'address' 필드를 활성화하여 제출할 수 있게 함
+            document.getElementById('address').disabled = false;
+
+            // 비밀번호가 일치하면 폼 제출
+            this.submit();
+        });
+
+        function openDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    document.getElementById('address').value = data.address;
+                }
+            }).open();
+        }
+
+        function dupIdCheck() {
+            let id = document.getElementById('id').value.trim();
+
+            if (id === '') {
+                alert('아이디를 입력해주세요.');
+                return;
+            }
+            
+            // AJAX 요청으로 아이디 중복체크
+            fetch('/dupcheck?id=' + id)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.isDuplicate) {
+                        alert('이미 사용 중인 아이디입니다.');
+                        isIdChecked = false;
+                    } else {
+                        alert('사용 가능한 아이디입니다.');
+                        isIdChecked = true;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('아이디 중복 체크 중 오류가 발생했습니다.');
+                    isIdChecked = false;
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f9fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.signup-container {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    text-align: center;
+}
+.signup-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+.signup-container input,
+.signup-container select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.signup-container .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.signup-container .row input {
+    width: calc(100% - 120px);
+}
+.signup-container .row button {
+    width: 100px;
+    margin-left: 10px;
+    height: 40px; /* 입력 칸과 동일한 높이로 설정 */
+    line-height: 20px; /* 버튼 텍스트 중앙 정렬을 위해 */
+}
+.signup-container .address-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.signup-container .address-container input {
+    flex: 1;
+    margin-right: 10px;
+}
+.signup-container .address-container button {
+    width: 100px;
+    height: 40px; /* 입력 칸과 동일한 높이로 설정 */
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+.signup-container .address-container button:hover {
+    background-color: #0056b3;
+}
+.signup-container button[type="submit"] {
+    width: 100%;
+    margin-top: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    height: 40px; /* 입력 칸과 동일한 높이로 설정 */
+    line-height: 20px; /* 버튼 텍스트 중앙 정렬을 위해 */
+}
+.signup-container button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+.error {
+    color: red;
+    font-size: 12px;
+    height: 12px;
+}
+
+#deleteButton {
+    width: 100%;
+    margin-top: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    height: 40px; /* 입력 칸과 동일한 높이로 설정 */
+    line-height: 20px; /* 버튼 텍스트 중앙 정렬을 위해 */
+  }
+
+  /* 마우스 호버 시 배경색 변경 */
+  #deleteButton:hover {
+    background-color: #0056b3;
+  }
