@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member List</title>
+    <link rel="stylesheet" href="/css/list.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Member List</h2>
+        <a href="/">목록으로</a>
+        <a href="javascript:addNewMemberRow()">회원등록</a>
+        <hr>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>계정</th>
+                    <th>이름</th>
+                    <th>생년월일</th>
+                    <th>이메일</th>
+                    <th>전화번호</th>
+                    <th>주소</th>
+                    <th>등급</th>
+                    <th>생성일자</th>
+                    <th>탈퇴유무</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="result, iterStat : ${userList}">
+                    <form action="/admin/userlist/update" method="post">
+                        <td th:text="${result.seq}"></td>
+                        <input type="hidden" name="seq" th:value="${result.seq}">
+                        <td>
+                            <div><input type="text" name="id" th:value="${result.id}"></div>
+                            <div><input type="text" name="pw" th:value="${result.pw}"></div> 
+                        </td>
+                        <td><input type="text" name="nm" th:value="${result.nm}"></td>
+                        <td><input type="text" name="birthDate" th:value="${result.birth_date}"></td>
+                        <td><input type="email" name="email" th:value="${result.email}"></td>
+                        <td><input type="text" name="phone" th:value="${result.phone}"></td>
+                        <td>
+                            <div class="address-container">
+                                <input type="text" name="address" th:value="${result.address}" placeholder="주소" th:id="${iterStat.index}">
+                                <button type="button" th:onclick="'openDaumPostcode(' + ${iterStat.index} + ')'">주소 찾기</button>
+                            </div>
+                            <div class="detail-address">
+                                <input type="text" name="addressDetail" th:value="${result.address_detail}" placeholder="상세주소">
+                            </div>
+                        </td>
+                        <td>
+                            <select name="grade">
+                                <option th:value="0" th:selected="${result.grade == 0}">아이언</option>
+                                <option th:value="1" th:selected="${result.grade == 1}">브론즈</option>
+                                <option th:value="2" th:selected="${result.grade == 2}">실버</option>
+                                <option th:value="3" th:selected="${result.grade == 3}">골드</option>
+                                <option th:value="4" th:selected="${result.grade == 4}">플레티넘</option>
+                                <option th:value="5" th:selected="${result.grade == 5}">에메랄드</option>
+                                <option th:value="6" th:selected="${result.grade == 6}">다이아몬드</option>
+                                <option th:value="7" th:selected="${result.grade == 7}">마스터</option>
+                                <option th:value="8" th:selected="${result.grade == 8}">그랜드마스터</option>
+                                <option th:value="9" th:selected="${result.grade == 9}">챌린저</option>
+                                <option th:value="99" th:selected="${result.grade == 99}">관리자</option>
+                            </select>
+                        </td>
+                        <td th:text="${result.reg_dt}"></td>
+                        <td>
+                            <select name="delFg">
+                                <option th:value="0" th:selected="${result.del_fg == 0}">X</option>
+                                <option th:value="1" th:selected="${result.del_fg == 1}">O</option>
+                            </select>
+                        </td>
+                        <td><button type="submit">수정</button></td>
+                        <td><button type="submit" formaction="/admin/memberDelete" formmethod="post" name="seq" th:value="${result.seq}">삭제</button></td>
+                    </form>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        function openDaumPostcode(index) {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    document.getElementById(index).value = data.address;
+                }
+            }).open();
+        }
+        function addNewMemberRow() {
+            const tableBody = document.querySelector("tbody");
+            const newRow = document.createElement("tr");
+
+            newRow.innerHTML = `
+                <td></td>
+                <td>
+                    <div><input type="text" name="id_" placeholder="아이디" required></div>
+                    <div><input type="password" name="pw_" placeholder="비밀번호" required></div>
+                </td>
+                <td><input type="text" name="name_" placeholder="이름" required></td>
+                <td><input type="text" name="birthDate_" placeholder="생년월일" required></td>
+                <td><input type="email" name="email_" placeholder="이메일" required></td>
+                <td><input type="text" name="phone_" placeholder="전화번호" required></td>
+                <td>
+                    <div class="address-container">
+                        <input type="text" name="address_" placeholder="주소" id="newAddress" required>
+                        <button type="button" onclick="openDaumPostcode('newAddress')">주소 찾기</button>
+                    </div>
+                    <div class="detail-address">
+                        <input type="text" name="addressDetail_" placeholder="상세주소" required>
+                    </div>
+                </td>
+                <td>
+                    <select name="grade_" required>
+                        <option value="0">아이언</option>
+                        <option value="1">브론즈</option>
+                        <option value="2">실버</option>
+                        <option value="3">골드</option>
+                        <option value="4">플레티넘</option>
+                        <option value="5">에메랄드</option>
+                        <option value="6">다이아몬드</option>
+                        <option value="7">마스터</option>
+                        <option value="8">그랜드마스터</option>
+                        <option value="9">챌린저</option>
+                        <option value="99">관리자</option>
+                    </select>
+                </td>
+                <td></td>
+                <td>
+                    <select name="delFg_" required>
+                        <option value="0">X</option>
+                        <option value="1">O</option>
+                    </select>
+                </td>
+                <td><button type="button" onclick="submitForm(this)">등록</button></td>
+                <td><button type="button" onclick="removeRow(this)">취소</button></td>
+            `;
+
+            tableBody.appendChild(newRow);
+        }
+
+        function removeRow(button) {
+            button.closest('tr').remove();
+        }
+
+        function submitForm(button) {
+            const form = document.createElement('form');
+            form.action = '/admin/memberRegister';
+            form.method = 'post';
+            const row = button.closest('tr');
+            row.querySelectorAll('input, select').forEach(input => {
+                form.appendChild(input.cloneNode(true));
+            });
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+</body>
+</html>

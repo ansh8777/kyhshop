@@ -1,0 +1,79 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+.container {
+    max-width: 2000px; /* 최대 너비 설정 */
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h2 {
+    color: #333;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    padding: 10px; /* 테이블 셀의 패딩 설정 */
+    text-align: center;
+    border: 1px solid #ddd;
+    white-space: nowrap; /* 텍스트가 한 줄로만 표시되도록 설정 */
+}
+th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+}
+td {
+    background-color: #fff;
+    color: #666;
+    vertical-align: middle;
+    padding: 0; /* 입력 요소들의 부모인 td의 기본 패딩 제거 */
+}
+input[type="text"], input[type="email"], select {
+    padding: 8px;
+    margin: 5px; /* 위아래와 좌우 모두 5px 마진 설정 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: calc(100% - 18px); /* 입력 요소들 너비 계산 (좌우 5px 마진 포함) */
+    box-sizing: border-box; /* 내부 패딩과 테두리를 포함한 전체 너비 설정 */
+}
+button {
+    padding: 8px 16px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #45a049;
+}
+.address-container {
+    display: flex;
+    align-items: center;
+}
+.detail-address {
+    margin-top: 5px;
+}
+a {
+    text-decoration: none;
+    color: #333;
+    padding: 8px 16px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f2f2f2;
+}
+a:hover {
+    background-color: #e6e6e6;
+}

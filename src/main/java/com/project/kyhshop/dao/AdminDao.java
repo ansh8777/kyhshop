@@ -11,5 +11,21 @@ public class AdminDao {
     @Autowired
     JdbcTemplate jt;
 
-
+    // 유저 리스트 전부 가져오기
+    public List<Map<String, Object>> selectUser() {
+        String sqlStmt = "SELECT seq, "             +
+                         "       id, "              +
+                         "       pw, "              +
+                         "       nm, "              +
+                         "       birth_date, "      +
+                         "       email, "           +
+                         "       phone, "           +
+                         "       address, "         +
+                         "       address_detail, "  +
+                         "       grade, "           +
+                         "       reg_dt, "          +
+                         "       del_fg "           +
+                         "FROM   tb_user_mst";
+        return jt.queryForList(sqlStmt);
+    }
 }
