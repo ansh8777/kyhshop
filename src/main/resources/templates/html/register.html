@@ -26,10 +26,10 @@
             <input type="email" id="email" name="email" placeholder="이메일" required>
             <input type="text" id="phone" name="phone" placeholder="전화번호" required>
             <div class="address-container">
-                <input type="text" id="address" name="address" placeholder="주소" required disabled>
+                <input type="text" id="address" name="address" placeholder="주소" required>
                 <button type="button" onclick="openDaumPostcode()">주소 찾기</button>
             </div>
-            <input type="text" id="address_detail" name="address_detail" placeholder="상세주소">
+            <input type="text" id="address_detail" name="address_detail" placeholder="상세주소" required>
             <button type="submit">가입하기</button>
         </form>
     </div>
@@ -37,7 +37,13 @@
     <!-- 다음 주소 API 스크립트 -->
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script>
-        let isIdChecked = false;
+        function openDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    document.getElementById('address').value = data.address;
+                }
+            }).open();
+        }
 
         document.addEventListener('DOMContentLoaded', function () {
             const birthYear = document.getElementById('year');
@@ -69,6 +75,8 @@
             }
         });
 
+        let isIdChecked = false;
+
         document.getElementById('signupForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -86,20 +94,9 @@
                 return;
             }
 
-            // 'address' 필드를 활성화하여 제출할 수 있게 함
-            document.getElementById('address').disabled = false;
-
             // 비밀번호가 일치하면 폼 제출
             this.submit();
         });
-
-        function openDaumPostcode() {
-            new daum.Postcode({
-                oncomplete: function(data) {
-                    document.getElementById('address').value = data.address;
-                }
-            }).open();
-        }
 
         function dupIdCheck() {
             let id = document.getElementById('id').value.trim();
@@ -111,7 +108,7 @@
             
             // AJAX 요청으로 아이디 중복체크
             fetch('/dupcheck?id=' + id)
-                .then(response => response.json())
+                .then(response => response.json())  // 응답 받은 후 json으로 파싱
                 .then(result => {
                     if (result.isDuplicate) {
                         alert('이미 사용 중인 아이디입니다.');

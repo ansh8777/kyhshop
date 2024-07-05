@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+    <link href="css/homepage.css" rel="stylesheet">
+    <style>
+        /* 추가된 스타일 */
+        .sidebar {
+            float: left;
+            width: 20%;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: black;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: #ccc;
+        }
+
+        .main-content {
+            float: left;
+            width: 80%;
+            padding: 20px;
+        }
+
+        .main-content h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #545454;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .main-content .order-list {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .main-content .order-list-item {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .main-content .order-list-item h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .main-content .order-list-item p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a class="logo" href="/">
+            <img src="images/kyhlogo.png" height="60px">
+        </a>
+        <ul>
+            <li><a href="#">Contact</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li th:if="${session.id == null}"><a href="/login">Login</a></li>
+            <li th:if="${session.id == null}"><a href="/register">Register</a></li>
+            <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+            <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="sidebar">
+        <ul>
+            <li><a href="#order-history">주문 내역</a></li>
+            <li><a href="#address-book">주소록 관리</a></li>
+            <li><a href="#profile-settings">개인 정보 설정</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div id="order-history" class="user-section">
+            <h2>최근 주문 내역</h2>
+            <div class="order-list">
+                <div class="order-list-item">
+                    <h3>주문 번호: #12345</h3>
+                    <p>상품: Sunglasses</p>
+                    <p>가격: 49,000원</p>
+                    <p>주문 일시: 2024-07-05 14:30:00</p>
+                </div>
+                <div class="order-list-item">
+                    <h3>주문 번호: #12346</h3>
+                    <p>상품: Tassel Loafer</p>
+                    <p>가격: 89,000원</p>
+                    <p>주문 일시: 2024-07-04 10:15:00</p>
+                </div>
+                <!-- 추가적인 주문 내역 아이템들을 여기에 추가할 수 있습니다 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="#"><img src="images/facebook.png"></a>
+        <a href="#"><img src="images/instagram.png"></a>
+        <a href="#"><img src="images/twitter.png"></a>
+    </div>
+</body>
+</html>

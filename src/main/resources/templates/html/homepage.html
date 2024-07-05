@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>SimpleShop</title>
+    <title>KYH SHOP</title>
     <meta charset="utf-8" />
     <link href="css/homepage.css" rel="stylesheet" />
   </head>
   <body>
     <div class="navbar">
-      <a class="logo" href="#">
-        <img src="images/logo.png" height="20px">
+      <a class="logo" href="/">
+        <img src="images/kyhlogo.png" height="60px">
       </a>
       <ul>
         <li><a href="#">Contact</a></li>
-        <li><a href="#">Shop</a></li>
-        <li><a href="#">Cart</a></li>
-        <li><a href="/login">Login</a></li>
+        <li><a href="/cart">Cart</a></li>
+        <li th:if="${session.id == null}"><a href="/login">Login</a></li>
+        <li th:if="${session.id == null}"><a href="/register">Register</a></li>
+        <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+        <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
       </ul>
     </div>
     
-    <img class="hero_header" src="images/hero_header.jpg">
+    <img class="hero_header" src="images/headerimg.png">
     <h1>Our new Products</h1>
     <div class="products">
       <a href="#">

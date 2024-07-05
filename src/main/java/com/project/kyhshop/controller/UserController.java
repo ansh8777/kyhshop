@@ -42,7 +42,6 @@ public class UserController {
         // 로그인 정보가 있으면(아이디, 비밀번호 일치 O)
         if (loginResult.size() == 1) {
             session.setAttribute("id", loginResult.get(0).get("id"));
-            session.setAttribute("pw", loginResult.get(0).get("pw"));
             session.setAttribute("nm", loginResult.get(0).get("nm"));
             return "redirect:/";
         } else {
@@ -95,5 +94,36 @@ public class UserController {
         response.put("isDuplicate", dup > 0);
 
         return response;
+    }
+
+    // 아이디 찾기 페이지
+    @GetMapping("/findid")
+    public String findId() {
+        return "html/findid";
+    }
+
+    // 아이디 찾기 액션
+    @GetMapping("/findid/action")
+    @ResponseBody
+    public Map<String, Object> findIdAction(@RequestParam String nm,
+                                            @RequestParam String birthDate)
+    {
+        String findId = ud.findid(nm, birthDate);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", findId);
+
+        return response;
+    }
+
+    // 회원페이지
+    @GetMapping("/my")
+    public String myPage(HttpSession session) {
+
+        // 로그인 안되어 있으면 로그인페이지로
+        if (session.getAttribute("id") == null) {
+            return "redirect:/member/login";
+        }
+        return "html/my";
     }
 }
