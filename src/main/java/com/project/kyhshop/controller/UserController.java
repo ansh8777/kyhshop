@@ -56,6 +56,38 @@ public class UserController {
         }
     }
 
+    // 판매자 로그인 페이지
+    @GetMapping("login/seller")
+    public String sellerLoginPage() {
+        return "html/seller/login";
+    }
+
+    // 판매자 로그인 액션
+    @PostMapping("/login/seller/action")
+    public String sellerLoginAction(@RequestParam String id,
+                                    @RequestParam String pw,
+                                    HttpSession session,
+                                    Model model)
+    {
+        // 아이디, 비밀번호가 DB와 일치하면 정보(아이디, 이름)를 loginResult 변수에 가져오기
+        List<Map<String, Object>> loginResult = ud.sellerLogin(id, pw);
+        int del_fg = ud.sellerDelFg(id, pw);
+
+        // 로그인 정보가 있으면(아이디, 비밀번호 일치 O, del_fg == 0)
+        if (loginResult.size() == 1 && del_fg == 0) {
+            session.setAttribute("id", loginResult.get(0).get("id"));
+            session.setAttribute("nm", loginResult.get(0).get("nm"));
+            session.setAttribute("grade", loginResult.get(0).get("grade"));
+            return "redirect:/";
+        } else if (loginResult.size() == 1 && del_fg == 1) {
+            model.addAttribute("link", "/login/resign");
+            model.addAttribute("msg", "탈퇴한 회원입니다. 탈퇴를 해제하시겠습니까?");
+            return "/html/alert";
+        } else {
+            return "redirect:/login/seller";
+        }
+    }
+
     // 탈퇴 회원 재가입 페이지
     @GetMapping("/login/resign")
     public String resignPage() {
@@ -89,43 +121,116 @@ public class UserController {
         return "redirect:/";
     }
 
-    // 회원가입 페이지
-    @GetMapping("/register")
-    public String registerPage() {
+    // 회원가입 고르기 (판매자, 구매자)
+    @GetMapping("/regiselect")
+    public String registerSelectPage() {
+        return "html/regiselect";
+    }
+
+    // 유저 회원가입 페이지
+    @GetMapping("/register/user")
+    public String userRegisterPage() {
         return "html/register";
     }
 
-    // 회원가입 액션
-    @PostMapping("/register/action")
-    public String registerAction(@RequestParam String id,
-                                 @RequestParam String pw,
-                                 @RequestParam String nm,
-                                 @RequestParam String year,
-                                 @RequestParam String month,
-                                 @RequestParam String day,
-                                 @RequestParam String email,
-                                 @RequestParam String phone,
-                                 @RequestParam String address,
-                                 @RequestParam String address_detail,
-                                 HttpSession session,
-                                 Model model)
+    // 유저 회원가입 액션
+    @PostMapping("/register/user/action")
+    public String userRegisterAction(@RequestParam String id,
+                                     @RequestParam String pw,
+                                     @RequestParam String nm,
+                                     @RequestParam String year,
+                                     @RequestParam String month,
+                                     @RequestParam String day,
+                                     @RequestParam String email,
+                                     @RequestParam String phone_1,
+                                     @RequestParam String phone_2,
+                                     @RequestParam String phone_3,
+                                     @RequestParam String address,
+                                     @RequestParam String address_detail,
+                                     HttpSession session,
+                                     Model model)
     {
+        int dup = ud.dupCheck(id);
+        if (dup == 1) {
+            model.addAttribute("link", "/login");
+            model.addAttribute("msg", "아이디 중복 오류!!");
+            return "/html/alert";
+        }
         // 월 or 일 은 예로들면 '7' 일 경우에 '07'로 만들어줌
         // 예) 2000년 2월 8일 = 20000208
         String birthDate = year + String.format("%02d", Integer.parseInt(month)) + String.format("%02d", Integer.parseInt(day));
-        String formatPhone = phone.replaceAll("-", "");
-        ud.register(id, pw, nm, birthDate, email, formatPhone, address, address_detail);
 
-        return "redirect:/login";
+        // 폰 번호 합치기 010-0000-0000
+        String phone = String.format("%s-%s-%s", phone_1, phone_2, phone_3);
+        ud.userRegister(id, pw, nm, birthDate, email, phone, address, address_detail);
+
+        model.addAttribute("link", "/login");
+        model.addAttribute("msg", "회원가입이 완료되었습니다.");
+        return "/html/alert";
     }
 
-    // 중복 확인
+    // 판매자 회원가입 페이지
+    @GetMapping("/register/seller")
+    public String sellerRegisterPage() {
+        return "html/seller/register";
+    }
+
+    // 판매자 회원가입 액션
+    @PostMapping("/register/seller/action")
+    public String sellerRegisterAction(@RequestParam String id,
+                                       @RequestParam String pw,
+                                       @RequestParam String nm,
+                                       @RequestParam String email,
+                                       @RequestParam String phone_1,
+                                       @RequestParam String phone_2,
+                                       @RequestParam String phone_3,
+                                       @RequestParam String address,
+                                       @RequestParam String address_detail,
+                                       @RequestParam String comp_nm,
+                                       @RequestParam String biz_id_1,
+                                       @RequestParam String biz_id_2,
+                                       @RequestParam String biz_id_3,
+                                       HttpSession session,
+                                       Model model)
+    {
+        int dup = ud.sellerDupCheck(id);
+        if (dup == 1) {
+            model.addAttribute("link", "/login");
+            model.addAttribute("msg", "아이디 중복 오류!!");
+            return "/html/alert";
+        }
+
+        // 폰 번호 합치기 010-0000-0000
+        String phone = String.format("%s-%s-%s", phone_1, phone_2, phone_3);
+
+        // 사업자 등록번호 합치기
+        String biz_id = String.format("%s-%s-%s", biz_id_1, biz_id_2, biz_id_3);
+
+        ud.sellerRegister(id, pw, nm, email, phone, address, address_detail, comp_nm, biz_id);
+
+        model.addAttribute("link", "/seller/login");
+        model.addAttribute("msg", "회원가입이 완료되었습니다.");
+        return "/html/alert";
+    }
+
+    // 유저 중복 확인
     @GetMapping("/dupcheck")
     @ResponseBody
     public Map<String, Object> dupCheck(@RequestParam String id) {
         int dup = ud.dupCheck(id);
         Map<String, Object> response = new HashMap<>();
         response.put("isDuplicate", dup > 0);
+
+        return response;
+    }
+
+    // 셀러 중복 확인
+    @GetMapping("/seller/dupcheck")
+    @ResponseBody
+    public Map<String, Object> sellerDupCheck(@RequestParam String id) {
+        int sel_dup = ud.sellerDupCheck(id);
+        Map<String, Object> response = new HashMap<>();
+        response.put("isDuplicate", sel_dup > 0);
 
         return response;
     }
@@ -240,6 +345,6 @@ public class UserController {
             ud.userDelete(userId);
             session.invalidate();
         }
-        return "<script>window.close(); alert('회원정보가 삭제되었습니다.');</script>";
+        return "<script>window.opener.location.reload(); window.close(); alert('회원정보가 삭제되었습니다.');</script>";
     }
 }

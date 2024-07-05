@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>판매자 로그인</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <div class="signup-container">
+        <h2>판매자 로그인</h2>
+        <form action="/login/seller/action" method="POST">
+            <input type="text" id="id" name="id" placeholder="아이디" autofocus>
+            <input type="password" id="password" name="pw" placeholder="비밀번호" required>
+            <div class="link-container">
+                <a href="" onclick="openPopup('/findid')">아이디 찾기</a>
+                <a href="" onclick="openPopup('/findpw')">비밀번호 찾기</a>
+            </div>
+            <div>
+                <button type="submit">로그인</button>
+                <a class="signup-link" href="/register/seller">회원가입</a>
+            </div>
+        </form>
+    </div>
+    <script>
+        function openPopup(url) {
+            window.open(url, '_blank', 'width=600,height=400');
+            return false;
+        }
+    </script>
+</body>
+</html>

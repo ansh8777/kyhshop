@@ -28,4 +28,23 @@ public class AdminDao {
                          "FROM   tb_user_mst";
         return jt.queryForList(sqlStmt);
     }
+
+    // 판매자 리스트 전부 가져오기
+    public List<Map<String, Object>> selectSeller() {
+        String sqlStmt = "SELECT seq, "             +
+                         "       id, "              +
+                         "       pw, "              +
+                         "       nm, "              +
+                         "       email, "           +
+                         "       phone, "           +
+                         "       address, "         +
+                         "       address_detail, "  +
+                         "       grade, "           +
+                         "       comp_nm, "         +
+                         "       biz_id, "          +
+                         "       reg_dt, "          +
+                         "       del_fg "           +
+                         "FROM   tb_seller_mst";
+        return jt.queryForList(sqlStmt);
+    }
 }

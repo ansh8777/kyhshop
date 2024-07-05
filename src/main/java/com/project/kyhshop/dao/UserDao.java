@@ -12,23 +12,44 @@ public class UserDao {
     @Autowired
     JdbcTemplate jt;
 
-    // 회원가입
-    public void register(String id,
-                         String pw,
-                         String nm,
-                         String birthDate,
-                         String email,
-                         String phone,
-                         String address,
-                         String address_detail)
+    // 유저 회원가입
+    public void userRegister(String id,
+                             String pw,
+                             String nm,
+                             String birthDate,
+                             String email,
+                             String phone,
+                             String address,
+                             String address_detail)
     {
         String sqlStmt = "INSERT INTO tb_user_mst(id, pw, nm, birth_date, email, phone, address, address_detail) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         jt.update(sqlStmt, id, pw, nm, birthDate, email, phone, address, address_detail);
     }
 
-    // 아이디 중복 체크
+    // 판매자 회원가입
+    public void sellerRegister(String id,
+                               String pw,
+                               String nm,
+                               String email,
+                               String phone,
+                               String address,
+                               String address_detail,
+                               String comp_nm,
+                               String biz_id)
+    {
+        String sqlStmt = "INSERT INTO tb_seller_mst(id, pw, nm, email, phone, address, address_detail, comp_nm, biz_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        jt.update(sqlStmt, id, pw, nm, email, phone, address, address_detail, comp_nm, biz_id);
+    }
+
+    // 유저 아이디 중복 체크
     public int dupCheck(String id) {
         String sqlStmt = "SELECT count(*) FROM tb_user_mst WHERE id = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, id);
+    }
+
+    // 셀러 아이디 중복 체크
+    public int sellerDupCheck(String id) {
+        String sqlStmt = "SELECT count(*) FROM tb_seller_mst WHERE id = ?";
         return jt.queryForObject(sqlStmt, Integer.class, id);
     }
 
@@ -38,9 +59,21 @@ public class UserDao {
         return jt.queryForList(sqlStmt, id, pw);
     }
 
+    // 셀러 로그인
+    public List<Map<String, Object>> sellerLogin(String id, String pw) {
+        String sqlStmt = "SELECT id, nm, grade FROM tb_seller_mst WHERE id = ? AND pw = ?";
+        return jt.queryForList(sqlStmt, id, pw);
+    }
+
     // 삭제 유무(del_fg) 값 가져오기
     public int delFg(String id, String pw) {
         String sqlStmt = "SELECT del_fg FROM tb_user_mst WHERE id = ? AND pw = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, id, pw);
+    }
+
+    // 셀러 삭제 유무(del_fg) 값 가져오기
+    public int sellerDelFg(String id, String pw) {
+        String sqlStmt = "SELECT del_fg FROM tb_seller_mst WHERE id = ? AND pw = ?";
         return jt.queryForObject(sqlStmt, Integer.class, id, pw);
     }
 

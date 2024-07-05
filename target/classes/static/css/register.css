@@ -102,3 +102,16 @@ body {
   #deleteButton:hover {
     background-color: #0056b3;
   }
+
+  .c-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.c-container input {
+    flex: 1;
+    margin-right: 5px;
+}
+.c-container span {
+    margin-right: 5px;
+}

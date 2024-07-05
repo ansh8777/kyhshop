@@ -9,10 +9,9 @@
 <body>
     <div class="signup-container">
         <h2>회원가입</h2>
-        <form action="/register/action" method="POST" id="signupForm">
+        <form action="/register/user/action" method="POST" id="signupForm">
             <div class="row">
                 <input type="text" id="id" name="id" placeholder="아이디" autofocus>
-                <label id="label1"></label>
                 <button type="button" onclick="dupIdCheck()">중복 확인</button>
             </div>
             <input type="password" id="password" name="pw" placeholder="비밀번호" required>
@@ -24,7 +23,13 @@
                 <select id="day" name="day" required></select>
             </div>
             <input type="email" id="email" name="email" placeholder="이메일" required>
-            <input type="text" id="phone" name="phone" placeholder="전화번호" required>
+            <div class="c-container">
+                <input type="text" id="phone1" name="phone_1" maxlength="3" placeholder="010" required>
+                <span>-</span>
+                <input type="text" id="phone2" name="phone_2" maxlength="4" placeholder="0000" required>
+                <span>-</span>
+                <input type="text" id="phone3" name="phone_3" maxlength="4" placeholder="0000" required>
+            </div>
             <div class="address-container">
                 <input type="text" id="address" name="address" placeholder="주소" required>
                 <button type="button" onclick="openDaumPostcode()">주소 찾기</button>
