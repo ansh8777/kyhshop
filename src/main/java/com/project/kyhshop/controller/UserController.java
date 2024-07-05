@@ -45,6 +45,7 @@ public class UserController {
         if (loginResult.size() == 1 && del_fg == 0) {
             session.setAttribute("id", loginResult.get(0).get("id"));
             session.setAttribute("nm", loginResult.get(0).get("nm"));
+            session.setAttribute("grade", loginResult.get(0).get("grade"));
             return "redirect:/";
         } else if (loginResult.size() == 1 && del_fg == 1) {
             model.addAttribute("link", "/login/resign");

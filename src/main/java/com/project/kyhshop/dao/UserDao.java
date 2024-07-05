@@ -34,7 +34,7 @@ public class UserDao {
 
     // 로그인
     public List<Map<String, Object>> login(String id, String pw) {
-        String sqlStmt = "SELECT id, nm FROM tb_user_mst WHERE id = ? AND pw = ?";
+        String sqlStmt = "SELECT id, nm, grade FROM tb_user_mst WHERE id = ? AND pw = ?";
         return jt.queryForList(sqlStmt, id, pw);
     }
 

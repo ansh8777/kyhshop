@@ -95,6 +95,7 @@
             <li><a href="#order-history">주문 내역</a></li>
             <li><a href="/address">주소록 관리</a></li>
             <li><a onclick="openPopup('/my/passcheck')">개인 정보 설정</a></li>
+            <li th:if="${session.grade == 99}"><a href="/admin">관리자 페이지</a></li>
         </ul>
     </div>
 
