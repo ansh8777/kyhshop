@@ -54,15 +54,23 @@ public class UserDao {
     }
 
     // 로그인
-    public List<Map<String, Object>> login(String id, String pw) {
-        String sqlStmt = "SELECT id, nm, grade FROM tb_user_mst WHERE id = ? AND pw = ?";
-        return jt.queryForList(sqlStmt, id, pw);
+    public Map<String, Object> login(String id, String pw) {
+        String sqlStmt = "SELECT id, nm, grade, del_fg FROM tb_user_mst WHERE id = ? AND pw = ?";
+        try {   // 결과가 없으면 null 반환
+            return jt.queryForMap(sqlStmt, id, pw);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     // 셀러 로그인
-    public List<Map<String, Object>> sellerLogin(String id, String pw) {
-        String sqlStmt = "SELECT id, nm, grade FROM tb_seller_mst WHERE id = ? AND pw = ?";
-        return jt.queryForList(sqlStmt, id, pw);
+    public Map<String, Object> sellerLogin(String id, String pw) {
+        String sqlStmt = "SELECT id, nm, grade, del_fg FROM tb_seller_mst WHERE id = ? AND pw = ?";
+        try {   // 결과가 없으면 null 반환
+            return jt.queryForMap(sqlStmt, id, pw);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     // 삭제 유무(del_fg) 값 가져오기

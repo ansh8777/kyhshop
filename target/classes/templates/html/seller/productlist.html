@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            min-width: 992px;
+            font-family: "Helvetica";
+        }
+        
+        .navbar{
+            height: 60px;
+            padding-left: 30px;
+        }
+        
+        .logo{
+            line-height: 60px;
+            float: left;
+        }
+        
+        .logo img{
+            vertical-align: middle;
+        }
+        
+        .navbar ul{
+            float: right;
+        }
+        
+        .navbar li{
+            list-style-type: none;
+            float: left;
+            margin-right: 30px;
+        }
+        
+        .navbar a{
+            text-decoration: none;
+            color: black;
+            font-style: bold;
+            font-size: 13px;
+        }
+        
+        .hero_header{
+            height: 450px;
+            width: 100%;
+        }
+        
+        body h1{
+            text-align: center;
+            margin-top: 60px;
+            margin-bottom: 60px;
+            font-size: 24px;
+            font-style: bold;
+            color: #545454;
+        }
+        
+        .products {
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0;
+            width: 740px;
+            text-align: center;
+        }
+        
+        .products img{
+            width: 225px;
+            height: 225px;
+            margin-right: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .products a{
+            text-decoration: none;
+            color: black;
+            float: left;
+            font-size: 16px;
+        }
+        
+        .price{
+            margin-top: 4px;
+            margin-bottom: 80px;
+        }
+        
+        .clearfix{
+            clear: both;
+        }
+        
+        .footer{
+            text-align: center;
+        }
+        
+        .footer img{
+            margin-top: 40px;
+            height: 20px;
+            margin-bottom: 80px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .manage-products {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+
+        .product-item img {
+            width: 100px;
+            height: 100px;
+            margin-right: 20px;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: gray; /* 회색 배경색 */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a class="logo" href="/">
+          <img src="images/kyhlogo.png" height="50px">
+        </a>
+        <ul>
+          <li><a href="#">Contact</a></li>
+          <li><a href="/cart">Cart</a></li>
+          <li th:if="${session.id == null}"><a href="/loginselect">Login</a></li>
+          <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
+          <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+          <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+      <div class="manage-products">
+        <h1>상품 관리</h1>
+
+        <!-- 판매자가 등록한 상품 목록 -->
+        <div class="product-item">
+            <img src="images/product1.jpg" alt="Product 1">
+            <div class="product-info">
+                <h3>상품 제목 1</h3>
+                <p>상품 설명 Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p class="price">가격: $50</p>
+            </div>
+            <div class="product-actions">
+                <button class="btn">수정</button>
+                <button class="btn">삭제</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <img src="images/product2.jpg" alt="Product 2">
+            <div class="product-info">
+                <h3>상품 제목 2</h3>
+                <p>상품 설명 Nulla vehicula dolor eu lectus vestibulum, sit amet cursus magna consectetur.</p>
+                <p class="price">가격: $70</p>
+            </div>
+            <div class="product-actions">
+                <button class="btn">수정</button>
+                <button class="btn">삭제</button>
+            </div>
+        </div>
+
+        <!-- 추가 상품 등록 버튼 -->
+        <div>
+            <button class="btn">상품 등록</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <!-- 푸터 유지 -->
+    </div>
+</body>
+</html>

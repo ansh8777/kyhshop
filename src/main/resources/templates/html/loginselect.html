@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 선택</title>
+    <link href="css/homepage.css" rel="stylesheet" />
+    <style>
+        .container {
+            text-align: center;
+            padding: 50px;
+            background-color: #f9f9f9;
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .container h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .container .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .container button {
+            text-decoration: none;
+            color: black;
+            background-color: #d3d3d3;
+            padding: 15px 30px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-size: 16px;
+            width: 45%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .container button.active {
+            background-color: white;
+            color: black;
+            border: 1px solid #d3d3d3;
+        }
+
+        .container button:not(.active):hover {
+            background-color: #e0e0e0;
+        }
+
+        .container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container input[type="text"],
+        .container input[type="password"] {
+            width: calc(100% - 40px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .container input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .container input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .container .form-group {
+            display: none;
+        }
+
+        .container .form-group.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a class="logo" href="/">
+            <img src="images/kyhlogo.png" height="50px">
+        </a>
+        <ul>
+            <li><a href="#">Contact</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li th:if="${session.id == null}"><a href="/loginselect">Login</a></li>
+            <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
+            <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+            <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h2>로그인 선택</h2>
+        <div class="button-group">
+            <button onclick="showLogin('normal')" class="active">일반회원</button>
+            <button onclick="showLogin('seller')">판매자회원</button>
+        </div>
+        <div id="normalLogin">
+            <form action="/login/action" method="post">
+                <div>
+                    <input type="text" name="id" placeholder="아이디" required>
+                    <input type="password" name="pw" placeholder="비밀번호" required>
+                </div>
+                <button type="submit">로그인</button>
+            </form>
+        </div>
+        <div id="sellerLogin" style="display: none;">
+            <form action="/login/seller/action" method="post">
+                <div>
+                    <input type="text" name="sellerId" placeholder="판매자 아이디" required>
+                    <input type="password" name="sellerPw" placeholder="판매자 비밀번호" required>
+                </div>
+                <button type="submit">로그인</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showLogin(type) {
+            if (type === 'normal') {
+                document.getElementById('normalLogin').style.display = 'block';
+                document.getElementById('sellerLogin').style.display = 'none';
+                document.querySelector('.button-group button:nth-child(1)').classList.add('active');
+                document.querySelector('.button-group button:nth-child(2)').classList.remove('active');
+            } else if (type === 'seller') {
+                document.getElementById('normalLogin').style.display = 'none';
+                document.getElementById('sellerLogin').style.display = 'block';
+                document.querySelector('.button-group button:nth-child(2)').classList.add('active');
+                document.querySelector('.button-group button:nth-child(1)').classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>

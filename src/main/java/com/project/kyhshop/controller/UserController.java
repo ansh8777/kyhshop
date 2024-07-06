@@ -24,6 +24,12 @@ public class UserController {
         return "html/homepage";
     }
 
+    // 로그인 고르기 페이지
+    @GetMapping("/loginselect")
+    public String loginSelectPage() {
+        return "html/loginselect";
+    }
+
     // 로그인 페이지
     @GetMapping("/login")
     public String loginPage() {
@@ -38,21 +44,23 @@ public class UserController {
                               Model model)
     {
         // 아이디, 비밀번호가 DB와 일치하면 정보(아이디, 이름)를 loginResult 변수에 가져오기
-        List<Map<String, Object>> loginResult = ud.login(id, pw);
-        int del_fg = ud.delFg(id, pw);
+        Map<String, Object> loginResult = ud.login(id, pw);
 
         // 로그인 정보가 있으면(아이디, 비밀번호 일치 O, del_fg == 0)
-        if (loginResult.size() == 1 && del_fg == 0) {
-            session.setAttribute("id", loginResult.get(0).get("id"));
-            session.setAttribute("nm", loginResult.get(0).get("nm"));
-            session.setAttribute("grade", loginResult.get(0).get("grade"));
+        if (loginResult != null && (int)loginResult.get("del_fg") == 0) {
+            session.setAttribute("id", loginResult.get("id"));
+            session.setAttribute("nm", loginResult.get("nm"));
+            session.setAttribute("grade", loginResult.get("grade"));
+            session.setAttribute("temp", "user");
             return "redirect:/";
-        } else if (loginResult.size() == 1 && del_fg == 1) {
+        } else if (loginResult != null && (int)loginResult.get("del_fg") == 1) {
             model.addAttribute("link", "/login/resign");
             model.addAttribute("msg", "탈퇴한 회원입니다. 탈퇴를 해제하시겠습니까?");
             return "/html/alert";
         } else {
-            return "redirect:/login";
+            model.addAttribute("link", "/loginselect");
+            model.addAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다.");
+            return "/html/alert";
         }
     }
 
@@ -64,27 +72,29 @@ public class UserController {
 
     // 판매자 로그인 액션
     @PostMapping("/login/seller/action")
-    public String sellerLoginAction(@RequestParam String id,
-                                    @RequestParam String pw,
+    public String sellerLoginAction(@RequestParam String sellerId,
+                                    @RequestParam String sellerPw,
                                     HttpSession session,
                                     Model model)
     {
         // 아이디, 비밀번호가 DB와 일치하면 정보(아이디, 이름)를 loginResult 변수에 가져오기
-        List<Map<String, Object>> loginResult = ud.sellerLogin(id, pw);
-        int del_fg = ud.sellerDelFg(id, pw);
+        Map<String, Object> loginResult = ud.sellerLogin(sellerId, sellerPw);
 
         // 로그인 정보가 있으면(아이디, 비밀번호 일치 O, del_fg == 0)
-        if (loginResult.size() == 1 && del_fg == 0) {
-            session.setAttribute("id", loginResult.get(0).get("id"));
-            session.setAttribute("nm", loginResult.get(0).get("nm"));
-            session.setAttribute("grade", loginResult.get(0).get("grade"));
+        if (loginResult != null && (int)loginResult.get("del_fg") == 0) {
+            session.setAttribute("id", loginResult.get("id"));
+            session.setAttribute("nm", loginResult.get("nm"));
+            session.setAttribute("grade", loginResult.get("grade"));
+            session.setAttribute("temp", "seller");
             return "redirect:/";
-        } else if (loginResult.size() == 1 && del_fg == 1) {
+        } else if (loginResult != null && (int)loginResult.get("del_fg") == 1) {
             model.addAttribute("link", "/login/resign");
             model.addAttribute("msg", "탈퇴한 회원입니다. 탈퇴를 해제하시겠습니까?");
             return "/html/alert";
         } else {
-            return "redirect:/login/seller";
+            model.addAttribute("link", "/loginselect");
+            model.addAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다.");
+            return "/html/alert";
         }
     }
 
