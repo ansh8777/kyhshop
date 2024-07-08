@@ -23,20 +23,15 @@ public class UserController {
     @GetMapping("/")
     public String homePage(Model model) {
         List<Map<String, Object>> prodSel = ud.selectProduct_9();
-        // 가격 포맷
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
         for (Map<String, Object> product : prodSel) {
-            double price = Double.parseDouble(product.get("prod_price").toString());
+            // prod_price 값을 가져와서 문자열로 변환합니다.
+            String priceString = product.get("prod_price").toString();
 
-            // 소수점이 0인지 확인합니다.
-            if (price % 1 == 0) {
-                // 소수점이 0이면 정수로 변환하고 포맷팅합니다.
-                product.put("prod_price_disp", decimalFormat.format((int) price));
-            } else {
-                // 소수점이 0이 아니면 그대로 유지합니다.
-                product.put("prod_price_disp", String.format("%,.2f", price));
-            }
+            // 문자열 형태의 가격을 정수로 변환하여 포맷팅합니다.
+            long price = Long.parseLong(priceString);
+            product.put("prod_price_disp", decimalFormat.format(price));
         }
         model.addAttribute("prodSel", prodSel);
         return "html/homepage";
@@ -360,12 +355,50 @@ public class UserController {
     public String userDeleteAction(HttpSession session,
                                    Model model)
     {
-        // 로그인 되어 있으면
+        // 로그인 되어 있으면 유저 삭제 및 세션 종료
         if (session.getAttribute("id") != null) {
             String userId = (String)session.getAttribute("id");
             ud.userDelete(userId);
             session.invalidate();
         }
         return "<script>window.opener.location.reload(); window.close(); alert('회원정보가 삭제되었습니다.');</script>";
+    }
+
+    // 주소록 관리 페이지
+    @GetMapping("my/address")
+    public String addressPage(HttpSession session,
+                              Model model)
+    {
+        if (session.getAttribute("id") == null) {
+            return "redirect:/";
+        }
+        String id = (String)session.getAttribute("id");
+        List<Map<String, Object>> addressList = ud.selectAddress(id);
+        model.addAttribute("addressList", addressList);
+
+        return "html/address";
+    }
+
+    // 주소록 입력 액션
+    @PostMapping("my/address/insert/action")
+    public String addressInsertAction(@RequestParam String name,
+                                      @RequestParam String phone_1,
+                                      @RequestParam String phone_2,
+                                      @RequestParam String phone_3,
+                                      @RequestParam String address,
+                                      @RequestParam String address_detail,
+                                      HttpSession session,
+                                      Model model)
+    {
+        if (session.getAttribute("id") == null) {
+            return "redirect:/";
+        }
+        // 폰 번호 합치기 010-0000-0000
+        String phone = String.format("%s-%s-%s", phone_1, phone_2, phone_3);
+        
+        String id = (String)session.getAttribute("id");
+        ud.insertAddress(id, name, phone, address, address_detail);
+
+        return "redirect:/my/address";
     }
 }

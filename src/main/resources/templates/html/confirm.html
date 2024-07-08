@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>알림</title>
+</head>
+<body>
+    <input type="hidden" id="msg" th:value="${msg}"/>
+    <input type="hidden" id="link" th:value="${link}"/>
+    
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var msg = document.getElementById('msg').value;
+            var link = document.getElementById('link').value;
+
+            var confirmed = confirm(msg);
+            if (confirmed) {
+                window.location.href = link;
+            } else {
+
+            }
+        });
+    </script>
+</body>
+</html>

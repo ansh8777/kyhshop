@@ -173,6 +173,21 @@
                 <label for="productPrice">상품 가격</label>
                 <input type="number" id="productPrice" name="productPrice" required>
             </div>
+            <div class="form-group">
+                <label for="productGrade">상품 등급</label>
+                <select name="productGrade">
+                    <option th:value="상">상</option>
+                    <option th:value="중">중</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="productVariety">상품 품종</label>
+                <select name="productVariety">
+                    <option th:value="후지">후지</option>
+                    <option th:value="홍로">홍로</option>
+                    <option th:value="아오리">아오리</option>
+                </select>
+            </div>
             <button type="submit" class="btn-submit">상품 등록</button>
         </form>
     </div>

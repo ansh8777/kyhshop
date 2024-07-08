@@ -57,6 +57,7 @@
         .product-top {
             display: flex;
             width: 100%;
+            justify-content: space-between; /* 수정하기와 삭제하기 버튼을 오른쪽으로 정렬하기 위해 */
         }
         
         .product-image {
@@ -146,6 +147,7 @@
 
     <div class="product-container" th:each="product : ${productSet}">
         <input type="hidden" name="seq" th:value="${product.seq}">
+        <input type="hidden" name="seller_id" th:value="${product.seller_id}">
         <div class="product-top">
             <div class="product-image">
                 <img th:src="@{'images/' + ${product.prod_img}}" alt="Product Image">
@@ -159,6 +161,13 @@
                     <button class="btn cart">장바구니</button>
                 </div>
             </div>
+            <div th:if="${session.id} == ${product.seller_id}">
+                <a class="btn" th:href="@{'/product/edit?seq=' + ${product.seq}}">수정하기</a>
+                <form th:action="@{/product/delete/action}" method="post" onsubmit="return confirmDelete()">
+                    <input type="hidden" th:name="seq" th:value="${product.seq}" />
+                    <button type="submit">삭제하기</button>
+                </form>
+            </div>
         </div>
         <div class="product-description" th:text="${product.prod_desc}">Product Description</div>
     </div>
@@ -168,5 +177,12 @@
         <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
         <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
     </div>
+
+    <script th:inline="javascript">
+        function confirmDelete() {
+            var confirmed = confirm("삭제하시겠습니까?");
+            return confirmed;
+        }
+    </script>
 </body>
 </html>

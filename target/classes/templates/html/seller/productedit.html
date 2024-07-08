@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 수정 페이지</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            min-width: 992px;
+            font-family: "Helvetica";
+        }
+        
+        .navbar {
+            height: 60px;
+            padding-left: 30px;
+        }
+        
+        .logo {
+            line-height: 60px;
+            float: left;
+        }
+        
+        .logo img {
+            vertical-align: middle;
+        }
+        
+        .navbar ul {
+            float: right;
+        }
+        
+        .navbar li {
+            list-style-type: none;
+            float: left;
+            margin-right: 30px;
+        }
+        
+        .navbar a {
+            text-decoration: none;
+            color: black;
+            font-style: bold;
+            font-size: 13px;
+        }
+        
+        body h1 {
+            text-align: center;
+            margin-top: 60px;
+            margin-bottom: 60px;
+            font-size: 24px;
+            font-style: bold;
+            color: #545454;
+        }
+        
+        .footer {
+            text-align: center;
+        }
+        
+        .footer img {
+            margin-top: 40px;
+            height: 20px;
+            margin-bottom: 80px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .form-container {
+            width: 60%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-group input[type="file"] {
+            display: block;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: gray; 
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-submit:hover {
+            background-color: #555; 
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a class="logo" href="/">
+            <img src="/images/kyhlogo.png" height="50px">
+        </a>
+        <ul>
+            <li><a href="#">Contact</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li th:if="${session.id == null}"><a href="/login">Login</a></li>
+            <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
+            <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+            <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+        </ul>
+    </div>
+
+    <h1>상품 수정</h1>
+
+    <div class="form-container">
+        <form action="/product/edit/action" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="seq" th:value="${productSet[0].seq}">
+            <div class="form-group">
+                <label for="subject">분류</label>
+                <select id="subject" name="category" required>
+                    <option value="">분류 선택</option>
+                    <option th:each="category : ${categoryList}"
+                            th:value="${category.category_nm}"
+                            th:text="${category.category_nm}"
+                            th:selected="${category.category_nm == productSet[0]['prod_category']}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="productTitle">상품 제목</label>
+                <input type="text" id="productTitle" name="productTitle" required
+                       th:value="${productSet[0]['prod_title']}">
+            </div>
+            <div class="form-group">
+                <label for="productId">상품 ID</label>
+                <input type="text" id="productId" name="productId" required
+                       th:value="${productSet[0]['prod_id']}">
+            </div>
+            <div class="form-group">
+                <label for="productName">상품 이름</label>
+                <input type="text" id="productName" name="productName" required
+                       th:value="${productSet[0]['prod_nm']}">
+            </div>
+            <div class="form-group">
+                <label for="productImage">상품 이미지 업로드</label>
+                <input type="file" id="productImage" name="file">
+            </div>
+            <div class="form-group">
+                <label for="productDescription">상품 내용</label>
+                <textarea id="productDescription" name="productDescription" rows="10"
+                          th:text="${productSet[0]['prod_desc']}"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="productAmount">상품 수량</label>
+                <input type="number" id="productAmount" name="productAmount" required
+                       th:value="${productSet[0]['prod_amount']}">
+            </div>
+            <div class="form-group">
+                <label for="productPrice">상품 가격</label>
+                <input type="number" id="productPrice" name="productPrice" required
+                       th:value="${productSet[0]['prod_price']}">
+            </div>
+            <div class="form-group">
+                <label for="productGrade">상품 등급</label>
+                <select name="productGrade">
+                    <option value="상" th:selected="${productSet[0]['prod_grade'] == '상'}">상</option>
+                    <option value="중" th:selected="${productSet[0]['prod_grade'] == '중'}">중</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="productVariety">상품 품종</label>
+                <select name="productVariety">
+                    <option value="후지" th:selected="${productSet[0]['prod_variety'] == '후지'}">후지</option>
+                    <option value="홍로" th:selected="${productSet[0]['prod_variety'] == '홍로'}">홍로</option>
+                    <option value="아오리" th:selected="${productSet[0]['prod_variety'] == '아오리'}">아오리</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn-submit">상품 수정</button>
+        </form>
+    </div>
+
+    <div class="footer">
+        <!-- 푸터 유지 -->
+    </div>
+</body>
+</html>

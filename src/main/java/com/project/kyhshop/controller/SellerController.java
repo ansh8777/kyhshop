@@ -26,26 +26,24 @@ public class SellerController {
     public String productList(HttpSession session,
                               Model model)
     {
+        String id = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(id);
+
         // 셀러가 아니면 로그인 페이지로
-        if (session.getAttribute("temp") != "seller") {
+        if (ox == 0) {
             return "redirect:/login";
         } 
-        String id = (String)session.getAttribute("id");
         List<Map<String, Object>> productSelect = sd.productSelect(id);
-        // 가격 포맷
+
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
         for (Map<String, Object> product : productSelect) {
-            double price = Double.parseDouble(product.get("prod_price").toString());
+            // prod_price 값을 가져와서 문자열로 변환합니다.
+            String priceString = product.get("prod_price").toString();
 
-            // 소수점이 0인지 확인합니다.
-            if (price % 1 == 0) {
-                // 소수점이 0이면 정수로 변환하고 포맷팅합니다.
-                product.put("prod_price_disp", decimalFormat.format((int) price));
-            } else {
-                // 소수점이 0이 아니면 그대로 유지합니다.
-                product.put("prod_price_disp", String.format("%,.2f", price));
-            }
+            // 문자열 형태의 가격을 정수로 변환하여 포맷팅합니다.
+            long price = Long.parseLong(priceString);
+            product.put("prod_price_disp", decimalFormat.format(price));
         }
         model.addAttribute("productSelect", productSelect);
 
@@ -57,10 +55,13 @@ public class SellerController {
     public String productInsert(HttpSession session,
                                 Model model)
     {
+        String id = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(id);
+
         // 셀러가 아니면 로그인 페이지로
-        if (session.getAttribute("temp") != "seller") {
+        if (ox == 0) {
             return "redirect:/login";
-        }
+        } 
         List<Map<String, Object>> categoryList = sd.categoryList();
         model.addAttribute("categoryList", categoryList);
 
@@ -78,13 +79,18 @@ public class SellerController {
                                       @RequestParam String productDescription,
                                       @RequestParam String productAmount,
                                       @RequestParam String productPrice,
+                                      @RequestParam String productGrade,
+                                      @RequestParam String productVariety,
                                       HttpSession session,
                                       Model model) throws IOException
     {
+        String id = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(id);
+
         // 셀러가 아니면 로그인 페이지로
-        if (session.getAttribute("temp") != "seller") {
+        if (ox == 0) {
             return "redirect:/login";
-        }
+        } 
 
         String imgName = null;
         // 파일이 업로드되었을 경우에만 처리
@@ -101,8 +107,7 @@ public class SellerController {
             imgName = "default_image.jpg";
         }
 
-        String sellerId = (String)session.getAttribute("id");
-        sd.productInsert(productId, category, productTitle, productDescription, productName, sellerId, imgName, productAmount, productPrice);
+        sd.productInsert(productId, category, productTitle, productDescription, productName, id, imgName, productAmount, productPrice, productGrade, productVariety);
         return "redirect:/seller/product";
     }
 }

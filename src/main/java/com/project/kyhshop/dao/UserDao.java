@@ -139,16 +139,37 @@ public class UserDao {
         jt.update(sqlStmt, id);
     }
 
-    // 상품 모두 가져오기
+    // 상품 9개 가져오기
     public List<Map<String, Object>> selectProduct_9() {
         String sqlStmt = "SELECT    TM.SEQ             AS seq, "                        +
+                         "          TM.prod_id         AS prod_id, "                    +
+                         "          TM.seller_id       AS seller_id, "                  +
                          "          TM.prod_img        AS prod_img, "                   +
                          "          TM.prod_nm         AS prod_nm, "                    +
-                         "          PD.prod_price      AS prod_price "                  +
+                         "          PD.prod_price      AS prod_price, "                 +
+                         "          PD.prod_grade      AS prod_grade, "                 +
+                         "          PD.prod_variety    AS prod_variety "                +
                          "FROM      TB_PRODUCT_MST TM "                                 +
-                         "JOIN      TB_PRODUCT_DETAIL PD ON TM.PROD_ID = PD.PROD_ID "   +
+                         "LEFT JOIN TB_PRODUCT_DETAIL PD ON TM.SEQ = PD.SEQ "   +
                          "ORDER BY  TM.SEQ DESC "                                       +
                          "LIMIT 9"; 
         return jt.queryForList(sqlStmt);
     }
+
+    // 저장된 주소지 가져오기
+    public List<Map<String, Object>> selectAddress(String id) {
+        String sqlStmt = "SELECT name, address, address_detail FROM tb_address_mst WHERE id = ?";
+        try {   // 결과가 없으면 null 반환
+            return jt.queryForList(sqlStmt, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    // 주소 Insert
+    public void insertAddress(String id, String name, String phone, String address, String address_detail)
+    {
+        String sqlStmt = "INSERT INTO tb_address_mst (id, name, phone, address, address_detail) VALUES (?, ?, ?, ?, ?)";
+        jt.update(sqlStmt, id, name, phone, address, address_detail);
+    }   
 }
