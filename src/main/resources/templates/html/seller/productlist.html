@@ -144,50 +144,36 @@
 <body>
     <div class="navbar">
         <a class="logo" href="/">
-          <img src="images/kyhlogo.png" height="50px">
+            <img src="/images/kyhlogo.png" height="50px">
         </a>
         <ul>
           <li><a href="#">Contact</a></li>
           <li><a href="/cart">Cart</a></li>
-          <li th:if="${session.id == null}"><a href="/loginselect">Login</a></li>
+          <li th:if="${session.id == null}"><a href="/login">Login</a></li>
           <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
-          <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
           <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+          <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
         </ul>
     </div>
       <div class="manage-products">
         <h1>상품 관리</h1>
 
-        <!-- 판매자가 등록한 상품 목록 -->
-        <div class="product-item">
-            <img src="images/product1.jpg" alt="Product 1">
+        <div th:each="product : ${productSelect}" class="product-item">
+            <img th:src="@{/images/{imgName}(imgName=${product.PROD_IMG})}" alt="Product Image">
             <div class="product-info">
-                <h3>상품 제목 1</h3>
-                <p>상품 설명 Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                <p class="price">가격: $50</p>
+                <h3 th:text="${product.PROD_NM}">상품 제목</h3>
+                <p th:text="${product.PROD_DESC}">상품 설명</p>
+                <p class="price" th:text="'가격: ' + ${product.prod_price_disp} + '원'">가격</p>
             </div>
             <div class="product-actions">
-                <button class="btn">수정</button>
-                <button class="btn">삭제</button>
-            </div>
-        </div>
-
-        <div class="product-item">
-            <img src="images/product2.jpg" alt="Product 2">
-            <div class="product-info">
-                <h3>상품 제목 2</h3>
-                <p>상품 설명 Nulla vehicula dolor eu lectus vestibulum, sit amet cursus magna consectetur.</p>
-                <p class="price">가격: $70</p>
-            </div>
-            <div class="product-actions">
-                <button class="btn">수정</button>
-                <button class="btn">삭제</button>
+                <a th:href="@{/seller/product/update/{seq}(seq=${product.SEQ})}" class="btn">수정</a>
+                <a th:href="@{/seller/product/delete/{seq}(seq=${product.SEQ})}" class="btn">삭제</a>
             </div>
         </div>
 
         <!-- 추가 상품 등록 버튼 -->
-        <div>
-            <button class="btn">상품 등록</button>
+        <div class="btn-container">
+            <button class="btn" onclick="window.location.href='/seller/product/insert'">상품 등록</button>
         </div>
     </div>
 

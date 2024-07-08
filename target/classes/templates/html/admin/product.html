@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <link rel="stylesheet" href="/css/list.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Product List</h2>
+        <a href="/">목록으로</a>
+        <hr>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>상품 아이디</th>
+                    <th>판매자 아이디</th>
+                    <th>상품명</th>
+                    <th>상품 분류</th>
+                    <th>등록일시</th>
+                    <th>상태</th>
+                    <th>재고량</th>
+                    <th>삭제</th>
+                    <th>수정</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product, iterStat : ${productList}">
+                    <form action="/admin/productlist/update" method="post">
+                        <td th:text="${product.seq}"></td>
+                        <input type="hidden" name="seq" th:value="${product.seq}">
+                        <td><input type="text" name="prodId" th:value="${product.prodId}" readonly></td>
+                        <td><input type="text" name="sellerId" th:value="${product.sellerId}" readonly></td>
+                        <td><input type="text" name="prodName" th:value="${product.productName}"></td>
+                        <td><input type="text" name="prodCategory" th:value="${product.productCategory}"></td>
+                        <td th:text="${product.regDt}"></td>
+                        <td><input type="text" name="productState" th:value="${product.productState}"></td>
+                        <td><input type="number" name="prodAmount" th:value="${product.prodAmount}"></td>
+                        <td>
+                            <button type="button" th:if="${product.prodAmount == 0}"
+                                onclick="deleteOutOfStock('${product.prodId}')">삭제</button>
+                        </td>
+                        <td><button type="submit">수정</button></td>
+                    </form>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function deleteOutOfStock(productId) {
+            if (confirm("정말로 이 품절 상품을 삭제하시겠습니까?")) {
+                const form = document.createElement('form');
+                form.action = '/admin/product/delete';
+                form.method = 'post';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'prodId';
+                input.value = productId;
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+

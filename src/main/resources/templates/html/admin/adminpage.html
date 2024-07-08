@@ -7,10 +7,18 @@
 </head>
 <body>
     <div class="sidebar">
+        <h2>관리자 메뉴</h2>
         <ul>
-            <li><a href="/admin/userlist">유저 정보 관리</a></li>
-            <li><a href="/admin/sellerlist">판매자 정보 관리</a></li>
+            <li>
+                <button onclick="location.href='/admin/userlist'" style="width: 100%; padding: 20px; font-size: 18px; margin-bottom: 10px;">유저 정보 관리</button>
+            </li>
+            <li>
+                <button onclick="location.href='/admin/sellerlist'" style="width: 100%; padding: 20px; font-size: 18px; margin-bottom: 10px;">판매자 정보 관리</button>
+            </li>
+            <li>
+                <button onclick="location.href='/admin/product'" style="width: 100%; padding: 20px; font-size: 18px; margin-bottom: 10px;">상품 관리</button>
+            </li>
         </ul>
-    </div>  
+    </div>
 </body>
 </html>

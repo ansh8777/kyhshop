@@ -138,4 +138,17 @@ public class UserDao {
         String sqlStmt = "UPDATE tb_user_mst SET del_fg = 1 WHERE id = ?";
         jt.update(sqlStmt, id);
     }
+
+    // 상품 모두 가져오기
+    public List<Map<String, Object>> selectProduct_9() {
+        String sqlStmt = "SELECT    TM.SEQ             AS seq, "                        +
+                         "          TM.prod_img        AS prod_img, "                   +
+                         "          TM.prod_nm         AS prod_nm, "                    +
+                         "          PD.prod_price      AS prod_price "                  +
+                         "FROM      TB_PRODUCT_MST TM "                                 +
+                         "JOIN      TB_PRODUCT_DETAIL PD ON TM.PROD_ID = PD.PROD_ID "   +
+                         "ORDER BY  TM.SEQ DESC "                                       +
+                         "LIMIT 9"; 
+        return jt.queryForList(sqlStmt);
+    }
 }

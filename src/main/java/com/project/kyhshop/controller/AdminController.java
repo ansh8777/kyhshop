@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 import com.project.kyhshop.dao.*;
@@ -56,5 +58,38 @@ public class AdminController {
         model.addAttribute("sellerList", sellerList);
         
         return "html/admin/sellerlist";
+    }
+
+    @GetMapping("/admin/product")
+    public String mangeProduct(@RequestParam(defaultValue = "1") String order, Model model) {
+        // order 파라미터에 따라 정렬 기준 설정
+        String orderString = "";
+        if (order.equals("1")) {
+            orderString = "productCategory";
+        } else if (order.equals("2")) {
+            orderString = "regDt";
+        } else {
+            orderString = "sellerId";
+        }
+        // 설정된 정렬 기준에 따라 상품 리스트 조회
+        List<Map<String, Object>> productList = ad.selectProductList(orderString);
+        // 조회된 상품 리스트를 모델에 추가
+        model.addAttribute("productList", productList);
+        // admin/product.html 페이지로 이동
+        return "html/admin/product";
+    }
+
+    @PostMapping("/admin/product/delete")
+    public String deleteProduct(@RequestParam String prodId, HttpSession session) {
+        // 로그인 안되어 있으면
+        if (session.getAttribute("id") == null) {
+            return "redirect:/login";
+        } 
+        else if ((int)session.getAttribute("grade") != 99) {  // 등급이 99가 아니면
+            return "redirect:/";
+        }
+
+        ad.deleteProduct(prodId);
+        return "redirect:/admin/product";
     }
 }

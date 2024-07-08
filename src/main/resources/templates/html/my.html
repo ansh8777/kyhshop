@@ -85,8 +85,8 @@
             <li><a href="/cart">Cart</a></li>
             <li th:if="${session.id == null}"><a href="/login">Login</a></li>
             <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
-            <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
             <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+            <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
         </ul>
     </div>
 

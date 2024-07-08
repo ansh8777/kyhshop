@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import com.project.kyhshop.dao.*;
 
@@ -20,19 +21,35 @@ public class UserController {
     
     // 홈페이지
     @GetMapping("/")
-    public String homePage() {
-        return "html/homepage";
-    }
+    public String homePage(Model model) {
+        List<Map<String, Object>> prodSel = ud.selectProduct_9();
+        // 가격 포맷
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
-    // 로그인 고르기 페이지
-    @GetMapping("/loginselect")
-    public String loginSelectPage() {
-        return "html/loginselect";
+        for (Map<String, Object> product : prodSel) {
+            double price = Double.parseDouble(product.get("prod_price").toString());
+
+            // 소수점이 0인지 확인합니다.
+            if (price % 1 == 0) {
+                // 소수점이 0이면 정수로 변환하고 포맷팅합니다.
+                product.put("prod_price_disp", decimalFormat.format((int) price));
+            } else {
+                // 소수점이 0이 아니면 그대로 유지합니다.
+                product.put("prod_price_disp", String.format("%,.2f", price));
+            }
+        }
+        model.addAttribute("prodSel", prodSel);
+        return "html/homepage";
     }
 
     // 로그인 페이지
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(HttpSession session) {
+        // 로그인 되어 있으면 홈페이지로
+        if (session.getAttribute("id") != null) {
+            return "redirect:/";
+        }
+        
         return "html/login";
     }
 
@@ -58,16 +75,10 @@ public class UserController {
             model.addAttribute("msg", "탈퇴한 회원입니다. 탈퇴를 해제하시겠습니까?");
             return "/html/alert";
         } else {
-            model.addAttribute("link", "/loginselect");
+            model.addAttribute("link", "/login");
             model.addAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다.");
             return "/html/alert";
         }
-    }
-
-    // 판매자 로그인 페이지
-    @GetMapping("login/seller")
-    public String sellerLoginPage() {
-        return "html/seller/login";
     }
 
     // 판매자 로그인 액션
@@ -92,7 +103,7 @@ public class UserController {
             model.addAttribute("msg", "탈퇴한 회원입니다. 탈퇴를 해제하시겠습니까?");
             return "/html/alert";
         } else {
-            model.addAttribute("link", "/loginselect");
+            model.addAttribute("link", "/login");
             model.addAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다.");
             return "/html/alert";
         }

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Purchase Page</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            min-width: 992px;
+            font-family: "Helvetica";
+        }
+        
+        .navbar {
+            height: 60px;
+            padding-left: 30px;
+        }
+        
+        .logo {
+            line-height: 60px;
+            float: left;
+        }
+        
+        .logo img {
+            vertical-align: middle;
+        }
+        
+        .navbar ul {
+            float: right;
+        }
+        
+        .navbar li {
+            list-style-type: none;
+            float: left;
+            margin-right: 30px;
+        }
+        
+        .navbar a {
+            text-decoration: none;
+            color: black;
+            font-style: bold;
+            font-size: 13px;
+        }
+        
+        .product-container {
+            width: 80%;
+            margin: 60px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .product-top {
+            display: flex;
+            width: 100%;
+        }
+        
+        .product-image {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .product-image img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+        }
+        
+        .product-details {
+            flex: 1;
+            padding: 20px;
+        }
+        
+        .product-details h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .product-details .name {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .product-details .price {
+            font-size: 22px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .product-details .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .product-details .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #000;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .product-details .btn.cart {
+            background-color: #888;
+        }
+        
+        .product-description {
+            width: 100%;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #555;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer img {
+            height: 20px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a class="logo" href="/">
+          <img src="/images/kyhlogo.png" height="50px">
+        </a>
+        <ul>
+          <li><a href="#">Contact</a></li>
+          <li><a href="/cart">Cart</a></li>
+          <li th:if="${session.id == null}"><a href="/login">Login</a></li>
+          <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
+          <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+          <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+        </ul>
+    </div>
+
+    <div class="product-container" th:each="product : ${productSet}">
+        <input type="hidden" name="seq" th:value="${product.seq}">
+        <div class="product-top">
+            <div class="product-image">
+                <img th:src="@{'images/' + ${product.prod_img}}" alt="Product Image">
+            </div>
+            <div class="product-details">
+                <h1 th:text="${product.prod_title}"></h1>
+                <p class="name" th:text="${product.prod_nm}">Product Name</p>
+                <p class="price" th:text="'가격: ' + ${product.prod_price_disp} + '원'">Price</p>
+                <div class="buttons">
+                    <button class="btn buy">구매하기</button>
+                    <button class="btn cart">장바구니</button>
+                </div>
+            </div>
+        </div>
+        <div class="product-description" th:text="${product.prod_desc}">Product Description</div>
+    </div>
+
+    <div class="footer">
+        <a href="#"><img src="images/facebook.png" alt="Facebook"></a>
+        <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
+        <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
+    </div>
+</body>
+</html>

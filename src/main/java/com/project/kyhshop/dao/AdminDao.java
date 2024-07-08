@@ -47,4 +47,31 @@ public class AdminDao {
                          "FROM   tb_seller_mst";
         return jt.queryForList(sqlStmt);
     }
+
+    // 상품 목록 조회 메소드 구현
+    public List<Map<String, Object>> selectProductList(String orderString) {
+        String sqlStmt = "SELECT p.seq as seq, " +
+                         "p.prod_id as prodId, " +
+                         "p.seller_id as sellerId, " +
+                         "p.prod_category as productCategory, " +
+                         "p.prod_nm as productName, " +
+                         "(SELECT code_name FROM tb_code_detail WHERE seq = p.prod_category) as category, " +
+                         "p.product_state as productState, " +
+                         "(SELECT code_name FROM tb_code_detail WHERE seq = p.product_state) as state, " +
+                         "p.reg_dt as regDt, " +
+                         "d.prod_amount as prodAmount " +
+                         "FROM tb_product_mst p " +
+                         "JOIN tb_product_detail d ON p.prod_id = d.prod_id " +
+                         "ORDER BY " + orderString;
+
+        return jt.queryForList(sqlStmt);
+    }
+
+    // 상품 삭제 메소드
+    public void deleteProduct(String prodId) {
+        String sqlDetail = "DELETE FROM tb_product_detail WHERE prod_id = ?";
+        String sqlMst = "DELETE FROM tb_product_mst WHERE prod_id = ?";
+        jt.update(sqlDetail, prodId);
+        jt.update(sqlMst, prodId);
+    }
 }
