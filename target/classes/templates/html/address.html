@@ -42,7 +42,6 @@
 </head>
 <body>
     <h1>주소록 관리</h1>
-
     <h2>주소 목록</h2>
         <div th:each="address : ${addressList}" class="address-entry">
             <h3 th:text="${address.name}">이름</h3>

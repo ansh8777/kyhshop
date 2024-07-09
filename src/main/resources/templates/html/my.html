@@ -81,8 +81,8 @@
             <img src="images/kyhlogo.png" height="50px">
         </a>
         <ul>
-            <li><a href="#">Contact</a></li>
-            <li><a href="/cart">Cart</a></li>
+            <li><a href="/allproduct">Product</a></li>
+            <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
             <li th:if="${session.id == null}"><a href="/login">Login</a></li>
             <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
             <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
@@ -128,13 +128,6 @@
             </div>
         </div>
     </div>
-
-    <div class="footer">
-        <a href="#"><img src="images/facebook.png"></a>
-        <a href="#"><img src="images/instagram.png"></a>
-        <a href="#"><img src="images/twitter.png"></a>
-    </div>
-
     <script>
         function openPopup(url) {
             window.open(url, '_blank', 'width=600,height=1000');

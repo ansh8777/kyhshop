@@ -62,7 +62,6 @@ public class ProductController {
     // 상품 수정 액션
     @PostMapping("product/edit/action")
     public String productrEditAction(@RequestParam String seq,
-                                     @RequestParam String productId,
                                      @RequestParam String category,
                                      @RequestParam String productName,
                                      @RequestParam MultipartFile file,
@@ -92,7 +91,7 @@ public class ProductController {
             imgName = "default_image.jpg";
         }
 
-        pd.productEdit(seq, productId, sellerId, category, productName, imgName, productTitle, productDescription, productAmount, productPrice, productGrade, productVariety);
+        pd.productEdit(seq, sellerId, category, productName, imgName, productTitle, productDescription, productAmount, productPrice, productGrade, productVariety);
 
         model.addAttribute("link", "/product?seq=" + seq);
         model.addAttribute("msg", "수정이 완료되었습니다.");
@@ -107,5 +106,24 @@ public class ProductController {
         pd.productDelete(seq);
 
         return "redirect:/";
+    }
+
+    // 모든 상품 페이지
+    @GetMapping("/allproduct")
+    public String allProductPage(Model model) {
+        List<Map<String, Object>> productSelectList = pd.productSelect();
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+
+        for (Map<String, Object> product : productSelectList) {
+            // prod_price 값을 가져와서 문자열로 변환합니다.
+            String priceString = product.get("prod_price").toString();
+
+            // 문자열 형태의 가격을 정수로 변환하여 포맷팅합니다.
+            long price = Long.parseLong(priceString);
+            product.put("prod_price_disp", decimalFormat.format(price));
+        }
+        model.addAttribute("productSelectList", productSelectList);
+
+        return "html/product/allproduct";
     }
 }

@@ -71,8 +71,7 @@ public class SellerController {
 
     // 상품 등록 액션
     @PostMapping("/seller/product/insert/action")
-    public String productInsertAction(@RequestParam String productId,
-                                      @RequestParam String category,
+    public String productInsertAction(@RequestParam String category,
                                       @RequestParam String productTitle,
                                       @RequestParam String productName,
                                       @RequestParam MultipartFile file,
@@ -107,7 +106,7 @@ public class SellerController {
             imgName = "default_image.jpg";
         }
 
-        sd.productInsert(productId, category, productTitle, productDescription, productName, id, imgName, productAmount, productPrice, productGrade, productVariety);
+        sd.productInsert(category, productTitle, productDescription, productName, id, imgName, productAmount, productPrice, productGrade, productVariety);
         return "redirect:/seller/product";
     }
 }

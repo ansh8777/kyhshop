@@ -4,220 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인 선택</title>
+    <link href="css/homepage.css" rel="stylesheet" />
     <style>
-        /* 전체 스타일링 */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: '맑은 고딕', 'Malgun Gothic', '돋움', Dotum, 'Apple SD Gothic Neo', sans-serif;
-            background-color: #f5f5f5;
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
         .container {
-            flex: 1;
-            background-color: #ffffff;
-            padding: 20px;
-            border: 1px solid #dddddd;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 500px;
             text-align: center;
+            padding: 50px;
+            background-color: #f9f9f9;
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        /* 네비게이션 바 */
-        nav {
-            background-color: #245501;
-            color: #ffffff;
-            padding: 10px 0;
-            text-align: center;
-            position: relative;
-            width: 100%;
+        .container h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
         }
 
-        nav ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
+        .container .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
 
-        nav ul li {
-            display: inline;
-            margin: 0 10px;
-        }
-
-        nav ul li a {
-            color: #ffffff;
+        .container button {
+            display: inline-block; /* 텍스트를 가로로 배치 */
             text-decoration: none;
-            padding: 10px;
-            transition: all 0.3s ease;
-        }
-
-        nav ul li a:hover {
-            background-color: #1b3f01;
-        }
-
-        /* 로그인 아이콘 */
-        .login-icon {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            cursor: pointer;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 40px;
-            left: 10px;
-            background-color: #ffffff;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-            width: 150px; /* 드롭다운 너비 조정 */
-        }
-
-        .dropdown-content li {
-            list-style-type: none;
-        }
-
-        .dropdown-content a {
             color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        /* 헤더 */
-        header {
-            background-color: #f0f0f0;
-            text-align: center;
-            padding: 20px 0;
-            width: 100%;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            color: #245501;
-            margin-bottom: 10px;
-        }
-
-        /* 로그인 선택 스타일 */
-        .button-group {
-            margin: 20px 0;
-        }
-
-        .button-group button {
-            padding: 10px 20px;
-            margin: 0 10px;
+            background-color: #d3d3d3;
+            padding: 15px 30px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-size: 16px;
+            width: 45%;
             border: none;
-            background-color: #f0f0f0;
             cursor: pointer;
-            transition: background-color 0.3s;
+            white-space: nowrap; /* 텍스트가 줄바꿈 없이 한 줄에 나오도록 설정 */
         }
 
-        .button-group button.active {
-            background-color: #245501;
-            color: #ffffff;
+        .container button.active {
+            background-color: white;
+            color: black;
+            border: 1px solid #d3d3d3;
         }
 
-        .button-group button:hover {
-            background-color: #1b3f01;
-            color: #ffffff;
+        .container button:not(.active):hover {
+            background-color: #e0e0e0;
         }
 
-        form {
+        .container form {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        form div {
-            margin-bottom: 10px;
-        }
-
-        form input {
+        .container input[type="text"],
+        .container input[type="password"] {
+            width: calc(100% - 40px);
             padding: 10px;
-            width: 100%;
-            margin-bottom: 10px;
-            border: 1px solid #dddddd;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
-        form button {
+        .container input[type="submit"] {
+            background-color: #007bff;
+            color: white;
             padding: 10px 20px;
             border: none;
-            background-color: #245501;
-            color: #ffffff;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        form button:hover {
-            background-color: #1b3f01;
-        }
-
-        /* 푸터 */
-        footer {
-            background-color: #245501;
-            color: #ffffff;
-            text-align: center;
-            padding: 10px 0;
-            position: relative;
+            transition: background-color 0.3s ease;
             width: 100%;
-            bottom: 0;
+            margin-top: 10px;
         }
 
-        footer a {
-            color: #ffffff;
-            text-decoration: none;
-            margin: 0 10px;
+        .container input[type="submit"]:hover {
+            background-color: #0056b3;
         }
 
-        footer a:hover {
-            text-decoration: underline;
+        .container .form-group {
+            display: none;
+        }
+
+        .container .form-group.active {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <!-- 네비게이션 바 -->
-  <nav>
-    <div class="dropdown">
-      <img src="https://img.icons8.com/ios-glyphs/30/ffffff/user.png" class="login-icon" alt="로그인 아이콘">
-      <div class="dropdown-content">
-        <li th:if="${session.id == null}"><a href="/login">Login</a></li>
-        <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
-        <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
-        <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
-      </div>
+    <div class="navbar">
+        <a class="logo" href="/">
+            <img src="images/kyhlogo.png" height="50px">
+        </a>
+        <ul>
+            <li><a href="/allproduct">Product</a></li>
+            <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
+            <li th:if="${session.id == null}"><a href="/login">Login</a></li>
+            <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
+            <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+            <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+        </ul>
     </div>
-    <a class="logo" href="/">
-      <img src="/images/kyhlogo.png" height="50px" alt="KYH Shop 로고">
-    </a>
-    <ul>
-      <li><a href="/product/index">전체상품보기</a></li>
-      <li><a href="/code">카테고리별 조회</a></li>
-    </ul>
-  </nav>
-  <!-- 헤더 -->
-  <header>
-    <h1>Fruit of KYH</h1>
-    <p>신선하고 맛있는 과일을 합리적인 가격에 만나보세요!</p>
-  </header>
 
     <div class="container">
         <h2>로그인 선택</h2>
@@ -244,16 +135,6 @@
             </form>
         </div>
     </div>
-
-    <footer>
-        <p>고객센터: 1234-5678 | 이메일: help@fruitkyh.co.kr</p>
-        <nav>
-          <a href="/info">이용약관</a>
-          <a href="/privacy">개인정보 처리방침</a>
-          <a href="/sitemap">사이트맵</a>
-        </nav>
-      </footer>
-    
 
     <script>
         function showLogin(type) {

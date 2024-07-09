@@ -1,270 +1,40 @@
 <!DOCTYPE html>
-<html lang="ko">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KYH Mall</title>
-  <style>
-    /* 전체 스타일링 */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: '맑은 고딕', 'Malgun Gothic', '돋움', Dotum, 'Apple SD Gothic Neo', sans-serif;
-      background-color: #f5f5f5;
-      line-height: 1.6;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .container {
-      flex: 1;
-    }
-
-    /* 네비게이션 바 */
-    nav {
-      background-color: #245501;
-      color: #ffffff;
-      padding: 10px 0;
-      text-align: center;
-      position: relative;
-      height: auto;
-    }
-
-    nav ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    nav ul li {
-      display: inline;
-      margin: 0 10px;
-    }
-
-    nav ul li a {
-      color: #ffffff;
-      text-decoration: none;
-      padding: 10px;
-      transition: all 0.3s ease;
-    }
-
-    nav ul li a:hover {
-      background-color: #1b3f01;
-    }
-
-    /* 로그인 아이콘 */
-    .login-icon {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      cursor: pointer;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      top: 40px;
-      left: 10px;
-      background-color: #ffffff;
-      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-      z-index: 1;
-      width: 150px; /* 드롭다운 너비 조정 */
-    }
-
-    .dropdown-content li {
-      list-style-type: none;
-    }
-
-    .dropdown-content a {
-      color: black;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-    }
-
-    .dropdown-content a:hover {
-      background-color: #f1f1f1;
-    }
-
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-
-    /* 헤더 */
-    header {
-      background-color: #f8f8f2; /* 아이보리 배경색 */
-      text-align: center;
-      padding: 20px 0;
-    }
-
-    header h1 {
-      font-size: 2.5rem;
-      color: #245501;
-      margin-bottom: 10px;
-    }
-
-    /* 메인 섹션 */
-    section {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      margin-top: 20px;
-    }
-
-    .product {
-      background-color: #ffffff;
-      border: 1px solid #dddddd;
-      margin: 10px;
-      padding: 15px;
-      width: 30%; /* 각 상품이 3개씩 한 줄에 나타나도록 설정 */
-      text-align: center;
-      box-sizing: border-box;
-    }
-
-    .product img {
-      max-width: 100%;
-      height: auto;
-    }
-
-    .product p {
-      margin-bottom: 10px;
-    }
-
-    .product p.price {
-      font-weight: bold;
-      color: #245501;
-      font-size: 1.2rem;
-    }
-
-    /* 검색 폼을 가운데 정렬하기 위한 스타일 */
-    .search-container {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .search-container form {
-      display: inline-block;
-      text-align: left; /* 폼 안의 요소들은 왼쪽 정렬 */
-    }
-
-    .search-container label {
-      margin-right: 10px;
-    }
-
-    .search-container select,
-    .search-container input[type="text"],
-    .search-container button {
-      margin-bottom: 10px;
-    }
-
-    /* 푸터 */
-    footer {
-      background-color: #245501;
-      color: #ffffff;
-      text-align: center;
-      padding: 10px 0;
-      position: relative; /* 기존 absolute에서 수정 */
-      width: 100%;
-      bottom: 0;
-    }
-
-    footer a {
-      color: #ffffff;
-      text-decoration: none;
-      margin: 0 10px;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-
-<body>
-  <!-- 네비게이션 바 -->
-  <nav>
-    <div class="dropdown">
-      <img src="https://img.icons8.com/ios-glyphs/30/ffffff/user.png" class="login-icon" alt="로그인 아이콘">
-      <div class="dropdown-content">
+<html>
+  <head>
+    <title>KYH SHOP</title>
+    <meta charset="utf-8" />
+    <link href="css/homepage.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="navbar">
+      <a class="logo" href="/">
+        <img src="/images/kyhlogo.png" height="50px">
+      </a>
+      <ul>
+        <li><a href="/allproduct">Product</a></li>
+        <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
         <li th:if="${session.id == null}"><a href="/login">Login</a></li>
         <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
         <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
         <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
-      </div>
+      </ul>
     </div>
-    <a class="logo" href="/">
-      <img src="/images/kyhlogo.png" height="50px" alt="KYH Shop 로고">
-    </a>
-    <ul>
-      <li><a href="/product/index">전체상품보기</a></li>
-      <li><a href="/code">카테고리별 조회</a></li>
-    </ul>
-  </nav>
-  <!-- 헤더 -->
-  <header>
-    <h1>Fruit of KYH</h1>
-    <p>신선하고 맛있는 과일을 합리적인 가격에 만나보세요!</p>
-  </header>
-  <!-- 검색 폼 -->
-  <div class="search-container">
-    <h1>Our Products</h1>
-    <form id="searchForm">
-      <label for="searchOption">검색 기준 선택:</label>
-      <select id="searchOption" name="searchOption">
-        <option value="상품명">상품명</option>
-        <option value="판매자">판매자</option>
-      </select>
-
-      <label for="searchCategory">과일 등급:</label>
-      <select id="searchCategory" name="searchCategory">
-        <option value="상">A</option>
-        <option value="중">B</option>
-      </select>
-
-      <label for="searchVariety">과일 품종:</label>
-      <select id="searchVariety" name="searchVariety">
-        <option value="후지">후지</option>
-        <option value="홍로">홍로</option>
-        <option value="아오리">아오리</option>
-      </select>
-<br>
-      <label for="searchTerm">검색어:</label>
-      <input type="text" id="searchTerm" name="searchTerm" style="width: 500px;" placeholder=" 검색어를 입력해주세요.">
-
-      <button type="submit">검색</button>
-    </form>
-  </div>
-  <!-- 메인 섹션 -->
-  <div class="container">
-    <section>
-      <!-- 과일 상품 -->
-      <div th:each="product : ${prodSel}" class="product">
-        <a th:href="'/product?seq=' + ${product.seq}">
+          <div class="search-container">
+            <form action="/search" method="get">
+              <input type="text" placeholder="..." name="query">
+              <button type="submit">Search</button>
+            </form>
+          </div>
+    <h1>Our new Products</h1>
+    <div class="products">
+      <div th:each="product : ${prodSel}">
+        <a th:href="@{/product(seq=${product.seq})}">
           <img th:src="@{'images/' + ${product.prod_img}}" alt="Product Image">
-          <p th:text="${product.prod_nm}">Product Name</p>
-          <p class="price" th:text="${product.prod_price_disp} + '원'">Product Price</p>
-          <p th:text="'등급: ' + ${product.prod_grade}">Product Grade</p>
-          <p th:text="'품종: ' + ${product.prod_variety}">Product Variety</p>
-          <p th:text="'판매자: ' + ${product.seller_id}">Product Seller</p>
+          <p th:text="${product.prod_title}">Product Name</p>
+          <p class="price" th:text="'가격: ' + ${product.prod_price_disp} + '원'">가격</p>
         </a>
       </div>
-    </section>
-  </div>
-
-  <!-- 푸터 -->
-  <footer>
-    <p>고객센터: 1234-5678 | 이메일: help@fruitkyh.co.kr</p>
-    <nav>
-      <a href="/info">이용약관</a>
-      <a href="/privacy">개인정보 처리방침</a>
-      <a href="/sitemap">사이트맵</a>
-    </nav>
-  </footer>
-</body>
+      <div class="clearfix"></div>
+    </div>
+  </body>
 </html>

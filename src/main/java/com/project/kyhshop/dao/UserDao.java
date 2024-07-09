@@ -142,15 +142,15 @@ public class UserDao {
     // 상품 9개 가져오기
     public List<Map<String, Object>> selectProduct_9() {
         String sqlStmt = "SELECT    TM.SEQ             AS seq, "                        +
-                         "          TM.prod_id         AS prod_id, "                    +
                          "          TM.seller_id       AS seller_id, "                  +
                          "          TM.prod_img        AS prod_img, "                   +
                          "          TM.prod_nm         AS prod_nm, "                    +
+                         "          PD.prod_title      AS prod_title, "                 +
                          "          PD.prod_price      AS prod_price, "                 +
                          "          PD.prod_grade      AS prod_grade, "                 +
                          "          PD.prod_variety    AS prod_variety "                +
-                         "FROM      TB_PRODUCT_MST TM "                                 +
-                         "LEFT JOIN TB_PRODUCT_DETAIL PD ON TM.SEQ = PD.SEQ "   +
+                         "FROM      tb_product_mst TM "                                 +
+                         "LEFT JOIN tb_product_detail PD ON TM.SEQ = PD.SEQ "   +
                          "ORDER BY  TM.SEQ DESC "                                       +
                          "LIMIT 9"; 
         return jt.queryForList(sqlStmt);

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            min-width: 992px;
+            font-family: "Helvetica";
+        }
+        
+        .navbar {
+            height: 60px;
+            padding-left: 30px;
+        }
+        
+        .logo {
+            line-height: 60px;
+            float: left;
+        }
+        
+        .logo img {
+            vertical-align: middle;
+        }
+        
+        .navbar ul {
+            float: right;
+        }
+        
+        .navbar li {
+            list-style-type: none;
+            float: left;
+            margin-right: 30px;
+        }
+        
+        .navbar a {
+            text-decoration: none;
+            color: black;
+            font-size: 13px;
+        }
+        
+        .hero_header {
+            height: 450px;
+            width: 100%;
+        }
+        
+        body h1 {
+            text-align: center;
+            margin-top: 60px;
+            margin-bottom: 60px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #545454;
+        }
+        
+        .products {
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0;
+            width: 80%;
+            text-align: left;
+        }
+        
+        .product-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+        
+        .product-item img {
+            width: 150px;
+            height: 150px;
+            margin-right: 20px;
+        }
+        
+        .product-details {
+            flex-grow: 1;
+        }
+        
+        .product-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .product-price {
+            font-size: 16px;
+            color: #333;
+            margin: 5px 0;
+        }
+        
+        .product-seller {
+            font-size: 14px;
+            color: #777;
+        }
+        
+        .footer {
+            text-align: center;
+        }
+        
+        .footer img {
+            margin-top: 40px;
+            height: 20px;
+            margin-bottom: 80px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        a.product-item {
+            text-decoration: none;
+        }
+
+        .search-container {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0; /* 상단 및 하단 여백 추가 */
+      }
+
+      .search-container form {
+        display: flex;
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .search-container input[type="text"] {
+        width: 80%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px 0 0 5px;
+        outline: none;
+      }
+
+      .search-container button {
+        width: 20%;
+        padding: 10px;
+        background-color: #d3d3d3; /* 회색 */
+        border: none;
+        border-radius: 0 5px 5px 0;
+        color: white;
+        cursor: pointer;
+      }
+      
+      .search-container button:hover {
+        background-color: #a9a9a9; /* 어두운 회색 */
+      }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a class="logo" href="/">
+          <img src="/images/kyhlogo.png" height="50px">
+        </a>
+        <ul>
+          <li><a href="/allproduct">Product</a></li>
+          <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
+          <li th:if="${session.id == null}"><a href="/login">Login</a></li>
+          <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
+          <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+          <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+        </ul>
+    </div>
+    <div class="search-container">
+        <form action="/search" method="get">
+          <input type="text" placeholder="..." name="query">
+          <button type="submit">Search</button>
+        </form>
+    </div>
+    <div class="products">
+        <a th:each="product : ${productSelectList}" th:href="@{/product(seq=${product.seq})}" class="product-item">
+            <img th:src="@{'/images/' + ${product.prod_img}}" alt="Product Image">
+            <div class="product-details">
+                <p class="product-title" th:text="${product.prod_nm}">Product Title</p>
+                <p class="product-price" th:text="${product.prod_price_disp} + '원'">가격</p>
+                <p class="product-seller" th:text="${product.SELLER_NM}">Seller</p>
+            </div>
+        </a>
+    </div>
+</body>
+</html>

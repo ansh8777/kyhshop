@@ -152,8 +152,8 @@
             <img src="/images/kyhlogo.png" height="50px">
         </a>
         <ul>
-          <li><a href="#">Contact</a></li>
-          <li><a href="/cart">Cart</a></li>
+          <li><a href="/allproduct">Product</a></li>
+          <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
           <li th:if="${session.id == null}"><a href="/login">Login</a></li>
           <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
           <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
@@ -184,11 +184,6 @@
             <button class="btn" onclick="window.location.href='/seller/product/insert'">상품 등록</button>
         </div>
     </div>
-
-    <div class="footer">
-        <!-- 푸터 유지 -->
-    </div>
-
     <script th:inline="javascript">
         function confirmDelete() {
             var confirmed = confirm("삭제하시겠습니까?");

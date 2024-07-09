@@ -94,6 +94,25 @@
             margin-bottom: 20px;
         }
 
+        .product-details .quantity {
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .product-details .quantity input {
+            width: 60px;
+            margin-left: 10px;
+            text-align: center;
+        }
+
+        .product-details .total-price {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+        
         .product-details .buttons {
             display: flex;
             gap: 10px;
@@ -136,8 +155,8 @@
           <img src="/images/kyhlogo.png" height="50px">
         </a>
         <ul>
-          <li><a href="#">Contact</a></li>
-          <li><a href="/cart">Cart</a></li>
+          <li><a href="/allproduct">Product</a></li>
+          <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
           <li th:if="${session.id == null}"><a href="/login">Login</a></li>
           <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
           <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
@@ -155,10 +174,14 @@
             <div class="product-details">
                 <h1 th:text="${product.prod_title}"></h1>
                 <p class="name" th:text="${product.prod_nm}">Product Name</p>
-                <p class="price" th:text="'가격: ' + ${product.prod_price_disp} + '원'">Price</p>
+                <p class="price" th:text="'가격: ' + ${product.prod_price_disp} + '원'" id="price-${product.seq}">Price</p>
+                <div class="amount">
+                    <label for="amount">수량:</label>
+                    <input type="number" id="amount" name="amount" value="1" min="1">
+                </div>
                 <div class="buttons">
-                    <button class="btn buy">구매하기</button>
-                    <button class="btn cart">장바구니</button>
+                    <button class="btn buy" onclick="basketinsert()">구매하기</button>
+                    <button class="btn cart" onclick="buyinsert()">장바구니</button>
                 </div>
             </div>
             <div th:if="${session.id} == ${product.seller_id}">
@@ -171,17 +194,26 @@
         </div>
         <div class="product-description" th:text="${product.prod_desc}">Product Description</div>
     </div>
-
-    <div class="footer">
-        <a href="#"><img src="images/facebook.png" alt="Facebook"></a>
-        <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
-        <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
-    </div>
-
     <script th:inline="javascript">
         function confirmDelete() {
             var confirmed = confirm("삭제하시겠습니까?");
             return confirmed;
+        }
+
+        function basketinsert() {
+            let productId = document.getElementsByName("seq")[0].value;
+            let amount = document.getElementsByName("amount")[0].value;
+
+            // 구매하기 버튼 클릭 시 구매하기 액션으로 이동
+            location.href = "/order/basket/insert/action?productId=" + productId + "&amount=" + amount;
+        }
+
+        function buyinsert() {
+            let productId = document.getElementsByName("seq")[0].value;
+            let amount = document.getElementsByName("amount")[0].value;
+
+            // 구매하기 버튼 클릭 시 구매하기 액션으로 이동
+            location.href = "/order/buy/insert/action?productId=" + productId + "&amount=" + amount;
         }
     </script>
 </body>
