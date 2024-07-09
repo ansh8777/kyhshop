@@ -93,7 +93,7 @@
     <div class="sidebar" th:if="${session.temp} == 'user'">
         <ul>
             <li><a href="/order-history">주문 내역</a></li>
-            <li><a href="/my/address" onclick="window.open('/my/address', '주소록 관리', 'width=600,height=400'); return false;">주소록 관리</a></li>
+            <li><a href="/my/address" onclick="window.open('/my/address', '주소록 관리', 'width=600,height=1000'); return false;">주소록 관리</a></li>
             <li><a onclick="openPopup('/my/passcheck')">개인 정보 설정</a></li>
             <li th:if="${session.grade == 99}"><a href="/admin">관리자 페이지</a></li>
         </ul>

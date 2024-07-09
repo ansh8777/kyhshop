@@ -401,4 +401,17 @@ public class UserController {
 
         return "redirect:/my/address";
     }
+
+    // 주소록 삭제 액션
+    @PostMapping("my/address/delete/action")
+    public String addressDeleteAction(@RequestParam String seq,
+                                      HttpSession session)
+    {
+        if (session.getAttribute("id") == null) {
+            return "redirect:/";
+        }
+        ud.deleteAddress(seq);
+        
+        return "redirect:/my/address";
+    }
 }

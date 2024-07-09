@@ -120,7 +120,7 @@ public class UserDao {
     // 유저 정보 가져오기
     public List<Map<String, Object>> selectUser(String id) {
         String sqlStmt = "SELECT seq, id, pw, nm, birth_date, email, phone, address, address_detail, grade " +
-                         "FROM TB_USER_MST " +
+                         "FROM tb_user_mst " +
                          "WHERE id = ?";
         return jt.queryForList(sqlStmt, id);
     }
@@ -158,7 +158,7 @@ public class UserDao {
 
     // 저장된 주소지 가져오기
     public List<Map<String, Object>> selectAddress(String id) {
-        String sqlStmt = "SELECT name, address, address_detail FROM tb_address_mst WHERE id = ?";
+        String sqlStmt = "SELECT seq, name, phone, address, address_detail FROM tb_address_mst WHERE id = ?";
         try {   // 결과가 없으면 null 반환
             return jt.queryForList(sqlStmt, id);
         } catch (EmptyResultDataAccessException e) {
@@ -171,5 +171,11 @@ public class UserDao {
     {
         String sqlStmt = "INSERT INTO tb_address_mst (id, name, phone, address, address_detail) VALUES (?, ?, ?, ?, ?)";
         jt.update(sqlStmt, id, name, phone, address, address_detail);
-    }   
+    }
+
+    // 주소 Delete
+    public void deleteAddress(String seq) {
+        String sqlStmt = "DELETE FROM tb_address_mst WHERE seq = ?";
+        jt.update(sqlStmt, seq);
+    }
 }

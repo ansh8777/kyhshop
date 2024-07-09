@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Purchase Page</title>
+    <title>제품 구매 페이지</title>
     <style>
         * {
             box-sizing: border-box;
@@ -57,7 +57,7 @@
         .product-top {
             display: flex;
             width: 100%;
-            justify-content: space-between; /* 수정하기와 삭제하기 버튼을 오른쪽으로 정렬하기 위해 */
+            justify-content: space-between;
         }
         
         .product-image {
@@ -155,11 +155,11 @@
           <img src="/images/kyhlogo.png" height="50px">
         </a>
         <ul>
-          <li><a href="/allproduct">Product</a></li>
-          <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
-          <li th:if="${session.id == null}"><a href="/login">Login</a></li>
-          <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
-          <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+          <li><a href="/allproduct">제품</a></li>
+          <li th:if="${session.temp == 'user'}"><a href="/cart">장바구니</a></li>
+          <li th:if="${session.id == null}"><a href="/login">로그인</a></li>
+          <li th:if="${session.id == null}"><a href="/regiselect">회원가입</a></li>
+          <li th:if="${session.id != null}"><a href="/logout">로그아웃</a></li>
           <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
         </ul>
     </div>
@@ -169,16 +169,18 @@
         <input type="hidden" name="seller_id" th:value="${product.seller_id}">
         <div class="product-top">
             <div class="product-image">
-                <img th:src="@{'images/' + ${product.prod_img}}" alt="Product Image">
+                <img th:src="@{'images/' + ${product.prod_img}}" alt="제품 이미지">
             </div>
             <div class="product-details">
                 <h1 th:text="${product.prod_title}"></h1>
-                <p class="name" th:text="${product.prod_nm}">Product Name</p>
-                <p class="price" th:text="'가격: ' + ${product.prod_price_disp} + '원'" id="price-${product.seq}">Price</p>
-                <div class="amount">
+                <p class="name" th:text="${product.prod_nm}">제품 이름</p>
+                <p class="price" th:text="'가격: ' + ${product.prod_price_disp} + '원'">가격</p>
+                <input type="hidden" name="price-${product.seq}" id="price-${product.seq}" th:value="${product.prod_price}">
+                <div class="quantity">
                     <label for="amount">수량:</label>
-                    <input type="number" id="amount" name="amount" value="1" min="1">
+                    <input type="number" id="amount-${product.seq}" name="amount" value="1" min="1" th:attr="onchange='updateTotalPrice(' + ${product.seq} + ')'">
                 </div>
+                <div class="total-price" id="total-price-${product.seq}">총 가격: <span id="total-price-value-${product.seq}" th:text="${product.prod_price_disp}"></span>원</div>
                 <div class="buttons">
                     <button class="btn buy" onclick="basketinsert()">구매하기</button>
                     <button class="btn cart" onclick="buyinsert()">장바구니</button>
@@ -192,7 +194,7 @@
                 </form>
             </div>
         </div>
-        <div class="product-description" th:text="${product.prod_desc}">Product Description</div>
+        <div class="product-description" th:text="${product.prod_desc}">제품 설명</div>
     </div>
     <script th:inline="javascript">
         function confirmDelete() {
@@ -200,20 +202,12 @@
             return confirmed;
         }
 
-        function basketinsert() {
-            let productId = document.getElementsByName("seq")[0].value;
-            let amount = document.getElementsByName("amount")[0].value;
-
-            // 구매하기 버튼 클릭 시 구매하기 액션으로 이동
-            location.href = "/order/basket/insert/action?productId=" + productId + "&amount=" + amount;
-        }
-
-        function buyinsert() {
-            let productId = document.getElementsByName("seq")[0].value;
-            let amount = document.getElementsByName("amount")[0].value;
-
-            // 구매하기 버튼 클릭 시 구매하기 액션으로 이동
-            location.href = "/order/buy/insert/action?productId=" + productId + "&amount=" + amount;
+        function updateTotalPrice(seq) {
+            var amount = document.getElementById('amount-' + seq).value;
+            var price = document.getElementById('price-' + seq).value;
+            var totalPrice = amount * price;
+            var totalPriceFormatted = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            document.getElementById('total-price-value-' + seq).innerText = totalPriceFormatted;
         }
     </script>
 </body>

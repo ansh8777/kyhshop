@@ -1,82 +1,147 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>주소록 관리</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .address-list {
-            list-style-type: none;
+            background-color: #f8f9fa;
+            margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #343a40;
         }
-        .address-list li {
-            background-color: #f2f2f2;
+        h1, h2 {
+            color: #495057;
+        }
+        .address-entry {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 10px 0;
+            width: 80%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+        .address-info {
+            flex-grow: 1;
+        }
+        .address-actions {
+            display: flex;
+            align-items: center;
+        }
+        form {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            width: 80%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        input[type="text"], button {
             padding: 10px;
-            margin-bottom: 5px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+        }
+        .c-container, .address-container {
+            display: flex;
+            gap: 10px;
+        }
+        button[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            padding: 10px; /* 기본 스타일 */
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        button[type="button"] {
+            width: auto;
+            background-color: #6c757d;
+            color: white;
+            white-space: nowrap;
+            padding-left: 0; /* 추가 */
+            padding-right: 0; /* 추가 */
+        }
+        button[type="button"]:hover {
+            background-color: #495057;
+        }
+        input#name, input#address_detail {
+            width: calc(100% - 20px); /* 기존 너비에서 약간 줄임 */
+        }
+        form.delete-form {
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            box-shadow: none;
+            display: flex;
+            align-items: center; /* 수정된 부분 */
+        }
+        .delete-form button {
+            width: 100px;
         }
     </style>
 </head>
 <body>
-    <h1>주소록 관리</h1>
-    <h2>주소 목록</h2>
-        <div th:each="address : ${addressList}" class="address-entry">
-            <h3 th:text="${address.name}">이름</h3>
-            <p>전화번호: <span th:text="${address.phone}"></span></p>
-            <p>주소: <span th:text="${address.address}"></span></p>
-            <p>상세주소: <span th:text="${address.address_detail}"></span></p>
-        </div>
-    
-    <form action="/my/address/insert/action" method="post">
-        <input type="text" id="name" name="name" placeholder="이름" required>
-        <div class="c-container">
-            <input type="text" id="phone1" name="phone_1" maxlength="3" placeholder="010" required>
-            <span>-</span>
-            <input type="text" id="phone2" name="phone_2" maxlength="4" placeholder="0000" required>
-            <span>-</span>
-            <input type="text" id="phone3" name="phone_3" maxlength="4" placeholder="0000" required>
-        </div>
-        <div class="address-container">
-            <input type="text" id="address" name="address" placeholder="주소" required>
-            <button type="button" onclick="openDaumPostcode()">주소 찾기</button>
-        </div>
-        <input type="text" id="address_detail" name="address_detail" placeholder="상세주소" required>
-        <button type="submit">주소록 추가</button>
-    </form>
+<h1>주소 목록</h1>
+<div th:each="address : ${addressList}" class="address-entry">
+    <div class="address-info">
+        <h3 th:text="${address.name}">이름</h3>
+        <p>전화번호: <span th:text="${address.phone}"></span></p>
+        <p>주소: <span th:text="${address.address}"></span></p>
+        <p>상세주소: <span th:text="${address.address_detail}"></span></p>
+    </div>
+    <div class="address-actions">
+        <form action="/my/address/delete/action" method="post" class="delete-form">
+            <input type="hidden" name="seq" th:value="${address.seq}" />
+            <button type="submit">삭제</button>
+        </form>
+    </div>
+</div>
 
-    <!-- 다음 주소 API 스크립트 -->
-    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <script>
-        function openDaumPostcode() {
-            new daum.Postcode({
-                oncomplete: function(data) {
-                    document.getElementById('address').value = data.address;
-                }
-            }).open();
-        }
-    </script>
+<form action="/my/address/insert/action" method="post">
+    <input type="text" id="name" name="name" placeholder="이름" required>
+    <div class="c-container">
+        <input type="text" id="phone1" name="phone_1" maxlength="3" placeholder="010" required>
+        <span>-</span>
+        <input type="text" id="phone2" name="phone_2" maxlength="4" placeholder="0000" required>
+        <span>-</span>
+        <input type="text" id="phone3" name="phone_3" maxlength="4" placeholder="0000" required>
+    </div>
+    <div class="address-container">
+        <input type="text" id="address" name="address" placeholder="주소" required>
+        <button type="button" onclick="openDaumPostcode()">주소찾기</button>
+    </div>
+    <input type="text" id="address_detail" name="address_detail" placeholder="상세주소" required>
+    <button type="submit">주소록 추가</button>
+</form>
+
+<!-- 다음 주소 API 스크립트 -->
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    function openDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                document.getElementById('address').value = data.address;
+            }
+        }).open();
+    }
+</script>
+
 </body>
 </html>
