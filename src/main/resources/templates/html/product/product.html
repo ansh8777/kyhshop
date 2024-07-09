@@ -169,18 +169,19 @@
         <input type="hidden" name="seller_id" th:value="${product.seller_id}">
         <div class="product-top">
             <div class="product-image">
-                <img th:src="@{'images/' + ${product.prod_img}}" alt="제품 이미지">
+                <img th:src="@{'/images/' + ${product.prod_img}}" alt="제품 이미지">
             </div>
             <div class="product-details">
                 <h1 th:text="${product.prod_title}"></h1>
                 <p class="name" th:text="${product.prod_nm}">제품 이름</p>
+                <input type="hidden" id="productname" name="productname" th:value="${product.prod_nm}">
                 <p class="price" th:text="'가격: ' + ${product.prod_price_disp} + '원'">가격</p>
-                <input type="hidden" name="price-${product.seq}" id="price-${product.seq}" th:value="${product.prod_price}">
+                <input type="hidden" th:id="'price-' + ${product.seq}" th:value="${product.prod_price}">
                 <div class="quantity">
-                    <label for="amount">수량:</label>
-                    <input type="number" id="amount-${product.seq}" name="amount" value="1" min="1" th:attr="onchange='updateTotalPrice(' + ${product.seq} + ')'">
+                    <label th:for="'amount-' + ${product.seq}">수량:</label>
+                    <input type="number" th:id="'amount-' + ${product.seq}" name="amount" value="1" min="1" th:onchange="'updateTotalPrice(' + ${product.seq} + ',' + ${product.prod_price} + ')'">
                 </div>
-                <div class="total-price" id="total-price-${product.seq}">총 가격: <span id="total-price-value-${product.seq}" th:text="${product.prod_price_disp}"></span>원</div>
+                <div class="total-price" th:id="'total-price-' + ${product.seq}">총 가격: <span th:text="${product.prod_price_disp}"></span>원</div>
                 <div class="buttons">
                     <button class="btn buy" onclick="basketinsert()">구매하기</button>
                     <button class="btn cart" onclick="buyinsert()">장바구니</button>
@@ -202,12 +203,24 @@
             return confirmed;
         }
 
-        function updateTotalPrice(seq) {
+        function updateTotalPrice(seq, price) {
             var amount = document.getElementById('amount-' + seq).value;
-            var price = document.getElementById('price-' + seq).value;
             var totalPrice = amount * price;
-            var totalPriceFormatted = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            document.getElementById('total-price-value-' + seq).innerText = totalPriceFormatted;
+            document.getElementById('total-price-' + seq).innerText = '총 가격: ' + totalPrice.toLocaleString() + '원';
+        }
+
+        function basketinsert() {
+            let amount = document.getElementsByName("amount")[0].value;
+            let product_id = document.getElementsByName("productname")[0].value;
+            // 구매하기 버튼 클릭 시 구매하기 액션으로 이동
+            location.href = "/order/basket/insert/action?amount=" + amount + "&product_id=" + product_id;
+        }
+
+        function buyinsert() {
+            let amount = document.getElementsByName("amount")[0].value;
+            let product_id = document.getElementsByName("productname")[0].value;
+            // 구매하기 버튼 클릭 시 구매하기 액션으로 이동
+            location.href = "/order/basket/insert/action?amount=" + amount + "&product_id=" + product_id;
         }
     </script>
 </body>
