@@ -181,7 +181,7 @@
                     <input type="number" th:id="'amount-' + ${product.seq}" name="amount" value="1" min="1" th:onchange="'updateTotalPrice(' + ${product.seq} + ',' + ${product.prod_price} + ')'">
                 </div>
                 <div class="total-price" th:id="'total-price-' + ${product.seq}">총 가격: <span th:text="${product.prod_price_disp}"></span>원</div>
-                <div class="buttons">
+                <div class="buttons" th:if="${session.temp} == 'user'">
                     <button class="btn buy" onclick="buyinsert()">구매하기</button>
                     <button class="btn cart" onclick="basketinsert()">장바구니</button>
                 </div>
@@ -208,19 +208,45 @@
             document.getElementById('total-price-' + seq).innerText = '총 가격: ' + totalPrice.toLocaleString() + '원';
         }
 
-        function basketinsert() {
-            let amount = document.getElementsByName("amount")[0].value;
-            let product_id = document.getElementsByName("productname")[0].value;
-            // 구매하기 버튼 클릭 시 구매하기 액션으로 이동
-            location.href = "/order/basket/insert/action?amount=" + amount + "&product_id=" + product_id;
-        }
-
         function buyinsert() {
             let amount = document.getElementsByName("amount")[0].value;
             let seq = document.getElementsByName("seq")[0].value;
             // 구매하기 버튼 클릭 시 구매하기 액션으로 이동
             location.href = "/order?seq=" + seq + "&amount=" + amount;
         }
+
+        function basketinsert() {
+            let amount = document.getElementsByName("amount")[0].value;
+            let seq = document.getElementsByName("seq")[0].value;
+
+            // 동적으로 폼 생성
+            let form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/cart/insert/action';
+            form.target = 'popupWindow'; // 팝업 창으로 제출
+
+            let amountInput = document.createElement('input');
+            amountInput.type = 'hidden';
+            amountInput.name = 'amount';
+            amountInput.value = amount;
+            form.appendChild(amountInput);
+
+            let seqInput = document.createElement('input');
+            seqInput.type = 'hidden';
+            seqInput.name = 'seq';
+            seqInput.value = seq;
+            form.appendChild(seqInput);
+
+            document.body.appendChild(form);
+
+            // 팝업 창 생성
+            let popupWindow = window.open('', 'popupWindow', 'width=400,height=200');
+            form.submit();
+            
+            // 폼 제출 후 팝업 창 포커스
+            popupWindow.focus();
+        }
+
     </script>
 </body>
 </html>

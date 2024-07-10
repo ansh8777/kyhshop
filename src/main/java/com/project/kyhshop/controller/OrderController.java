@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.project.kyhshop.dao.*;
@@ -29,7 +30,7 @@ public class OrderController {
                             HttpSession session,
                             Model model) {
         if (session.getAttribute("id") == null) {
-            return "redirect:/product?seq=" + seq;
+            return "redirect:/login";
         }
         int dbAmount = od.getAmount(seq);
         String id = (String) session.getAttribute("id");
@@ -37,6 +38,7 @@ public class OrderController {
         if (amount <= dbAmount) {
             Map<String, Object> address = od.getMainAddress(id);
             if (address.isEmpty()) {
+                model.addAttribute("link", "/my");
                 model.addAttribute("msg", "메인 배송지가 설정되지 않았습니다.");
                 return "/html/alert";
             }
@@ -71,6 +73,47 @@ public class OrderController {
             model.addAttribute("msg", "구매하려는 수량이 재고를 초과합니다.");
             return "/html/alert";
         }
+    }
+
+    // 결제 액션
+    @PostMapping("order/action")
+    public String orderAction(@RequestParam String seq,
+                              @RequestParam int amount,
+                              HttpSession session,
+                              Model model)
+    {
+        String userId = (String)session.getAttribute("id");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        od.orderInsert(userId, seq, amount);
+
+        return "/html/order/complete";
+    }
+
+    // 장바구니 상품 추가
+    @PostMapping("cart/insert/action")
+    public String cartInsertAction(@RequestParam String seq,
+                                   @RequestParam int amount,
+                                   HttpSession session,
+                                   Model model)
+    {
+        String userId = (String)session.getAttribute("id");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        Map<String, Object> findProd = od.findCartProduct(userId, seq);
+        if (findProd != null) {
+            // 기존 물품과 같은 물품이 있으면 수량 업데이트
+            int currentAmount = (int)findProd.get("prod_amount");
+            int newAmount = currentAmount + amount;
+            od.updateCartProduct(userId, seq, newAmount);
+        } else {
+            // 기존 항목이 없으면 INSERT
+            od.cartInsert(userId, seq, amount);
+        }
+        return "redirect:/gocart";
     }
 
     // 장바구니에 상품 추가 액션

@@ -168,6 +168,17 @@ public class UserController {
         return response;
     }
 
+    // 이메일 중복 확인
+    @GetMapping("/dupcheck/email")
+    @ResponseBody
+    public Map<String, Object> dupEmailCheck(@RequestParam String email) {
+        int dup = ud.dupEmailCheck(email);
+        Map<String, Object> response = new HashMap<>();
+        response.put("isDupEmail", dup > 0);
+
+        return response;
+    }
+
     // 아이디 찾기 페이지
     @GetMapping("/find/id")
     public String findId() {
@@ -204,7 +215,9 @@ public class UserController {
     public String passCheck(HttpSession session) {
 
         // 로그인 안되어 있으면 로그인페이지로
-        if (session.getAttribute("id") == null) {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || temp != "user") {
             return "redirect:/login";
         }
 
@@ -219,11 +232,12 @@ public class UserController {
                               Model model)
     {
         // 로그인 되어 있으면
-        if (session.getAttribute("id") != null) {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || temp != "user") {
             int verifyCnt = ud.verifyPass(id, pw);  // 비밀번호 확인
 
             if (verifyCnt == 1) {                   // 비밀번호 확인 되면
-                String userId = (String)session.getAttribute("id");
                 Map<String, Object> userSelect = ud.selectUser(userId);         // 유저 정보 가져오기
 
                 model.addAttribute("userSelect", userSelect);     // 유저 정보 addAttribute
@@ -257,8 +271,9 @@ public class UserController {
                                    Model model)
     {
         // 로그인 되어 있으면
-        if (session.getAttribute("id") != null) {
-            String userId = (String)session.getAttribute("id");
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || temp != "user") {
 
             String birthDate = year + String.format("%02d", Integer.parseInt(month)) + String.format("%02d", Integer.parseInt(day));
 
@@ -278,8 +293,9 @@ public class UserController {
                                    Model model)
     {
         // 로그인 되어 있으면 유저 삭제 및 세션 종료
-        if (session.getAttribute("id") != null) {
-            String userId = (String)session.getAttribute("id");
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || temp != "user") {
             ud.userDelete(userId);
             session.invalidate();
         }
@@ -291,11 +307,12 @@ public class UserController {
     public String addressPage(HttpSession session,
                               Model model)
     {
-        if (session.getAttribute("id") == null) {
-            return "redirect:/";
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || temp != "user") {
+            return "redirect:/login";
         }
-        String id = (String)session.getAttribute("id");
-        List<Map<String, Object>> addressList = ud.selectAddress(id);
+        List<Map<String, Object>> addressList = ud.selectAddress(userId);
         model.addAttribute("addressList", addressList);
 
         return "html/user/address";
@@ -312,14 +329,15 @@ public class UserController {
                                       HttpSession session,
                                       Model model)
     {
-        if (session.getAttribute("id") == null) {
-            return "redirect:/";
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || temp != "user") {
+            return "redirect:/login";
         }
         // 폰 번호 합치기 010-0000-0000
         String phone = String.format("%s-%s-%s", phone_1, phone_2, phone_3);
         
-        String id = (String)session.getAttribute("id");
-        ud.insertAddress(id, name, phone, address, address_detail);
+        ud.insertAddress(userId, name, phone, address, address_detail);
 
         return "redirect:/my/address";
     }
@@ -329,8 +347,10 @@ public class UserController {
     public String addressDeleteAction(@RequestParam String seq,
                                       HttpSession session)
     {
-        if (session.getAttribute("id") == null) {
-            return "redirect:/";
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || temp != "user") {
+            return "redirect:/login";
         }
         ud.deleteAddress(seq);
 
@@ -343,14 +363,37 @@ public class UserController {
                                     HttpSession session,
                                     Model model)
     {
-        if (session.getAttribute("id") == null) {
-            return "redirect:/";
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || temp != "user") {
+            return "redirect:/login";
         }
-        String id = (String)session.getAttribute("id");
-        ud.mainAddress(seq, id);
+        ud.mainAddress(seq, userId);
 
         model.addAttribute("link", "/my/address");
         model.addAttribute("msg", "수정이 완료되었습니다.");
         return "/html/alert";
+    }
+
+    // 장바구니 넣을 때 실행되는 팝업
+    @GetMapping("gocart")
+    public String goCartBefore() {
+        return "/html/user/gocart";
+    }
+
+    // 장바구니
+    @GetMapping("cart")
+    public String cart(HttpSession session,
+                       Model model)
+    {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || temp != "user") {
+            return "redirect:/login";
+        }
+        List<Map<String, Object>> cartList = ud.cartSelect(userId);
+        model.addAttribute("cartList", cartList);
+
+        return "html/user/cart";
     }
 }

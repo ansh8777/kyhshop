@@ -33,6 +33,12 @@ public class SellerDao {
         return jt.queryForObject(sqlStmt, Integer.class, id);
     }
 
+    // 셀러 이메일 중복 체크
+    public int sellerDupEmailCheck(String email) {
+        String sqlStmt = "SELECT count(*) FROM tb_seller_mst WHERE email = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, email);
+    }
+
     // 셀러 로그인
     public Map<String, Object> sellerLogin(String id, String pw) {
         String sqlStmt = "SELECT id, nm, grade, del_fg FROM tb_seller_mst WHERE id = ? AND pw = ?";
@@ -80,7 +86,7 @@ public class SellerDao {
     // 셀러 개인정보 수정
     public void sellerProfileChange(String id, String pw, String nm, String email, String phone, String address, String address_detail, String compNm, String bizId)
     {
-        String sqlStmt = "UPDATE tb_user_mst SET pw = ?, nm = ?, email = ?, phone = ?, address = ?, address_detail = ?, comp_nm = ?, biz_id = ? WHERE id = ?";
+        String sqlStmt = "UPDATE tb_seller_mst SET pw = ?, nm = ?, email = ?, phone = ?, address = ?, address_detail = ?, comp_nm = ?, biz_id = ? WHERE id = ?";
         jt.update(sqlStmt, pw, nm, email, phone, address, address_detail, compNm, bizId, id);
     }
 

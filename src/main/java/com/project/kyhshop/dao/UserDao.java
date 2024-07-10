@@ -32,6 +32,12 @@ public class UserDao {
         return jt.queryForObject(sqlStmt, Integer.class, id);
     }
 
+    // 유저 이메일 중복 체크
+    public int dupEmailCheck(String email) {
+        String sqlStmt = "SELECT count(*) FROM tb_user_mst WHERE email = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, email);
+    }
+
     // 로그인
     public Map<String, Object> login(String id, String pw) {
         String sqlStmt = "SELECT id, nm, grade, del_fg FROM tb_user_mst WHERE id = ? AND pw = ?";
@@ -148,5 +154,24 @@ public class UserDao {
         String sqlStmt2 = "UPDATE tb_address_mst SET main_address = 1 WHERE seq = ?";
         jt.update(sqlStmt1, id);
         jt.update(sqlStmt2, seq);
+    }
+
+    // 장바구니 SELECT
+    public List<Map<String, Object>> cartSelect(String userId)
+    {
+        String sqlStmt = "SELECT    PM.prod_img                     AS prod_img, " +
+                         "          PM.seq                          AS prod_id, " +
+                         "          PD.prod_title                   AS prod_title, " +
+                         "          PD.prod_price                   AS prod_price, " +
+                         "          CM.prod_amount                  AS prod_amount, " +
+                         "         (PD.prod_price * CM.prod_amount) AS total_price, " +
+                         "          PM.seller_id                    AS seller_id, " +
+                         "          SM.nm                           AS seller_name " +
+                         "FROM      tb_cart_mst CM " +
+                         "          JOIN tb_product_mst PM ON CM.prod_id = PM.seq " +
+                         "          JOIN tb_product_detail PD ON PM.seq = PD.seq " +
+                         "          JOIN tb_seller_mst SM ON PM.seller_id = SM.id " +
+                         "WHERE     CM.user_id = ?";
+        return jt.queryForList(sqlStmt, userId);
     }
 }

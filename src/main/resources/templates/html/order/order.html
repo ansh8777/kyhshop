@@ -196,7 +196,11 @@
                 </div>
             </div>
             <div class="payment-button">
-                <button>결제하기</button>
+                <form action="/order/action" method="post">
+                    <input type="hidden" name="seq" th:value="${orderList[0].seq}">
+                    <input type="hidden" name="amount" th:value="${orderList[0].amount}">
+                    <button type="submit">결제하기</button>
+                </form>
             </div>
         </div>
     </div>

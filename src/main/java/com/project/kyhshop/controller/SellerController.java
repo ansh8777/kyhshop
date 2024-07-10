@@ -77,6 +77,17 @@ public class SellerController {
         return response;
     }
 
+    // 이메일 중복 확인
+    @GetMapping("/seller/dupcheck/email")
+    @ResponseBody
+    public Map<String, Object> dupEmailCheck(@RequestParam String email) {
+        int dup = sd.sellerDupEmailCheck(email);
+        Map<String, Object> response = new HashMap<>();
+        response.put("isDupEmail", dup > 0);
+
+        return response;
+    }
+
     // 셀러 로그인 액션
     @PostMapping("/login/seller/action")
     public String sellerLoginAction(@RequestParam String sellerId,
@@ -129,10 +140,13 @@ public class SellerController {
     @GetMapping("my/seller/passcheck")
     public String sellerPassCheck(HttpSession session) {
 
-        // 로그인 안되어 있으면 로그인페이지로
-        if (session.getAttribute("id") == null) {
+        String id = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(id);
+
+        // 셀러가 아니면 로그인 페이지로
+        if (ox == 0) {
             return "redirect:/login";
-        }
+        } 
 
         return "html/seller/passwordcheck";
     }
@@ -144,12 +158,18 @@ public class SellerController {
                               HttpSession session,
                               Model model)
     {
+        String sellerId = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(id);
+
+        // 셀러가 아니면 로그인 페이지로
+        if (ox == 0) {
+            return "redirect:/login";
+        } 
         // 로그인 되어 있으면
-        if (session.getAttribute("id") != null) {
+        if (sellerId != null) {
             int verifyCnt = sd.sellerVerifyPass(id, pw);  // 비밀번호 확인
 
             if (verifyCnt == 1) {                   // 비밀번호 확인 되면
-                String sellerId = (String)session.getAttribute("id");
                 List<Map<String, Object>> sellerSelect = sd.selectSeller(sellerId);   // 셀러 정보 가져오기
                 model.addAttribute("sellerSelect", sellerSelect);       // 셀러 정보 addAttribute
 
@@ -169,9 +189,6 @@ public class SellerController {
     @ResponseBody
     public String sellerChangeAction(@RequestParam String pw,
                                      @RequestParam String nm,
-                                     @RequestParam String year,
-                                     @RequestParam String month,
-                                     @RequestParam String day,
                                      @RequestParam String email,
                                      @RequestParam String phone1,
                                      @RequestParam String phone2,
@@ -185,8 +202,15 @@ public class SellerController {
                                      HttpSession session,
                                      Model model)
     {
+        String id = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(id);
+
+        // 셀러가 아니면 로그인 페이지로
+        if (ox == 0) {
+            return "redirect:/login";
+        } 
         // 로그인 되어 있으면
-        if (session.getAttribute("id") != null) {
+        if (id != null) {
             String sellerId = (String)session.getAttribute("id");
 
             // 폰 번호 합치기 010-0000-0000
@@ -206,13 +230,19 @@ public class SellerController {
     public String sellerDeleteAction(HttpSession session,
                                      Model model)
     {
-        String sellerId = (String)session.getAttribute("id");
+        String id = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(id);
+
+        // 셀러가 아니면 로그인 페이지로
+        if (ox == 0) {
+            return "redirect:/login";
+        } 
         // 로그인 되어 있으면
-        if (sellerId != null) {
-            if (sd.sellerPageCnt(sellerId) > 0) {
+        if (id != null) {
+            if (sd.sellerPageCnt(id) > 0) {
                 return "<script>window.opener.location.reload(); window.close(); alert('탈퇴하시려면 판매 물품을 삭제하신 후에 다시 해주시기 바랍니다.');</script>";
             } else {
-                sd.sellerDelete(sellerId);
+                sd.sellerDelete(id);
                 session.invalidate();
                 return "<script>window.opener.location.reload(); window.close(); alert('회원정보가 삭제되었습니다.');</script>";
             }

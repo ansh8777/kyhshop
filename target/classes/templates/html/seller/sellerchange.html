@@ -9,7 +9,7 @@
 <body>
     <div class="signup-container">
         <h2>정보 수정</h2>
-        <form action="/my/profile/changeaction" method="POST" id="signupForm">
+        <form action="/my/seller/profile/changeaction" method="POST" id="signupForm">
             <input type="password" id="password" name="pw" placeholder="비밀번호" th:value="${sellerSelect[0]['pw']}" required>
             <input type="password" id="confirmPassword" placeholder="비밀번호 확인" required>
             <input type="text" id="nm" name="nm" placeholder="이름" th:value="${sellerSelect[0]['nm']}" required>

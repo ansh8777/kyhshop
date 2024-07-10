@@ -17,7 +17,10 @@
             <input type="password" id="password" name="pw" placeholder="비밀번호" required>
             <input type="password" id="confirmPassword" placeholder="비밀번호 확인" required>
             <input type="text" id="nm" name="nm" placeholder="이름" required>
-            <input type="email" id="email" name="email" placeholder="이메일" required>
+            <div class="row">
+                <input type="email" id="email" name="email" placeholder="이메일" required>
+                <button type="button" onclick="dupEmailCheck()">중복 확인</button>
+            </div>
             <div class="c-container">
                 <input type="text" id="phone1" name="phone_1" maxlength="3" placeholder="010" required>
                 <span>-</span>
@@ -42,6 +45,7 @@
         </form>
     </div>
     <div class="password-requirements">
+        <p>비밀번호 규칙</p>
         <p id="length" class="invalid">8자 이상</p>
         <p id="uppercase" class="invalid">대문자 최소 1개 포함</p>
         <p id="lowercase" class="invalid">소문자 최소 1개 포함</p>
@@ -62,6 +66,7 @@
         }
 
         let isIdChecked = false;
+        let isEmailChecked = false;
 
         document.getElementById('signupForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -69,6 +74,12 @@
             // 아이디 중복체크 확인
             if (!isIdChecked) {
                 alert('아이디 중복 체크를 해주세요.');
+                return;
+            }
+
+            // 이메일 중복체크 확인
+            if (!isEmailChecked) {
+                alert('이메일 중복 체크를 해주세요.');
                 return;
             }
 
@@ -116,7 +127,34 @@
                     isIdChecked = false;
                 });
         }
-        
+
+        function dupEmailCheck() {
+            let email = document.getElementById('email').value.trim();
+
+            if (email === '') {
+                alert('이메일을 입력해주세요.');
+                return;
+            }
+            
+            // AJAX 요청으로 이메일 중복체크
+            fetch('/seller/dupcheck/email?email=' + email)
+                .then(response => response.json())  // 응답 받은 후 json으로 파싱
+                .then(result => {
+                    if (result.isDupEmail) {
+                        alert('이미 사용 중인 이메일입니다.');
+                        isEmailChecked = false;
+                    } else {
+                        alert('사용 가능한 이메일입니다.');
+                        isEmailChecked = true;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('이메일 중복 체크 중 오류가 발생했습니다.');
+                    isEmailChecked = false;
+                });
+        }
+
         const password = document.getElementById('password');
         const confirmPassword = document.getElementById('confirmPassword');
         const length = document.getElementById('length');

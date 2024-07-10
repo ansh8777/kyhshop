@@ -32,6 +32,12 @@ public class ProductDao {
         return jt.queryForList(sqlStmt, seq);
     }
 
+    // 상품 이미지 가져오기
+    public String getOriginImg(String seq) {
+        String sqlStmt = "SELECT prod_img FROM tb_product_mst WHERE seq = ?";
+        return jt.queryForObject(sqlStmt, String.class, seq);
+    }
+
     // 상품 수정
     public void productEdit(String seq, String seller_id, String prod_category, String prod_nm, String prod_img, String prod_title, String prod_desc, String prod_amount, String prod_price, String prod_grade, String prod_variety)
     {

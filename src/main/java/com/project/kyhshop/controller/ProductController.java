@@ -24,10 +24,17 @@ public class ProductController {
     @Autowired
     SellerDao sd;
 
+    // 상품 페이지
     @GetMapping("/product")
     public String productPage(@RequestParam String seq,
+                              HttpSession session,
                               Model model)
     {
+        // 셀러가 아니면 로그인 페이지로
+        String userId = (String)session.getAttribute("id");
+        if (userId == null) {
+            return "redirect:/login";
+        }
         List<Map<String, Object>> productSet = pd.productSelect_1(seq);
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
@@ -50,6 +57,14 @@ public class ProductController {
                                   HttpSession session,
                                   Model model)
     {
+        String sellerId = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(sellerId);
+
+        // 셀러가 아니면 로그인 페이지로
+        if (ox == 0) {
+            return "redirect:/login";
+        } 
+
         List<Map<String, Object>> productSet = pd.productSelect_1(seq);
         model.addAttribute("productSet", productSet);
 
@@ -75,6 +90,15 @@ public class ProductController {
                                      Model model) throws IOException
     {
         String sellerId = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(sellerId);
+
+        // 셀러가 아니면 로그인 페이지로
+        if (ox == 0) {
+            return "redirect:/login";
+        } 
+
+        // 기존 이미지 가져오기
+        String originImg = pd.getOriginImg(seq);
 
         String imgName = null;
         // 파일이 업로드되었을 경우에만 처리
@@ -88,7 +112,7 @@ public class ProductController {
             File img = new File(uploadImg);
             file.transferTo(img);
         } else {
-            imgName = "default_image.jpg";
+            imgName = originImg;
         }
 
         pd.productEdit(seq, sellerId, category, productName, imgName, productTitle, productDescription, productAmount, productPrice, productGrade, productVariety);
@@ -101,10 +125,18 @@ public class ProductController {
     // 상품 삭제하기 액션
     @PostMapping("product/delete/action")
     public String productDeleteAction(@RequestParam String seq,
+                                      HttpSession session,
                                       Model model)
     {
-        pd.productDelete(seq);
+        String sellerId = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(sellerId);
 
+        // 셀러가 아니면 로그인 페이지로
+        if (ox == 0) {
+            return "redirect:/login";
+        } 
+
+        pd.productDelete(seq);
         return "redirect:/";
     }
 

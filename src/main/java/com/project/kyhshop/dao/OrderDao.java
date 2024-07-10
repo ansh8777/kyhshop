@@ -85,7 +85,8 @@ public class OrderDao {
     // 주문 정보 가져오기
     public List<Map<String, Object>> orderSelect(String seq, int amount)
     {
-        String sqlStmt = "SELECT    PM.prod_nm      AS prod_nm, " +
+        String sqlStmt = "SELECT    PM.seq          AS seq, " +
+                         "          PM.prod_nm      AS prod_nm, " +
                          "          PD.prod_price   AS prod_price, " +
                          "          ?               AS amount, " +
                          "         (PD.prod_price * ?) AS total_price " +
@@ -93,5 +94,34 @@ public class OrderDao {
                          "          JOIN tb_product_detail PD ON PM.seq = PD.seq " +
                          "WHERE     PM.seq = ?";
         return jt.queryForList(sqlStmt, amount, amount, seq);
+    }
+
+    // 결제 완료 db 넣기
+    public void orderInsert(String id, String seq, int amount) {
+        String sqlStmt = "INSERT INTO tb_order_mst (prod_id, prod_amount, user_id, state) VALUES (?, ?, ?, 1)";
+        jt.update(sqlStmt, seq, amount, id);
+    }
+
+    // 장바구니 상품 추가
+    public void cartInsert(String id, String seq, int amount) {
+        String sqlStmt = "INSERT INTO tb_cart_mst (prod_id, prod_amount, user_id) VALUES (?, ?, ?)";
+        jt.update(sqlStmt, seq, amount, id);
+    }
+
+    // 기존 장바구니 항목 확인
+    public Map<String, Object> findCartProduct(String userId, String prodId) {
+        String sqlStmt = "SELECT * FROM tb_cart_mst WHERE user_id = ? AND prod_id = ?";
+        try {
+            return jt.queryForMap(sqlStmt, userId, prodId);
+        } catch (EmptyResultDataAccessException e) {
+            return null; // 결과가 없는 경우 null 반환
+        }
+    }
+
+    // 장바구니 업데이트
+    public void updateCartProduct(String userId, String prodId, int amount)
+    {
+        String sqlStmt = "UPDATE tb_cart_mst SET prod_amount = ? WHERE user_id = ? AND prod_id = ?";
+        jt.update(sqlStmt, amount, userId, prodId);
     }
 }
