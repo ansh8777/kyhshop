@@ -26,30 +26,9 @@ public class UserDao {
         jt.update(sqlStmt, id, pw, nm, birthDate, email, phone, address, address_detail);
     }
 
-    // 판매자 회원가입
-    public void sellerRegister(String id,
-                               String pw,
-                               String nm,
-                               String email,
-                               String phone,
-                               String address,
-                               String address_detail,
-                               String comp_nm,
-                               String biz_id)
-    {
-        String sqlStmt = "INSERT INTO tb_seller_mst(id, pw, nm, email, phone, address, address_detail, comp_nm, biz_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        jt.update(sqlStmt, id, pw, nm, email, phone, address, address_detail, comp_nm, biz_id);
-    }
-
     // 유저 아이디 중복 체크
     public int dupCheck(String id) {
         String sqlStmt = "SELECT count(*) FROM tb_user_mst WHERE id = ?";
-        return jt.queryForObject(sqlStmt, Integer.class, id);
-    }
-
-    // 셀러 아이디 중복 체크
-    public int sellerDupCheck(String id) {
-        String sqlStmt = "SELECT count(*) FROM tb_seller_mst WHERE id = ?";
         return jt.queryForObject(sqlStmt, Integer.class, id);
     }
 
@@ -63,25 +42,9 @@ public class UserDao {
         }
     }
 
-    // 셀러 로그인
-    public Map<String, Object> sellerLogin(String id, String pw) {
-        String sqlStmt = "SELECT id, nm, grade, del_fg FROM tb_seller_mst WHERE id = ? AND pw = ?";
-        try {   // 결과가 없으면 null 반환
-            return jt.queryForMap(sqlStmt, id, pw);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }
-
     // 삭제 유무(del_fg) 값 가져오기
     public int delFg(String id, String pw) {
         String sqlStmt = "SELECT del_fg FROM tb_user_mst WHERE id = ? AND pw = ?";
-        return jt.queryForObject(sqlStmt, Integer.class, id, pw);
-    }
-
-    // 셀러 삭제 유무(del_fg) 값 가져오기
-    public int sellerDelFg(String id, String pw) {
-        String sqlStmt = "SELECT del_fg FROM tb_seller_mst WHERE id = ? AND pw = ?";
         return jt.queryForObject(sqlStmt, Integer.class, id, pw);
     }
 
@@ -118,11 +81,11 @@ public class UserDao {
     }
 
     // 유저 정보 가져오기
-    public List<Map<String, Object>> selectUser(String id) {
+    public Map<String, Object> selectUser(String id) {
         String sqlStmt = "SELECT seq, id, pw, nm, birth_date, email, phone, address, address_detail, grade " +
                          "FROM tb_user_mst " +
                          "WHERE id = ?";
-        return jt.queryForList(sqlStmt, id);
+        return jt.queryForMap(sqlStmt, id);
     }
 
     // 유저 개인정보 수정
@@ -158,7 +121,7 @@ public class UserDao {
 
     // 저장된 주소지 가져오기
     public List<Map<String, Object>> selectAddress(String id) {
-        String sqlStmt = "SELECT seq, name, phone, address, address_detail FROM tb_address_mst WHERE id = ?";
+        String sqlStmt = "SELECT seq, name, phone, address, address_detail, main_address FROM tb_address_mst WHERE id = ?";
         try {   // 결과가 없으면 null 반환
             return jt.queryForList(sqlStmt, id);
         } catch (EmptyResultDataAccessException e) {
@@ -177,5 +140,13 @@ public class UserDao {
     public void deleteAddress(String seq) {
         String sqlStmt = "DELETE FROM tb_address_mst WHERE seq = ?";
         jt.update(sqlStmt, seq);
+    }
+
+    // 메인 주소 Update
+    public void mainAddress(String seq, String id) {
+        String sqlStmt1 = "UPDATE tb_address_mst SET main_address = 0 WHERE id = ?";
+        String sqlStmt2 = "UPDATE tb_address_mst SET main_address = 1 WHERE seq = ?";
+        jt.update(sqlStmt1, id);
+        jt.update(sqlStmt2, seq);
     }
 }

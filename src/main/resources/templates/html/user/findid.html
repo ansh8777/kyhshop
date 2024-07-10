@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아이디 찾기</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <div class="signup-container">
+        <h2>아이디 찾기</h2>
+        <input type="text" id="nm" name="nm" placeholder="이름" autofocus required>
+        <input type="text" id="birthDate" name="birthDate" placeholder="생년월일(8자리)" required>
+        <button type="button" onclick="idCheck()">아이디 찾기</button>
+    </div>
+
+    <script>
+        function idCheck() {
+            var nm = document.getElementById('nm').value.trim();
+            var birthDate = document.getElementById('birthDate').value.trim();
+
+            if (nm === '') {
+                alert('이름을 입력해주세요.');
+                return;
+            }
+
+            if (birthDate === '') {
+                alert('생년월일을 입력해주세요.');
+                return;
+            }
+
+            // 생년월일 형식 체크 (8자리 숫자)
+            if (!/^\d{8}$/.test(birthDate)) {
+                alert('올바른 생년월일 형식(YYYYMMDD)으로 입력해주세요.');
+                return;
+            }
+
+            // 아이디 찾기 로직
+            fetch('/find/id/action?nm=' + encodeURIComponent(nm) + '&birthDate=' + encodeURIComponent(birthDate))
+                .then(response => response.json())
+                .then(result => {
+                    if (result.id) {
+                        alert('당신의 아이디는 ' + result.id + ' 입니다.');
+                        window.close();
+                    } else {
+                        alert('입력한 정보로 아이디를 찾을 수 없습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('아이디 찾기 중 오류가 발생했습니다.');
+                });
+        }
+    </script>
+</body>
+</html>

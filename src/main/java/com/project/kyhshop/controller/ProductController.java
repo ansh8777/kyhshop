@@ -110,8 +110,22 @@ public class ProductController {
 
     // 모든 상품 페이지
     @GetMapping("/allproduct")
-    public String allProductPage(Model model) {
+    public String allProductPage(@RequestParam(defaultValue = "1") int page,
+                                 Model model)
+    {
+        int pageSize = 10;
+        int pageIndex = page - 1;
+
+        
         List<Map<String, Object>> productSelectList = pd.productSelect();
+
+        // 총 페이지 수 계산
+        int totalPages = (int) Math.ceil((double) productSelectList.size() / pageSize);
+
+        int start = pageIndex * pageSize;
+        int end = Math.min(start + pageSize, productSelectList.size());
+        List<Map<String, Object>> paginatedList = productSelectList.subList(start, end);
+
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
         for (Map<String, Object> product : productSelectList) {
@@ -122,7 +136,9 @@ public class ProductController {
             long price = Long.parseLong(priceString);
             product.put("prod_price_disp", decimalFormat.format(price));
         }
-        model.addAttribute("productSelectList", productSelectList);
+        model.addAttribute("productSelectList", paginatedList);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
 
         return "html/product/allproduct";
     }

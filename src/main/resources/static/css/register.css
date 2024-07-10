@@ -115,3 +115,29 @@ body {
 .c-container span {
     margin-right: 5px;
 }
+.password-requirements {
+    font-size: 12px;
+    color: #666;
+    position: absolute;
+    top: 120px; /* 적절한 위치로 조정 */
+    right: 330px; /* 적절한 위치로 조정 */
+    width: 200px; /* 적절한 너비로 조정 */
+}
+
+.password-requirements .valid {
+    color: green;
+}
+
+.password-requirements .invalid {
+    color: red;
+}
+
+.signup-container {
+    position: relative;
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}

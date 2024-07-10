@@ -12,6 +12,71 @@ public class SellerDao {
     @Autowired
     JdbcTemplate jt;
 
+    // 판매자 회원가입
+    public void sellerRegister(String id,
+                               String pw,
+                               String nm,
+                               String email,
+                               String phone,
+                               String address,
+                               String address_detail,
+                               String comp_nm,
+                               String biz_id)
+    {
+        String sqlStmt = "INSERT INTO tb_seller_mst(id, pw, nm, email, phone, address, address_detail, comp_nm, biz_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        jt.update(sqlStmt, id, pw, nm, email, phone, address, address_detail, comp_nm, biz_id);
+    }
+
+    // 셀러 아이디 중복 체크
+    public int sellerDupCheck(String id) {
+        String sqlStmt = "SELECT count(*) FROM tb_seller_mst WHERE id = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, id);
+    }
+
+    // 셀러 로그인
+    public Map<String, Object> sellerLogin(String id, String pw) {
+        String sqlStmt = "SELECT id, nm, grade, del_fg FROM tb_seller_mst WHERE id = ? AND pw = ?";
+        try {   // 결과가 없으면 null 반환
+            return jt.queryForMap(sqlStmt, id, pw);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    // 셀러 삭제 유무(del_fg) 값 가져오기
+    public int sellerDelFg(String id, String pw) {
+        String sqlStmt = "SELECT del_fg FROM tb_seller_mst WHERE id = ? AND pw = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, id, pw);
+    }
+
+    // 셀러 아이디 찾기
+    public String findSellerId(String nm, String email) {
+        String sqlStmt = "SELECT id FROM tb_seller_mst WHERE nm = ? AND email = ?";
+        try {   // 결과가 없으면 null 반환
+            return jt.queryForObject(sqlStmt, String.class, nm, email);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    // 셀러 비밀번호 확인 (정보 변경을 위해서)
+    public int sellerVerifyPass(String id, String pw) {
+        String sqlStmt = "SELECT count(*) FROM tb_seller_mst WHERE id = ? AND pw = ?";
+        try {   // 결과가 없으면 null 반환
+            return jt.queryForObject(sqlStmt, Integer.class, id, pw);
+        } catch (EmptyResultDataAccessException e) {
+            return 0;
+        }
+    }
+
+    // 셀러 정보 가져오기
+    public List<Map<String, Object>> selectSeller(String id) {
+        String sqlStmt = "SELECT seq, id, pw, nm, email, phone, address, address_detail, grade, comp_nm, biz_id " +
+                         "FROM tb_seller_mst " +
+                         "WHERE id = ?";
+        return jt.queryForList(sqlStmt, id);
+    }
+
     // 셀러아이디 유무만 가져오기
     public int sellerOX(String id) {
         String sqlStmt = "SELECT count(*) FROM tb_seller_mst WHERE id = ?";

@@ -1,9 +1,11 @@
 package com.project.kyhshop.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -60,5 +62,36 @@ public class OrderDao {
     public void orderBasketChangeAction(String userId) {
         String sqlStmt = "UPDATE order_mst SET order_state = 1 WHERE user_id = ?";
         jt.update(sqlStmt, userId);
+    }
+
+    ////////////
+
+    // 재고 수량 가져오기
+    public int getAmount(String seq) {
+        String sqlStmt = "SELECT prod_amount FROM tb_product_detail WHERE seq = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, seq);
+    }
+
+    // 메인 배송지 가져오기
+    public Map<String, Object> getMainAddress(String id) {
+        String sqlStmt = "SELECT name, phone, address, address_detail FROM tb_address_mst WHERE id = ? AND main_address = 1";
+        try {
+            return jt.queryForMap(sqlStmt, id);
+        } catch (EmptyResultDataAccessException e) {
+            return new HashMap<>(); // 결과가 없을 경우 빈 맵 반환
+        }
+    }
+
+    // 주문 정보 가져오기
+    public List<Map<String, Object>> orderSelect(String seq, int amount)
+    {
+        String sqlStmt = "SELECT    PM.prod_nm      AS prod_nm, " +
+                         "          PD.prod_price   AS prod_price, " +
+                         "          ?               AS amount, " +
+                         "         (PD.prod_price * ?) AS total_price " +
+                         "FROM      tb_product_mst PM " +
+                         "          JOIN tb_product_detail PD ON PM.seq = PD.seq " +
+                         "WHERE     PM.seq = ?";
+        return jt.queryForList(sqlStmt, amount, amount, seq);
     }
 }

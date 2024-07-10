@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Page</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-width: 992px;
+            font-family: "Helvetica";
+        }
+
+        .navbar {
+            height: 60px;
+            padding-left: 30px;
+        }
+
+        .logo {
+            line-height: 60px;
+            float: left;
+        }
+
+        .logo img {
+            vertical-align: middle;
+        }
+
+        .navbar ul {
+            float: right;
+        }
+
+        .navbar li {
+            list-style-type: none;
+            float: left;
+            margin-right: 30px;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: black;
+            font-size: 13px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .left-side, .right-side {
+            width: 48%;
+        }
+
+        .order-info {
+            margin-bottom: 20px;
+        }
+
+        .order-info h2 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #545454;
+            margin-bottom: 10px;
+        }
+
+        .order-summary, .payment-summary {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .order-summary h3, .payment-summary h3 {
+            font-size: 18px;
+            font-weight: bold;
+            color: #545454;
+            margin-bottom: 15px;
+        }
+
+        .order-summary p, .payment-summary p {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .payment-button {
+            display: flex;
+            justify-content: center;
+        }
+
+        .payment-button button {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .order-items {
+            margin-top: 20px;
+        }
+
+        .order-items table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .order-items th, .order-items td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .order-items th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .total-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff0000;
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a class="logo" href="/">
+            <img src="/images/kyhlogo.png" height="50px">
+        </a>
+        <ul>
+            <li><a href="/allproduct">Product</a></li>
+            <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
+            <li th:if="${session.id == null}"><a href="/login">Login</a></li>
+            <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
+            <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+            <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="left-side">
+            <div class="order-info">
+                <h2>주문자 배송정보</h2>
+                <div class="order-summary">
+                    <h3>배송 정보</h3>
+                    <p>이름: <span th:text="${address.name}"></span></p>
+                    <p>주소: <span th:text="${address.address}"></span></p>
+                    <p>상세 주소: <span th:text="${address.address_detail}"></span></p>
+                    <p>전화번호: <span th:text="${address.phone}"></span></p>
+                </div>
+            </div>
+            
+            <div class="order-info order-items">
+                <h2>주문상품 (<span th:text="${orderList.size()}"></span>종 <span th:text="${orderList.size()}"></span>개)</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>상품명</th>
+                            <th>판매가</th>
+                            <th>수량</th>
+                            <th>합계</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="order : ${orderList}">
+                            <td th:text="${order.prod_nm}"></td>
+                            <td th:text="${order.prod_price_disp} + '원'">0원</td>
+                            <td th:text="${order.amount}">0</td>
+                            <td th:text="${order.total_price_disp} + '원'">0원</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="right-side">
+            <div class="order-info">
+                <h2>최종 결제금액</h2>
+                <div class="payment-summary">
+                    <h3>결제 요약</h3>
+                    <p>상품 금액: <span th:text="${totalPaymentAmount} + '원'">0원</span></p>
+                    <p>배송비: 저희 KYH는 모든 상품 배송비가 무료입니다.</p>
+                    <p>할인 금액: 0원</p>
+                    <p><strong>총 결제금액: <span th:text="${totalPaymentAmount} + '원'">0원</span></strong></p>
+                </div>
+                <div class="total-amount">
+                    <span th:text="${totalPaymentAmount} + '원'">0원</span>
+                </div>
+            </div>
+            <div class="payment-button">
+                <button>결제하기</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -174,7 +174,6 @@
             <div class="product-details">
                 <h1 th:text="${product.prod_title}"></h1>
                 <p class="name" th:text="${product.prod_nm}">제품 이름</p>
-                <input type="hidden" id="productname" name="productname" th:value="${product.prod_nm}">
                 <p class="price" th:text="'가격: ' + ${product.prod_price_disp} + '원'">가격</p>
                 <input type="hidden" th:id="'price-' + ${product.seq}" th:value="${product.prod_price}">
                 <div class="quantity">
@@ -183,8 +182,8 @@
                 </div>
                 <div class="total-price" th:id="'total-price-' + ${product.seq}">총 가격: <span th:text="${product.prod_price_disp}"></span>원</div>
                 <div class="buttons">
-                    <button class="btn buy" onclick="basketinsert()">구매하기</button>
-                    <button class="btn cart" onclick="buyinsert()">장바구니</button>
+                    <button class="btn buy" onclick="buyinsert()">구매하기</button>
+                    <button class="btn cart" onclick="basketinsert()">장바구니</button>
                 </div>
             </div>
             <div th:if="${session.id} == ${product.seller_id}">
@@ -218,9 +217,9 @@
 
         function buyinsert() {
             let amount = document.getElementsByName("amount")[0].value;
-            let product_id = document.getElementsByName("productname")[0].value;
+            let seq = document.getElementsByName("seq")[0].value;
             // 구매하기 버튼 클릭 시 구매하기 액션으로 이동
-            location.href = "/order/basket/insert/action?amount=" + amount + "&product_id=" + product_id;
+            location.href = "/order?seq=" + seq + "&amount=" + amount;
         }
     </script>
 </body>

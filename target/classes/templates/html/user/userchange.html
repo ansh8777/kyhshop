@@ -10,22 +10,28 @@
     <div class="signup-container">
         <h2>정보 수정</h2>
         <form action="/my/profile/changeaction" method="POST" id="signupForm">
-            <input type="password" id="password" name="pw" placeholder="비밀번호" th:value="${userSelect[0]['pw']}" required>
+            <input type="password" id="password" name="pw" placeholder="비밀번호" th:value="${userSelect['pw']}" required>
             <input type="password" id="confirmPassword" placeholder="비밀번호 확인" required>
-            <input type="text" id="nm" name="nm" placeholder="이름" th:value="${userSelect[0]['nm']}" required>
-            <input type="hidden" id="birthDate" name="birthDate" th:value="${userSelect[0]['birth_date']}">
+            <input type="text" id="nm" name="nm" placeholder="이름" th:value="${userSelect['nm']}" required>
+            <input type="hidden" id="birthDate" name="birthDate" th:value="${userSelect['birth_date']}">
             <div class="row">
                 <select id="year" name="year" required></select>
                 <select id="month" name="month" required></select>
                 <select id="day" name="day" required></select>
             </div>
-            <input type="email" id="email" name="email" placeholder="이메일" th:value="${userSelect[0]['email']}" required>
-            <input type="text" id="phone" name="phone" placeholder="전화번호" th:value="${userSelect[0]['phone']}" required>
+            <input type="email" id="email" name="email" placeholder="이메일" th:value="${userSelect['email']}" required>
+            <div class="c-container">
+                <input type="text" id="phone1" name="phone1" maxlength="3" placeholder="010" th:value="${userSelect['phone1']}" required>
+                <span>-</span>
+                <input type="text" id="phone2" name="phone2" maxlength="4" placeholder="0000" th:value="${userSelect['phone2']}" required>
+                <span>-</span>
+                <input type="text" id="phone3" name="phone3" maxlength="4" placeholder="0000" th:value="${userSelect['phone3']}" required>
+            </div>
             <div class="address-container">
-                <input type="text" id="address" name="address" placeholder="주소" th:value="${userSelect[0]['address']}" required>
+                <input type="text" id="address" name="address" placeholder="주소" th:value="${userSelect['address']}" required>
                 <button type="button" onclick="openDaumPostcode()">주소 찾기</button>
             </div>
-            <input type="text" id="detailAddress" name="addressDetail" placeholder="상세주소" th:value="${userSelect[0]['address_detail']}">
+            <input type="text" id="detailAddress" name="addressDetail" placeholder="상세주소" th:value="${userSelect['address_detail']}">
             <button type="submit">수정하기</button>
             <button type="button" id="deleteButton" onclick="confirmAndNavigateToDelete()">탈퇴하기</button>
         </form>

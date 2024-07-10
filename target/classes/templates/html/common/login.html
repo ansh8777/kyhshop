@@ -93,6 +93,36 @@
         .container .form-group.active {
             display: block;
         }
+
+        .container input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .container .form-group {
+            display: none;
+        }
+
+        .container .form-group.active {
+            display: block;
+        }
+
+        .container .find-links {
+            display: flex;
+            justify-content: flex-end;
+            width: calc(100% - 40px);
+            margin-top: 10px;
+        }
+
+        .container .find-links a {
+            margin-left: 10px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .container .find-links a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -122,6 +152,11 @@
                     <input type="text" name="id" placeholder="아이디" required>
                     <input type="password" name="pw" placeholder="비밀번호" required>
                 </div>
+                <div class="find-links">
+                    <a href="#" onclick="openPopup('/find/id')">아이디 찾기</a>
+                    <a href="#" onclick="openPopup('/find/pw')">비밀번호 찾기</a>
+                </div>
+                <pre></pre>
                 <button type="submit">로그인</button>
             </form>
         </div>
@@ -131,6 +166,11 @@
                     <input type="text" name="sellerId" placeholder="판매자 아이디" required>
                     <input type="password" name="sellerPw" placeholder="판매자 비밀번호" required>
                 </div>
+                <div class="find-links">
+                    <a href="#" onclick="openPopup('/find/seller/id')">아이디 찾기</a>
+                    <a href="#" onclick="openPopup('/find/seller/pw')">비밀번호 찾기</a>
+                </div>
+                <pre></pre>
                 <button type="submit">로그인</button>
             </form>
         </div>
@@ -149,6 +189,10 @@
                 document.querySelector('.button-group button:nth-child(2)').classList.add('active');
                 document.querySelector('.button-group button:nth-child(1)').classList.remove('active');
             }
+        }
+
+        function openPopup(url) {
+            window.open(url, 'popup', 'width=600,height=400,scrollbars=yes');
         }
     </script>
 </body>

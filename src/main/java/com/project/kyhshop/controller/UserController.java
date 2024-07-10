@@ -34,10 +34,10 @@ public class UserController {
             product.put("prod_price_disp", decimalFormat.format(price));
         }
         model.addAttribute("prodSel", prodSel);
-        return "html/homepage";
+        return "html/common/homepage";
     }
 
-    // 로그인 페이지
+    // 로그인 페이지 (유저, 셀러 공통)
     @GetMapping("/login")
     public String loginPage(HttpSession session) {
         // 로그인 되어 있으면 홈페이지로
@@ -45,7 +45,7 @@ public class UserController {
             return "redirect:/";
         }
         
-        return "html/login";
+        return "html/common/login";
     }
 
     // 로그인 액션
@@ -76,38 +76,10 @@ public class UserController {
         }
     }
 
-    // 판매자 로그인 액션
-    @PostMapping("/login/seller/action")
-    public String sellerLoginAction(@RequestParam String sellerId,
-                                    @RequestParam String sellerPw,
-                                    HttpSession session,
-                                    Model model)
-    {
-        // 아이디, 비밀번호가 DB와 일치하면 정보(아이디, 이름)를 loginResult 변수에 가져오기
-        Map<String, Object> loginResult = ud.sellerLogin(sellerId, sellerPw);
-
-        // 로그인 정보가 있으면(아이디, 비밀번호 일치 O, del_fg == 0)
-        if (loginResult != null && (int)loginResult.get("del_fg") == 0) {
-            session.setAttribute("id", loginResult.get("id"));
-            session.setAttribute("nm", loginResult.get("nm"));
-            session.setAttribute("grade", loginResult.get("grade"));
-            session.setAttribute("temp", "seller");
-            return "redirect:/";
-        } else if (loginResult != null && (int)loginResult.get("del_fg") == 1) {
-            model.addAttribute("link", "/login/resign");
-            model.addAttribute("msg", "탈퇴한 회원입니다. 탈퇴를 해제하시겠습니까?");
-            return "/html/alert";
-        } else {
-            model.addAttribute("link", "/login");
-            model.addAttribute("msg", "아이디 또는 비밀번호가 일치하지 않습니다.");
-            return "/html/alert";
-        }
-    }
-
     // 탈퇴 회원 재가입 페이지
     @GetMapping("/login/resign")
     public String resignPage() {
-        return "html/resign";
+        return "html/user/resign";
     }
 
     // 탈퇴 회원 재가입 액션
@@ -140,13 +112,13 @@ public class UserController {
     // 회원가입 고르기 (판매자, 구매자)
     @GetMapping("/regiselect")
     public String registerSelectPage() {
-        return "html/regiselect";
+        return "html/common/regiselect";
     }
 
     // 유저 회원가입 페이지
     @GetMapping("/register/user")
     public String userRegisterPage() {
-        return "html/register";
+        return "html/user/register";
     }
 
     // 유저 회원가입 액션
@@ -185,50 +157,6 @@ public class UserController {
         return "/html/alert";
     }
 
-    // 판매자 회원가입 페이지
-    @GetMapping("/register/seller")
-    public String sellerRegisterPage() {
-        return "html/seller/register";
-    }
-
-    // 판매자 회원가입 액션
-    @PostMapping("/register/seller/action")
-    public String sellerRegisterAction(@RequestParam String id,
-                                       @RequestParam String pw,
-                                       @RequestParam String nm,
-                                       @RequestParam String email,
-                                       @RequestParam String phone_1,
-                                       @RequestParam String phone_2,
-                                       @RequestParam String phone_3,
-                                       @RequestParam String address,
-                                       @RequestParam String address_detail,
-                                       @RequestParam String comp_nm,
-                                       @RequestParam String biz_id_1,
-                                       @RequestParam String biz_id_2,
-                                       @RequestParam String biz_id_3,
-                                       HttpSession session,
-                                       Model model)
-    {
-        int dup = ud.sellerDupCheck(id);
-        if (dup == 1) {
-            model.addAttribute("link", "/login");
-            model.addAttribute("msg", "아이디 중복 오류!!");
-            return "/html/alert";
-        }
-
-        // 폰 번호 합치기 010-0000-0000
-        String phone = String.format("%s-%s-%s", phone_1, phone_2, phone_3);
-
-        // 사업자 등록번호 합치기
-        String biz_id = String.format("%s-%s-%s", biz_id_1, biz_id_2, biz_id_3);
-
-        ud.sellerRegister(id, pw, nm, email, phone, address, address_detail, comp_nm, biz_id);
-
-        model.addAttribute("link", "/seller/login");
-        model.addAttribute("msg", "회원가입이 완료되었습니다.");
-        return "/html/alert";
-    }
-
     // 유저 중복 확인
     @GetMapping("/dupcheck")
     @ResponseBody
@@ -240,25 +168,14 @@ public class UserController {
         return response;
     }
 
-    // 셀러 중복 확인
-    @GetMapping("/seller/dupcheck")
-    @ResponseBody
-    public Map<String, Object> sellerDupCheck(@RequestParam String id) {
-        int sel_dup = ud.sellerDupCheck(id);
-        Map<String, Object> response = new HashMap<>();
-        response.put("isDuplicate", sel_dup > 0);
-
-        return response;
-    }
-
     // 아이디 찾기 페이지
-    @GetMapping("/findid")
+    @GetMapping("/find/id")
     public String findId() {
-        return "html/findid";
+        return "html/user/findid";
     }
 
     // 아이디 찾기 액션
-    @GetMapping("/findid/action")
+    @GetMapping("/find/id/action")
     @ResponseBody
     public Map<String, Object> findIdAction(@RequestParam String nm,
                                             @RequestParam String birthDate)
@@ -271,7 +188,7 @@ public class UserController {
         return response;
     }
 
-    // 회원페이지
+    // 회원페이지 (유저, 셀러 공통)
     @GetMapping("/my")
     public String myPage(HttpSession session) {
 
@@ -279,7 +196,7 @@ public class UserController {
         if (session.getAttribute("id") == null) {
             return "redirect:/login";
         }
-        return "html/my";
+        return "html/common/my";
     }
 
     // 비밀번호 확인 페이지 (개인정보 수정을 위해)
@@ -291,7 +208,7 @@ public class UserController {
             return "redirect:/login";
         }
 
-        return "html/passwordcheck";
+        return "html/user/passwordcheck";
     }
 
     // 회원수정 페이지
@@ -307,10 +224,20 @@ public class UserController {
 
             if (verifyCnt == 1) {                   // 비밀번호 확인 되면
                 String userId = (String)session.getAttribute("id");
-                List<Map<String, Object>> userSelect = ud.selectUser(userId);   // 유저 정보 가져오기
+                Map<String, Object> userSelect = ud.selectUser(userId);         // 유저 정보 가져오기
+
+                String phone = (String) userSelect.get("phone");
+                if (phone != null && phone.contains("-")) {
+                    String[] phoneParts = phone.split("-");
+                    if (phoneParts.length == 3) {
+                        userSelect.put("phone1", phoneParts[0]);
+                        userSelect.put("phone2", phoneParts[1]);
+                        userSelect.put("phone3", phoneParts[2]);
+                    }
+                }
                 model.addAttribute("userSelect", userSelect);     // 유저 정보 addAttribute
 
-                return "html/userchange";
+                return "html/user/userchange";
             } else {                                // 비밀번호 확인 실패 시
                 model.addAttribute("link", "/my/passcheck");
                 model.addAttribute("msg", "틀린 비밀번호 입니다.");
@@ -330,7 +257,9 @@ public class UserController {
                                    @RequestParam String month,
                                    @RequestParam String day,
                                    @RequestParam String email,
-                                   @RequestParam String phone,
+                                   @RequestParam String phone1,
+                                   @RequestParam String phone2,
+                                   @RequestParam String phone3,
                                    @RequestParam String address,
                                    @RequestParam String addressDetail,
                                    HttpSession session,
@@ -341,8 +270,10 @@ public class UserController {
             String userId = (String)session.getAttribute("id");
 
             String birthDate = year + String.format("%02d", Integer.parseInt(month)) + String.format("%02d", Integer.parseInt(day));
-            String formatPhone = phone.replaceAll("-", "");     // 전화번호 010-0000-0000 입력받았을 때 01000000000 으로 변환
-            ud.userProfileChange(userId, pw, nm, birthDate, email, formatPhone, address, addressDetail);
+
+            // 폰 번호 합치기 010-0000-0000
+            String phone = String.format("%s-%s-%s", phone1, phone2, phone3);
+            ud.userProfileChange(userId, pw, nm, birthDate, email, phone, address, addressDetail);
         } else {
             return "<script>window.close();</script>";
         }
@@ -376,7 +307,7 @@ public class UserController {
         List<Map<String, Object>> addressList = ud.selectAddress(id);
         model.addAttribute("addressList", addressList);
 
-        return "html/address";
+        return "html/user/address";
     }
 
     // 주소록 입력 액션
@@ -411,7 +342,24 @@ public class UserController {
             return "redirect:/";
         }
         ud.deleteAddress(seq);
-        
+
         return "redirect:/my/address";
+    }
+
+    // 대표 주소 액션
+    @PostMapping("my/address/main/action")
+    public String addressMainAction(@RequestParam String seq,
+                                    HttpSession session,
+                                    Model model)
+    {
+        if (session.getAttribute("id") == null) {
+            return "redirect:/";
+        }
+        String id = (String)session.getAttribute("id");
+        ud.mainAddress(seq, id);
+
+        model.addAttribute("link", "/my/address");
+        model.addAttribute("msg", "수정이 완료되었습니다.");
+        return "/html/alert";
     }
 }

@@ -95,6 +95,16 @@
         .delete-form button {
             width: 100px;
         }
+
+        .address-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .address-actions form {
+            width: 100%;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -107,11 +117,16 @@
         <p>상세주소: <span th:text="${address.address_detail}"></span></p>
     </div>
     <div class="address-actions">
+        <form action="/my/address/main/action" method="post" class="delete-form" th:if="${address.main_address == '0'}">
+            <input type="hidden" name="seq" th:value="${address.seq}" />
+            <button type="submit">대표주소 설정</button>
+        </form>
         <form action="/my/address/delete/action" method="post" class="delete-form">
             <input type="hidden" name="seq" th:value="${address.seq}" />
             <button type="submit">삭제</button>
         </form>
     </div>
+    
 </div>
 
 <form action="/my/address/insert/action" method="post">
