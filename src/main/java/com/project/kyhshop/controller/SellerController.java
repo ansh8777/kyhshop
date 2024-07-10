@@ -22,13 +22,13 @@ public class SellerController {
     @Autowired
     SellerDao sd;
 
-    // 판매자 회원가입 페이지
+    // 셀러 회원가입 페이지
     @GetMapping("/register/seller")
     public String sellerRegisterPage() {
         return "html/seller/register";
     }
 
-    // 판매자 회원가입 액션
+    // 셀러 회원가입 액션
     @PostMapping("/register/seller/action")
     public String sellerRegisterAction(@RequestParam String id,
                                        @RequestParam String pw,
@@ -61,7 +61,7 @@ public class SellerController {
 
         sd.sellerRegister(id, pw, nm, email, phone, address, address_detail, comp_nm, biz_id);
 
-        model.addAttribute("link", "/seller/login");
+        model.addAttribute("link", "/login");
         model.addAttribute("msg", "회원가입이 완료되었습니다.");
         return "/html/alert";
     }
@@ -162,6 +162,62 @@ public class SellerController {
         } else {
             return "/html/login";
         }
+    }
+
+    // 셀러 수정하기 액션
+    @PostMapping("my/seller/profile/changeaction")
+    @ResponseBody
+    public String sellerChangeAction(@RequestParam String pw,
+                                     @RequestParam String nm,
+                                     @RequestParam String year,
+                                     @RequestParam String month,
+                                     @RequestParam String day,
+                                     @RequestParam String email,
+                                     @RequestParam String phone1,
+                                     @RequestParam String phone2,
+                                     @RequestParam String phone3,
+                                     @RequestParam String address,
+                                     @RequestParam String addressDetail,
+                                     @RequestParam String compNm,
+                                     @RequestParam String bizId1,
+                                     @RequestParam String bizId2,
+                                     @RequestParam String bizId3,
+                                     HttpSession session,
+                                     Model model)
+    {
+        // 로그인 되어 있으면
+        if (session.getAttribute("id") != null) {
+            String sellerId = (String)session.getAttribute("id");
+
+            // 폰 번호 합치기 010-0000-0000
+            String phone = String.format("%s-%s-%s", phone1, phone2, phone3);
+            // 사업자 등록 번호 합치기
+            String bizId = String.format("%s-%s-%s", bizId1, bizId2, bizId3);
+            sd.sellerProfileChange(sellerId, pw, nm, email, phone, addressDetail, address, compNm, bizId);
+        } else {
+            return "<script>window.close();</script>";
+        }
+        return "<script>window.close(); alert('회원정보가 수정되었습니다.');</script>";
+    }
+
+    // 셀러 삭제하기 액션
+    @PostMapping("my/seller/profile/deleteaction")
+    @ResponseBody
+    public String sellerDeleteAction(HttpSession session,
+                                     Model model)
+    {
+        String sellerId = (String)session.getAttribute("id");
+        // 로그인 되어 있으면
+        if (sellerId != null) {
+            if (sd.sellerPageCnt(sellerId) > 0) {
+                return "<script>window.opener.location.reload(); window.close(); alert('탈퇴하시려면 판매 물품을 삭제하신 후에 다시 해주시기 바랍니다.');</script>";
+            } else {
+                sd.sellerDelete(sellerId);
+                session.invalidate();
+                return "<script>window.opener.location.reload(); window.close(); alert('회원정보가 삭제되었습니다.');</script>";
+            }
+        }
+        return "";
     }
     
     // 상품 관리 페이지

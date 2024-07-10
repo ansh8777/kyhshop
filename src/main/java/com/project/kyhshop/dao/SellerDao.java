@@ -12,7 +12,7 @@ public class SellerDao {
     @Autowired
     JdbcTemplate jt;
 
-    // 판매자 회원가입
+    // 셀러 회원가입
     public void sellerRegister(String id,
                                String pw,
                                String nm,
@@ -75,6 +75,30 @@ public class SellerDao {
                          "FROM tb_seller_mst " +
                          "WHERE id = ?";
         return jt.queryForList(sqlStmt, id);
+    }
+
+    // 셀러 개인정보 수정
+    public void sellerProfileChange(String id, String pw, String nm, String email, String phone, String address, String address_detail, String compNm, String bizId)
+    {
+        String sqlStmt = "UPDATE tb_user_mst SET pw = ?, nm = ?, email = ?, phone = ?, address = ?, address_detail = ?, comp_nm = ?, biz_id = ? WHERE id = ?";
+        jt.update(sqlStmt, pw, nm, email, phone, address, address_detail, compNm, bizId, id);
+    }
+
+    // 셀러 글 count
+    public int sellerPageCnt(String id) {
+        String sqlStmt = "SELECT count(*) FROM tb_product_mst WHERE seller_id = ?";
+        try {   // 결과가 없으면 null 반환
+            return jt.queryForObject(sqlStmt, Integer.class, id);
+        } catch (EmptyResultDataAccessException e) {
+            return 0;
+        }
+    }
+
+    // 셀러 개인이 삭제 (del_fg == 1로 변경)
+    public void sellerDelete(String id)
+    {
+        String sqlStmt = "UPDATE tb_seller_mst SET del_fg = 1 WHERE id = ?";
+        jt.update(sqlStmt, id);
     }
 
     // 셀러아이디 유무만 가져오기

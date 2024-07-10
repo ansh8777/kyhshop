@@ -10,28 +10,32 @@
     <div class="signup-container">
         <h2>정보 수정</h2>
         <form action="/my/profile/changeaction" method="POST" id="signupForm">
-            <input type="password" id="password" name="pw" placeholder="비밀번호" th:value="${userSelect['pw']}" required>
+            <input type="password" id="password" name="pw" placeholder="비밀번호" th:value="${sellerSelect[0]['pw']}" required>
             <input type="password" id="confirmPassword" placeholder="비밀번호 확인" required>
-            <input type="text" id="nm" name="nm" placeholder="이름" th:value="${userSelect['nm']}" required>
-            <input type="hidden" id="birthDate" name="birthDate" th:value="${userSelect['birth_date']}">
-            <div class="row">
-                <select id="year" name="year" required></select>
-                <select id="month" name="month" required></select>
-                <select id="day" name="day" required></select>
-            </div>
-            <input type="email" id="email" name="email" placeholder="이메일" th:value="${userSelect['email']}" required>
+            <input type="text" id="nm" name="nm" placeholder="이름" th:value="${sellerSelect[0]['nm']}" required>
+            <input type="email" id="email" name="email" placeholder="이메일" th:value="${sellerSelect[0]['email']}" required>
             <div class="c-container">
-                <input type="text" id="phone1" name="phone1" maxlength="3" placeholder="010" th:value="${userSelect['phone1']}" required>
+                <input type="hidden" id="phone" name="phone" th:value="${sellerSelect[0]['phone']}">
+                <input type="text" id="phone1" name="phone1" maxlength="3" placeholder="010" required>
                 <span>-</span>
-                <input type="text" id="phone2" name="phone2" maxlength="4" placeholder="0000" th:value="${userSelect['phone2']}" required>
+                <input type="text" id="phone2" name="phone2" maxlength="4" placeholder="0000" required>
                 <span>-</span>
-                <input type="text" id="phone3" name="phone3" maxlength="4" placeholder="0000" th:value="${userSelect['phone3']}" required>
+                <input type="text" id="phone3" name="phone3" maxlength="4" placeholder="0000" required>
             </div>
             <div class="address-container">
-                <input type="text" id="address" name="address" placeholder="주소" th:value="${userSelect['address']}" required>
+                <input type="text" id="address" name="address" placeholder="주소" th:value="${sellerSelect[0]['address']}" required>
                 <button type="button" onclick="openDaumPostcode()">주소 찾기</button>
             </div>
-            <input type="text" id="detailAddress" name="addressDetail" placeholder="상세주소" th:value="${userSelect['address_detail']}">
+            <input type="text" id="detailAddress" name="addressDetail" placeholder="상세주소" th:value="${sellerSelect[0]['address_detail']}">
+            <input type="text" id="compNm" name="compNm" placeholder="회사 이름" th:value="${sellerSelect[0]['comp_nm']}" required>
+            <div class="c-container">
+                <input type="hidden" id="bizId" name="bizId" th:value="${sellerSelect[0]['biz_id']}">
+                <input type="text" id="bizId1" name="bizId1" maxlength="3" placeholder="000" required>
+                <span>-</span>
+                <input type="text" id="bizId2" name="bizId2" maxlength="2" placeholder="00" required>
+                <span>-</span>
+                <input type="text" id="bizId3" name="bizId3" maxlength="5" placeholder="00000" required>
+            </div>
             <button type="submit">수정하기</button>
             <button type="button" id="deleteButton" onclick="confirmAndNavigateToDelete()">탈퇴하기</button>
         </form>
@@ -41,63 +45,28 @@
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const birthDateInput = document.getElementById('birthDate');
-            const birthDateValue = birthDateInput.value;
-
-            // 연도, 월, 일 추출
-            const parts = birthDateValue.split('-');
-            const year = parts[0];
-            const month = parts[1];
-            const day = parts[2];
-
-            // 각각의 select 요소 가져오기
-            const birthYear = document.getElementById('year');
-            const birthMonth = document.getElementById('month');
-            const birthDay = document.getElementById('day');
-
-            // 출생 연도 옵션 생성
-            for (let y = 1940; y <= 2022; y++) {
-                const option = document.createElement('option');
-                option.value = y;
-                option.textContent = y;
-                if (y === parseInt(year)) {
-                    option.selected = true; // 기본 연도 선택
+            // phone 값을 가져와서 phone1, phone2, phone3으로 나눔
+            const phone = document.getElementById('phone').value;
+            if (phone) {
+                const phoneParts = phone.split('-');
+                if (phoneParts.length === 3) {
+                    document.getElementById('phone1').value = phoneParts[0];
+                    document.getElementById('phone2').value = phoneParts[1];
+                    document.getElementById('phone3').value = phoneParts[2];
                 }
-                birthYear.appendChild(option);
             }
 
-            // 출생 월 옵션 생성
-            for (let m = 1; m <= 12; m++) {
-                const option = document.createElement('option');
-                option.value = m < 10 ? '0' + m : m; // 한 자리 수 월을 두 자리로 포맷
-                option.textContent = m < 10 ? '0' + m : m;
-                if (option.value === month) {
-                    option.selected = true; // 기본 월 선택
+            // biz_id 값을 가져와서 bizId1, bizId2, bizId3으로 나눔
+            const bizId = document.getElementById('bizId').value;
+            if (bizId) {
+                const bizIdParts = bizId.split('-');
+                if (bizIdParts.length === 3) {
+                    document.getElementById('bizId1').value = bizIdParts[0];
+                    document.getElementById('bizId2').value = bizIdParts[1];
+                    document.getElementById('bizId3').value = bizIdParts[2];
                 }
-                birthMonth.appendChild(option);
-            }
-
-            // 출생 일 옵션 생성 (31일까지 고려)
-            for (let d = 1; d <= 31; d++) {
-                const option = document.createElement('option');
-                option.value = d < 10 ? '0' + d : d; // 한 자리 수 일을 두 자리로 포맷
-                option.textContent = d < 10 ? '0' + d : d;
-                if (option.value === day) {
-                    option.selected = true; // 기본 일 선택
-                }
-                birthDay.appendChild(option);
             }
         });
-
-        // select 요소의 기본 선택값 설정하는 함수
-        function setSelectedValue(selectElement, value) {
-            for (let option of selectElement.options) {
-                if (option.value === value) {
-                    option.selected = true;
-                    break;
-                }
-            }
-        }
 
         document.getElementById('signupForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -113,7 +82,19 @@
             // 'address' 필드를 활성화하여 제출할 수 있게 함
             document.getElementById('address').disabled = false;
 
-            // 비밀번호가 일치하면 폼 제출
+            // phone1, phone2, phone3 값을 합쳐서 phone 필드에 설정
+            const phone1 = document.getElementById('phone1').value;
+            const phone2 = document.getElementById('phone2').value;
+            const phone3 = document.getElementById('phone3').value;
+            document.getElementById('phone').value = `${phone1}-${phone2}-${phone3}`;
+
+            // bizId1, bizId2, bizId3 값을 합쳐서 bizId 필드에 설정
+            const bizId1 = document.getElementById('bizId1').value;
+            const bizId2 = document.getElementById('bizId2').value;
+            const bizId3 = document.getElementById('bizId3').value;
+            document.getElementById('bizId').value = `${bizId1}-${bizId2}-${bizId3}`;
+
+            // 모든게 일치하면 폼 제출
             this.submit();
         });
 
@@ -127,7 +108,16 @@
 
         function confirmAndNavigateToDelete() {
             if (confirm('정말로 회원을 삭제하시겠습니까?')) {
-                window.location.href = '/my/profile/deleteaction'; // 삭제하기 경로로 이동
+                // 동적으로 폼 생성
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/my/seller/profile/deleteaction';
+                
+                // 폼을 body에 추가
+                document.body.appendChild(form);
+                
+                // 폼 제출
+                form.submit();
             }
         }
     </script>

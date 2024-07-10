@@ -21,11 +21,12 @@
             </div>
             <input type="email" id="email" name="email" placeholder="이메일" th:value="${userSelect['email']}" required>
             <div class="c-container">
-                <input type="text" id="phone1" name="phone1" maxlength="3" placeholder="010" th:value="${userSelect['phone1']}" required>
+                <input type="hidden" id="phone" name="phone" th:value="${userSelect['phone']}">
+                <input type="text" id="phone1" name="phone1" maxlength="3" placeholder="010" required>
                 <span>-</span>
-                <input type="text" id="phone2" name="phone2" maxlength="4" placeholder="0000" th:value="${userSelect['phone2']}" required>
+                <input type="text" id="phone2" name="phone2" maxlength="4" placeholder="0000" required>
                 <span>-</span>
-                <input type="text" id="phone3" name="phone3" maxlength="4" placeholder="0000" th:value="${userSelect['phone3']}" required>
+                <input type="text" id="phone3" name="phone3" maxlength="4" placeholder="0000" required>
             </div>
             <div class="address-container">
                 <input type="text" id="address" name="address" placeholder="주소" th:value="${userSelect['address']}" required>
@@ -87,6 +88,17 @@
                 }
                 birthDay.appendChild(option);
             }
+
+            const phone = document.getElementById('phone').value;
+
+            if (phone) {
+                const phoneParts = phone.split('-');
+                if (phoneParts.length === 3) {
+                    document.getElementById('phone1').value = phoneParts[0];
+                    document.getElementById('phone2').value = phoneParts[1];
+                    document.getElementById('phone3').value = phoneParts[2];
+                }
+            }
         });
 
         // select 요소의 기본 선택값 설정하는 함수
@@ -113,7 +125,13 @@
             // 'address' 필드를 활성화하여 제출할 수 있게 함
             document.getElementById('address').disabled = false;
 
-            // 비밀번호가 일치하면 폼 제출
+            // phone1, phone2, phone3 값을 합쳐서 phone 필드에 설정
+            const phone1 = document.getElementById('phone1').value;
+            const phone2 = document.getElementById('phone2').value;
+            const phone3 = document.getElementById('phone3').value;
+            document.getElementById('phone').value = `${phone1}-${phone2}-${phone3}`;
+
+            // 모든게 일치하면 폼 제출
             this.submit();
         });
 
@@ -127,7 +145,16 @@
 
         function confirmAndNavigateToDelete() {
             if (confirm('정말로 회원을 삭제하시겠습니까?')) {
-                window.location.href = '/my/profile/deleteaction'; // 삭제하기 경로로 이동
+                // 동적으로 폼 생성
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/my/profile/deleteaction';
+                
+                // 폼을 body에 추가
+                document.body.appendChild(form);
+                
+                // 폼 제출
+                form.submit();
             }
         }
     </script>

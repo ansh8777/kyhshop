@@ -226,15 +226,6 @@ public class UserController {
                 String userId = (String)session.getAttribute("id");
                 Map<String, Object> userSelect = ud.selectUser(userId);         // 유저 정보 가져오기
 
-                String phone = (String) userSelect.get("phone");
-                if (phone != null && phone.contains("-")) {
-                    String[] phoneParts = phone.split("-");
-                    if (phoneParts.length == 3) {
-                        userSelect.put("phone1", phoneParts[0]);
-                        userSelect.put("phone2", phoneParts[1]);
-                        userSelect.put("phone3", phoneParts[2]);
-                    }
-                }
                 model.addAttribute("userSelect", userSelect);     // 유저 정보 addAttribute
 
                 return "html/user/userchange";
@@ -281,7 +272,7 @@ public class UserController {
     }
     
     // 회원삭제하기 액션
-    @GetMapping("my/profile/deleteaction")
+    @PostMapping("my/profile/deleteaction")
     @ResponseBody
     public String userDeleteAction(HttpSession session,
                                    Model model)
