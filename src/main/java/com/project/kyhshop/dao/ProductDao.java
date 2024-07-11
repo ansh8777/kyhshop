@@ -71,6 +71,7 @@ public class ProductDao {
                          "          SM.nm AS SELLER_NM " +
                          "FROM      tb_product_mst PM   LEFT JOIN tb_product_detail PD ON PM.seq = PD.seq " +
                          "                              LEFT JOIN tb_seller_mst SM ON PM.seller_id = SM.id " +
+                         "WHERE     PD.PROD_AMOUNT <> 0 " +
                          "ORDER BY PM.SEQ DESC";
         return jt.queryForList(sqlStmt);
     }

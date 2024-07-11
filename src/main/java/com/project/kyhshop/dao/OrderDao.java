@@ -98,8 +98,11 @@ public class OrderDao {
 
     // 결제 완료 db 넣기
     public void orderInsert(String id, String seq, int amount) {
-        String sqlStmt = "INSERT INTO tb_order_mst (prod_id, prod_amount, user_id, state) VALUES (?, ?, ?, 1)";
-        jt.update(sqlStmt, seq, amount, id);
+        String sqlStmt1 = "INSERT INTO tb_order_mst (prod_id, prod_amount, user_id, state) VALUES (?, ?, ?, 1)";
+        jt.update(sqlStmt1, seq, amount, id);
+
+        String sqlStmt2 = "UPDATE tb_product_detail SET prod_amount = prod_amount - ? WHERE seq = ?";
+        jt.update(sqlStmt2, amount, seq);
     }
 
     // 장바구니 상품 추가

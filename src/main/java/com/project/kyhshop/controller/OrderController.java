@@ -88,6 +88,14 @@ public class OrderController {
         if (userId == null) {
             return "redirect:/login";
         }
+
+        int dbAmount = od.getAmount(seq);
+        if (amount > dbAmount) {
+            model.addAttribute("link", "/product?seq=" + seq);
+            model.addAttribute("msg", "구매하려는 수량이 재고를 초과합니다.");
+            return "/html/alert";
+        }
+
         od.orderInsert(userId, seq, amount);
 
         return "/html/order/complete";
@@ -116,25 +124,5 @@ public class OrderController {
             od.cartInsert(userId, seq, amount);
         }
         return "redirect:/gocart";
-    }
-
-    // 장바구니에 상품 추가 액션
-    @GetMapping("order/basket/insert/action")
-    public String orderBasketInsertAction(  @RequestParam String amount,
-                                            @RequestParam String product_id,
-                                            HttpSession session) {
-        String userId = (String)session.getAttribute("id");
-        orderDao.orderBasketChange(amount,userId,product_id);
-        return "redirect:/buyer/mypage";
-    }
-
-    // 상품 구매 액션
-    @GetMapping("order/buy/insert/action")
-    public String orderBuyInsertAction(@RequestParam String amount,
-                                       @RequestParam String product_id,
-                                        HttpSession session) {
-        String userId = (String)session.getAttribute("id");
-        orderDao.orderBuyChange(amount,userId,product_id);
-        return "redirect:/buyer/mypage";
     }
 }

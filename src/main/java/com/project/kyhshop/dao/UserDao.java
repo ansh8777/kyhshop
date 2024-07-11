@@ -121,6 +121,7 @@ public class UserDao {
                          "          PD.prod_variety    AS prod_variety "                +
                          "FROM      tb_product_mst TM "                                 +
                          "LEFT JOIN tb_product_detail PD ON TM.SEQ = PD.SEQ "   +
+                         "WHERE PD.prod_amount <> 0 " +
                          "ORDER BY  TM.SEQ DESC "                                       +
                          "LIMIT 9"; 
         return jt.queryForList(sqlStmt);
@@ -222,12 +223,15 @@ public class UserDao {
         return jt.queryForList(sqlStmt, userId);
     }
 
-    // 오더마스터 INSERT 장바구니에 있는건 DELETE
+    // 오더마스터 INSERT 장바구니, product_detail 있는건 DELETE
     public void cartToOrder(Map<String, Object> item) {
         String sqlStmt1 = "INSERT INTO tb_order_mst (prod_id, prod_amount, user_id, state) VALUES (?, ?, ?, 1)";
         jt.update(sqlStmt1, item.get("prod_id"), item.get("prod_amount"), item.get("user_id"));
 
         String sqlStmt2 = "DELETE FROM tb_cart_mst WHERE user_id = ? AND prod_id = ?";
         jt.update(sqlStmt2, item.get("user_id"), item.get("prod_id"));
+
+        String sqlStmt3 = "UPDATE tb_product_detail SET prod_amount = prod_amount - ? WHERE seq = ?";
+        jt.update(sqlStmt3, item.get("prod_amount"), item.get("prod_id"));
     }
 }
