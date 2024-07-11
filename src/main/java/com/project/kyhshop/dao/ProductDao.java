@@ -74,4 +74,19 @@ public class ProductDao {
                          "ORDER BY PM.SEQ DESC";
         return jt.queryForList(sqlStmt);
     }
+
+    public List<Map<String, Object>> gradevariety(String seq) {
+        String sqlstmt = "SELECT    prod_grade AS grade, " +
+                         "          prod_variety AS variety " +
+                         "FROM      tb_product_detail " +
+                         "WHERE     SEQ = ?";
+        return jt.queryForList(sqlstmt,seq);
+    }
+
+    public List<Map<String, Object>> lowerPrice(String garde, String variety) {
+        String sqlstmt = "SELECT    min(prod_price) as minprice " +
+        "FROM      tb_product_detail " +
+        "WHERE     prod_grade = ? and prod_variety = ?";
+        return jt.queryForList(sqlstmt,garde,variety);
+    }
 }

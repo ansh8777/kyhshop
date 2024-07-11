@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 곱하기 계산기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        .calculator {
+            display: flex;
+            flex-direction: column;
+            max-width: 300px;
+        }
+        .calculator input {
+            margin-bottom: 10px;
+            padding: 8px;
+            font-size: 16px;
+        }
+        .calculator .result {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="number" id="number1" placeholder="첫 번째 숫자">
+        <input type="number" id="number2" placeholder="두 번째 숫자">
+        <div class="result">결과: <span id="result">0</span></div>
+    </div>
+
+    <script>
+        const number1 = document.getElementById('number1');
+        const number2 = document.getElementById('number2');
+        const result = document.getElementById('result');
+
+        function updateResult() {
+            const value1 = parseFloat(number1.value) || 0;
+            const value2 = parseFloat(number2.value) || 0;
+            result.textContent = value1 * value2;
+        }
+
+        number1.addEventListener('input', updateResult);
+        number2.addEventListener('input', updateResult);
+    </script>
+</body>
+</html>

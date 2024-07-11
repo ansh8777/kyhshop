@@ -30,11 +30,6 @@ public class ProductController {
                               HttpSession session,
                               Model model)
     {
-        // 셀러가 아니면 로그인 페이지로
-        String userId = (String)session.getAttribute("id");
-        if (userId == null) {
-            return "redirect:/login";
-        }
         List<Map<String, Object>> productSet = pd.productSelect_1(seq);
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
@@ -46,7 +41,19 @@ public class ProductController {
             long price = Long.parseLong(priceString);
             product.put("prod_price_disp", decimalFormat.format(price));
         }
+
+        List<Map<String, Object>> gradevariety = pd.gradevariety(seq);
+
+        //  등급과 품종 정보가 있는 경우에만 lowerPrice를 호출하여 가격이 가장 낮은 상품을 조회합니다.
+        List<Map<String, Object>> lowerPrice = new ArrayList<>();
+        if (!gradevariety.isEmpty()) {
+            String grade = (String) gradevariety.get(0).get("grade");
+            String variety = (String) gradevariety.get(0).get("variety");
+            lowerPrice = pd.lowerPrice(grade, variety);
+        }
+
         model.addAttribute("productSet", productSet);
+        model.addAttribute("lowerPrice", lowerPrice);
 
         return "/html/product/product";
     }

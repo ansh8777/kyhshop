@@ -174,4 +174,23 @@ public class UserDao {
                          "WHERE     CM.user_id = ?";
         return jt.queryForList(sqlStmt, userId);
     }
+
+    // 장바구니 DELETE
+    public void cartDelete(String userId, String prodId) {
+        String sqlStmt = "DELETE FROM tb_cart_mst WHERE user_id = ? AND prod_id = ?";
+        jt.update(sqlStmt, userId, prodId);
+    }
+
+    // 주문내역 SELECT
+    public List<Map<String, Object>> orderSelect(String userId) {
+        String sqlStmt = "SELECT OM.seq AS seq, PM.prod_nm AS prod_nm, OM.prod_amount AS prod_amount, " +
+                     "(PD.prod_price * OM.prod_amount) AS price, OM.reg_dt AS reg_dt, PM.prod_img AS prod_img " +
+                     "FROM tb_order_mst OM " +
+                     "JOIN tb_product_mst PM ON OM.prod_id = PM.seq " +
+                     "JOIN tb_product_detail PD ON OM.prod_id = PD.seq " +
+                     "WHERE OM.user_id = ? " +
+                     "ORDER BY OM.reg_dt DESC " +
+                     "LIMIT 5";
+        return jt.queryForList(sqlStmt, userId);
+    }
 }

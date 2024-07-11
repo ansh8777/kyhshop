@@ -338,4 +338,28 @@ public class SellerController {
         sd.productInsert(category, productTitle, productDescription, productName, id, imgName, productAmount, productPrice, productGrade, productVariety);
         return "redirect:/seller/product";
     }
+
+    @GetMapping("/chart")
+    public String chart(Model model) {
+        List<Map<String,Object>> salesData = sd.testViewPrice();
+        List<Map<String,Object>> Gradeview = sd.Gradeview();
+        List<Map<String,Object>> Varietyview = sd.Varietyview();
+        model.addAttribute("salesData", salesData);
+        model.addAttribute("Gradeview", Gradeview);
+        model.addAttribute("Varietyview", Varietyview);
+        return "html/seller/chart";
+    }
+
+    @GetMapping("chart/filter")
+    public String filter(@RequestParam String grade,
+                         @RequestParam String variety,
+                         Model model) {
+        List<Map<String,Object>> salesData = sd.testViewByGradeVariety(grade,variety);
+        List<Map<String,Object>> Gradeview = sd.Gradeview();
+        List<Map<String,Object>> Varietyview = sd.Varietyview();
+        model.addAttribute("salesData", salesData);
+        model.addAttribute("Gradeview", Gradeview);
+        model.addAttribute("Varietyview", Varietyview);
+        return "html/seller/chart";
+    }
 }

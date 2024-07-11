@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
 import com.project.kyhshop.dao.*;
@@ -201,11 +202,30 @@ public class UserController {
 
     // 회원페이지 (유저, 셀러 공통)
     @GetMapping("/my")
-    public String myPage(HttpSession session) {
+    public String myPage(HttpSession session,
+                         Model model)
+    {
+
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
 
         // 로그인 안되어 있으면 로그인페이지로
-        if (session.getAttribute("id") == null) {
+        if (userId == null) {
             return "redirect:/login";
+        }
+        if (temp == "user") {
+            List<Map<String, Object>> orderList = ud.orderSelect(userId);
+            DecimalFormat decimalFormat = new DecimalFormat("#,###");
+
+            for (Map<String, Object> order : orderList) {
+                // prod_price 값을 가져와서 문자열로 변환합니다.
+                String priceString = order.get("price").toString();
+
+                // 문자열 형태의 가격을 정수로 변환하여 포맷팅합니다.
+                long price = Long.parseLong(priceString);
+                order.put("price_disp", decimalFormat.format(price));
+            }
+            model.addAttribute("orderList", orderList);
         }
         return "html/common/my";
     }
@@ -392,8 +412,33 @@ public class UserController {
             return "redirect:/login";
         }
         List<Map<String, Object>> cartList = ud.cartSelect(userId);
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+
+            for (Map<String, Object> cart : cartList) {
+                // prod_price 값을 가져와서 문자열로 변환합니다.
+                String priceString = cart.get("prod_price").toString();
+
+                // 문자열 형태의 가격을 정수로 변환하여 포맷팅합니다.
+                BigDecimal price = new BigDecimal(priceString);
+                cart.put("prod_price_disp", decimalFormat.format(price));
+            }
         model.addAttribute("cartList", cartList);
 
         return "html/user/cart";
+    }
+
+    // 장바구니 삭제
+    @PostMapping("cart/delete")
+    public String cartDelete(@RequestParam String prodId,
+                             HttpSession session,
+                             Model model)
+    {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || temp != "user") {
+            return "redirect:/login";
+        }
+        ud.cartDelete(userId, prodId);
+        return "redirect:/cart";
     }
 }

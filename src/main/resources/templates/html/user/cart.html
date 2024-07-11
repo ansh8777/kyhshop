@@ -1,57 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart</title>
+    <title>장바구니</title>
     <style>
         * {
             box-sizing: border-box;
         }
-        
+
         body {
             margin: 0;
             min-width: 992px;
             font-family: "Helvetica";
         }
-        
+
         .navbar {
             height: 60px;
             padding-left: 30px;
         }
-        
+
         .logo {
             line-height: 60px;
             float: left;
         }
-        
+
         .logo img {
             vertical-align: middle;
         }
-        
+
         .navbar ul {
             float: right;
         }
-        
+
         .navbar li {
             list-style-type: none;
             float: left;
             margin-right: 30px;
         }
-        
+
         .navbar a {
             text-decoration: none;
             color: black;
             font-style: bold;
             font-size: 13px;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         h1 {
             text-align: center;
             margin-top: 60px;
@@ -60,48 +60,48 @@
             font-weight: bold;
             color: #545454;
         }
-        
+
         .cart-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 40px;
         }
-        
+
         .cart-table th, .cart-table td {
             padding: 10px;
             border: 1px solid #ddd;
             text-align: center;
         }
-        
+
         .cart-table th {
             background-color: #f2f2f2;
             font-weight: bold;
         }
-        
+
         .cart-table img {
             width: 80px;
             height: 80px;
         }
-        
+
         .cart-table input {
             width: 50px;
             text-align: center;
         }
-        
+
         .cart-summary {
             text-align: right;
             margin-bottom: 40px;
         }
-        
+
         .cart-summary p {
             font-size: 18px;
             margin: 5px 0;
         }
-        
+
         .checkout-button {
             text-align: center;
         }
-        
+
         .checkout-button button {
             background-color: #007bff;
             color: white;
@@ -119,18 +119,18 @@
             <img src="/images/kyhlogo.png" height="50px">
         </a>
         <ul>
-            <li><a href="/allproduct">Product</a></li>
-            <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
-            <li th:if="${session.id == null}"><a href="/login">Login</a></li>
-            <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
-            <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+            <li><a href="/allproduct">상품</a></li>
+            <li th:if="${session.temp == 'user'}"><a href="/cart">장바구니</a></li>
+            <li th:if="${session.id == null}"><a href="/login">로그인</a></li>
+            <li th:if="${session.id == null}"><a href="/regiselect">회원가입</a></li>
+            <li th:if="${session.id != null}"><a href="/logout">로그아웃</a></li>
             <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
         </ul>
     </div>
-    
+
     <div class="container">
         <h1>장바구니</h1>
-        
+
         <table class="cart-table">
             <thead>
                 <tr>
@@ -147,66 +147,78 @@
                 <tr th:each="cart : ${cartList}">
                     <td><img th:src="@{'images/' + ${cart.prod_img}}" alt="Product Image"></td>
                     <td th:text="${cart.prod_title}"></td>
-                    <td th:text="${cart.prod_price} + ' 원'"></td>
-                    <td><input type="number" th:value="${cart.prod_amount}" min="1" class="cart-quantity" data-price="${cart.prod_price}" onchange="updateCartSummary()"></td>
-                    <td th:text="${cart.total_price} + ' 원'" class="total-price"></td>
-                    <td th:text="${cart.seller_name}"></td> <!-- seller_name 사용 -->
-                    <td><button th:onclick="'removeFromCart(' + ${cart.prod_id} + ')'">Remove</button></td>
+                    <td class="price" th:text="${cart.prod_price_disp} + '원'"></td>
+                    <td><input type="number" class="quantity" th:value="${cart.prod_amount}" min="1" onchange="updateCart(this)"></td>
+                    <td class="total-price">0원</td>
+                    <td th:text="${cart.seller_name}"></td>
+                    <td><button th:onclick="'deleteCartItem(' + ${cart.prod_id} + ')'">삭제</button></td>
                 </tr>
             </tbody>
         </table>
-        
+
         <div class="cart-summary">
-            <p>총 수량: <span id="totalQuantity"></span></p>
-            <p>총 가격: <span id="totalPrice"></span> 원</p>
+            <p>결제해야 할 금액: <span id="totalPrice">0</span> 원</p>
         </div>
-        
+
         <div class="checkout-button">
             <form action="/order" method="get">
                 <button type="submit">결제하기</button>
             </form>
         </div>
     </div>
+
     <script>
-        function updateCartSummary() {
-            let totalQuantity = 0;
-            let totalPrice = 0;
-
-            document.querySelectorAll('.cart-quantity').forEach(input => {
-                const quantity = parseInt(input.value);
-                const price = parseInt(input.dataset.price);
-                totalQuantity += quantity;
-                totalPrice += quantity * price;
-            });
-
-            document.getElementById('totalQuantity').innerText = totalQuantity;
-            document.getElementById('totalPrice').innerText = totalPrice.toLocaleString();
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         }
 
-        function removeFromCart(itemId) {
-            // AJAX 요청을 보내서 장바구니에서 해당 항목을 제거합니다.
-            fetch('/cart/remove/' + itemId, {
+        function updateCart(element) {
+            const row = element.closest('tr');
+            const price = parseFloat(row.querySelector('.price').innerText.replace(/,/g, '').replace('원', ''));
+            const quantity = parseInt(element.value);
+            const totalPrice = row.querySelector('.total-price');
+            totalPrice.innerText = formatNumber(price * quantity) + '원';
+
+            updateTotalPrice();
+        }
+
+        function updateTotalPrice() {
+            const totalPriceElement = document.getElementById('totalPrice');
+            const totalPrices = document.querySelectorAll('.total-price');
+            let total = 0;
+
+            totalPrices.forEach(price => {
+                total += parseFloat(price.innerText.replace(/,/g, '').replace('원', ''));
+            });
+
+            totalPriceElement.innerText = formatNumber(total); // '원'을 여기서 제거
+        }
+
+        // 초기 총 가격 계산
+        document.addEventListener('DOMContentLoaded', () => {
+            const quantities = document.querySelectorAll('.quantity');
+            quantities.forEach(quantity => updateCart(quantity));
+        });
+
+        function deleteCartItem(prodId) {
+            fetch('/cart/delete', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify({ id: itemId })
+                body: new URLSearchParams({ prodId: prodId }),
             })
             .then(response => {
                 if (response.ok) {
-                    window.location.reload();
+                    location.reload(); // 성공적으로 삭제한 후 페이지 새로고침
                 } else {
-                    alert('Failed to remove item from cart');
+                    alert('장바구니 항목 삭제에 실패했습니다.');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Failed to remove item from cart');
             });
         }
-
-        // 페이지 로드 시 장바구니 요약 업데이트
-        document.addEventListener('DOMContentLoaded', updateCartSummary);
     </script>
 </body>
 </html>

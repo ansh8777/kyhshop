@@ -175,6 +175,7 @@
                 <h1 th:text="${product.prod_title}"></h1>
                 <p class="name" th:text="${product.prod_nm}">제품 이름</p>
                 <p class="price" th:text="'가격: ' + ${product.prod_price_disp} + '원'">가격</p>
+                <p class="lowerprice" th:text="'최저가 : '+${lowerPrice[0].minprice} +'원'">최저가</p>
                 <input type="hidden" th:id="'price-' + ${product.seq}" th:value="${product.prod_price}">
                 <div class="quantity">
                     <label th:for="'amount-' + ${product.seq}">수량:</label>

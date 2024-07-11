@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Page</title>
+    <title>주문 내역</title>
     <link href="css/homepage.css" rel="stylesheet">
     <style>
         /* 추가된 스타일 */
@@ -73,6 +73,23 @@
         .main-content .order-list-item p {
             margin: 5px 0;
         }
+
+        .order-list-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .order-list-item img {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+        }
+
+        .order-details {
+            display: flex;
+            flex-direction: column;
+        }
     </style>
 </head>
 <body>
@@ -112,19 +129,16 @@
         <div id="order-history" class="user-section">
             <h2>최근 주문 내역</h2>
             <div class="order-list">
-                <div class="order-list-item">
-                    <h3>주문 번호: #12345</h3>
-                    <p>상품: Sunglasses</p>
-                    <p>가격: 49,000원</p>
-                    <p>주문 일시: 2024-07-05 14:30:00</p>
+                <div th:each="order : ${orderList}" class="order-list-item">
+                    <img th:src="@{'images/' + ${order.prod_img}}" alt="Product Image">
+                    <div class="order-details">
+                        <h3 th:text="'주문 번호: #' + ${order.seq}"></h3>
+                        <p th:text="'상품: ' + ${order.prod_nm}"></p>
+                        <p th:text="'수량: ' + ${order.prod_amount} + '개'"></p>
+                        <p th:text="'가격: ' + ${order.price_disp} + '원'"></p>
+                        <p th:text="'주문 일시: ' + ${order.reg_dt}"></p>
+                    </div>
                 </div>
-                <div class="order-list-item">
-                    <h3>주문 번호: #12346</h3>
-                    <p>상품: Tassel Loafer</p>
-                    <p>가격: 89,000원</p>
-                    <p>주문 일시: 2024-07-04 10:15:00</p>
-                </div>
-                <!-- 추가적인 주문 내역 아이템들을 여기에 추가할 수 있습니다 -->
             </div>
         </div>
     </div>
