@@ -28,13 +28,15 @@ public class OrderController {
     public String orderPage(@RequestParam String seq,
                             @RequestParam int amount,
                             HttpSession session,
-                            Model model) {
-        if (session.getAttribute("id") == null) {
+                            Model model)
+    {
+        String id = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (id == null || temp != "user") {
             return "redirect:/login";
         }
-        int dbAmount = od.getAmount(seq);
-        String id = (String) session.getAttribute("id");
 
+        int dbAmount = od.getAmount(seq);
         if (amount <= dbAmount) {
             Map<String, Object> address = od.getMainAddress(id);
             if (address.isEmpty()) {
@@ -42,6 +44,8 @@ public class OrderController {
                 model.addAttribute("msg", "메인 배송지가 설정되지 않았습니다.");
                 return "/html/alert";
             }
+            model.addAttribute("address", address);
+
             List<Map<String, Object>> orderList = od.orderSelect(seq, amount);
             DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
@@ -56,8 +60,6 @@ public class OrderController {
                 order.put("prod_price_disp", decimalFormat.format(price1));
                 order.put("total_price_disp", decimalFormat.format(price2));
             }
-
-            model.addAttribute("address", address);
 
             // 총 결제금액 계산
             BigDecimal totalPaymentAmount = orderList.stream()

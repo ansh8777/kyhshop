@@ -176,6 +176,20 @@ public class UserDao {
         return jt.queryForList(sqlStmt, userId);
     }
 
+    // 장바구니 SELECT2
+    public List<Map<String, Object>> cartSelect2(String userId)
+    {
+        String sqlStmt = "SELECT PM.prod_nm AS prod_nm, " +
+                        "PD.prod_price AS prod_price, " +
+                        "CM.prod_amount AS amount, " +
+                        "(PD.prod_price * CM.prod_amount) AS total_price " +
+                        "FROM tb_cart_mst CM " +
+                        "JOIN tb_product_mst PM ON CM.prod_id = PM.seq " +
+                        "JOIN tb_product_detail PD ON PM.seq = PD.seq " +
+                        "WHERE CM.user_id = ?";
+        return jt.queryForList(sqlStmt, userId);
+    }
+
     // 장바구니 DELETE
     public void cartDelete(String userId, String prodId) {
         String sqlStmt = "DELETE FROM tb_cart_mst WHERE user_id = ? AND prod_id = ?";
@@ -184,9 +198,9 @@ public class UserDao {
 
     // 장바구니 여러개 DELETE
     public void cartDeleteAll(String userId, List<Long> prodId) {
-        String sql = "DELETE FROM tb_cart_mst WHERE user_id = ? AND prod_id IN (" + 
+        String sqlStmt = "DELETE FROM tb_cart_mst WHERE user_id = ? AND prod_id IN (" + 
                       prodId.stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
-        jt.update(sql, userId);
+        jt.update(sqlStmt, userId);
     }
 
     // 주문내역 SELECT
@@ -200,5 +214,20 @@ public class UserDao {
                      "ORDER BY OM.reg_dt DESC " +
                      "LIMIT 5";
         return jt.queryForList(sqlStmt, userId);
+    }
+
+    // 장바구니에서 가져오기
+    public List<Map<String, Object>> getCartItems(String userId) {
+        String sqlStmt = "SELECT prod_id, prod_amount, user_id FROM tb_cart_mst WHERE user_id = ?";
+        return jt.queryForList(sqlStmt, userId);
+    }
+
+    // 오더마스터 INSERT 장바구니에 있는건 DELETE
+    public void cartToOrder(Map<String, Object> item) {
+        String sqlStmt1 = "INSERT INTO tb_order_mst (prod_id, prod_amount, user_id, state) VALUES (?, ?, ?, 1)";
+        jt.update(sqlStmt1, item.get("prod_id"), item.get("prod_amount"), item.get("user_id"));
+
+        String sqlStmt2 = "DELETE FROM tb_cart_mst WHERE user_id = ? AND prod_id = ?";
+        jt.update(sqlStmt2, item.get("user_id"), item.get("prod_id"));
     }
 }

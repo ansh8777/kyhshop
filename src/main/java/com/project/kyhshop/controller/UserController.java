@@ -21,6 +21,9 @@ import com.project.kyhshop.dao.*;
 public class UserController {
     @Autowired
     UserDao ud;
+
+    @Autowired
+    OrderDao od;
     
     // 홈페이지
     @GetMapping("/")
@@ -256,7 +259,7 @@ public class UserController {
         // 로그인 되어 있으면
         String userId = (String)session.getAttribute("id");
         String temp = (String)session.getAttribute("temp");
-        if (userId == null || temp != "user") {
+        if (userId != null || temp == "user") {
             int verifyCnt = ud.verifyPass(id, pw);  // 비밀번호 확인
 
             if (verifyCnt == 1) {                   // 비밀번호 확인 되면
@@ -271,7 +274,7 @@ public class UserController {
                 return "/html/alert";
             }
         } else {
-            return "/html/login";
+            return "/html/common/login";
         }
     }
 
@@ -295,7 +298,7 @@ public class UserController {
         // 로그인 되어 있으면
         String userId = (String)session.getAttribute("id");
         String temp = (String)session.getAttribute("temp");
-        if (userId == null || temp != "user") {
+        if (userId != null || temp == "user") {
 
             String birthDate = year + String.format("%02d", Integer.parseInt(month)) + String.format("%02d", Integer.parseInt(day));
 
@@ -317,7 +320,7 @@ public class UserController {
         // 로그인 되어 있으면 유저 삭제 및 세션 종료
         String userId = (String)session.getAttribute("id");
         String temp = (String)session.getAttribute("temp");
-        if (userId == null || temp != "user") {
+        if (userId != null || temp == "user") {
             ud.userDelete(userId);
             session.invalidate();
         }
@@ -461,5 +464,71 @@ public class UserController {
                                .collect(Collectors.toList());
         ud.cartDeleteAll(userId, prodIds);
         return "redirect:/cart";
+    }
+
+    // 장바구니에서 전체상품 구매 페이지
+    @GetMapping("cart/order")
+    public String cartOrderPage(
+                                HttpSession session,
+                                Model model) {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || !temp.equals("user")) {
+            return "redirect:/login";
+        }
+
+        Map<String, Object> address = od.getMainAddress(userId);
+        if (address.isEmpty()) {
+            model.addAttribute("link", "/my");
+            model.addAttribute("msg", "메인 배송지가 설정되지 않았습니다.");
+            return "/html/alert";
+        }
+        model.addAttribute("address", address);
+
+        List<Map<String, Object>> orderList = ud.cartSelect2(userId);
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+
+        for (Map<String, Object> cart : orderList) {
+            // prod_price 값을 가져와서 문자열로 변환합니다.
+            String prod_price = cart.get("prod_price").toString();
+            String total_price = cart.get("total_price").toString();
+
+            // 문자열 형태의 가격을 정수로 변환하여 포맷팅합니다.
+            BigDecimal price1 = new BigDecimal(prod_price);
+            BigDecimal price2 = new BigDecimal(total_price);
+            cart.put("prod_price_disp", decimalFormat.format(price1));
+            cart.put("total_price_disp", decimalFormat.format(price2));
+        }
+        // 총 결제금액 계산
+        BigDecimal totalPaymentAmount = orderList.stream()
+        .map(order -> new BigDecimal(order.get("total_price").toString()))
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
+        model.addAttribute("orderList", orderList);
+        model.addAttribute("totalPaymentAmount", decimalFormat.format(totalPaymentAmount));
+
+        return "html/order/cart_order";
+    }
+
+    // 장바구니 결제 액션
+    @PostMapping("/cart/order/action")
+    public String cartOrderAction(HttpSession session,
+                                  Model model) {
+
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || !temp.equals("user")) {
+            return "redirect:/login";
+        }
+
+        List<Map<String, Object>> cartItems = ud.getCartItems(userId);
+        for (Map<String, Object> item : cartItems) {
+            ud.cartToOrder(item);
+        }
+        
+        model.addAttribute("link", "/my");
+        model.addAttribute("msg", "구매가 완료되었습니다.");
+        return "/html/alert";
     }
 }
