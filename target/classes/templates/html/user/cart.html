@@ -83,7 +83,7 @@
             height: 80px;
         }
 
-        .cart-table input {
+        .cart-table input[type="number"] {
             width: 50px;
             text-align: center;
         }
@@ -99,7 +99,7 @@
         }
 
         .checkout-button {
-            text-align: center;
+            text-align: right;
         }
 
         .checkout-button button {
@@ -110,6 +110,21 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+        }
+
+        .delete-selected-button {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .delete-selected-button button {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -131,30 +146,39 @@
     <div class="container">
         <h1>장바구니</h1>
 
-        <table class="cart-table">
-            <thead>
-                <tr>
-                    <th>이미지</th>
-                    <th>상품명</th>
-                    <th>가격</th>
-                    <th>수량</th>
-                    <th>총 가격</th>
-                    <th>판매자</th>
-                    <th>삭제</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="cart : ${cartList}">
-                    <td><img th:src="@{'images/' + ${cart.prod_img}}" alt="Product Image"></td>
-                    <td th:text="${cart.prod_title}"></td>
-                    <td class="price" th:text="${cart.prod_price_disp} + '원'"></td>
-                    <td><input type="number" class="quantity" th:value="${cart.prod_amount}" min="1" onchange="updateCart(this)"></td>
-                    <td class="total-price">0원</td>
-                    <td th:text="${cart.seller_name}"></td>
-                    <td><button th:onclick="'deleteCartItem(' + ${cart.prod_id} + ')'">삭제</button></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="delete-selected-button">
+            <button onclick="deleteSelectedItems()">선택 삭제</button>
+        </div>
+
+        <form id="delete-form" method="post" action="/cart/deleteselect">
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" onclick="toggleAllCheckboxes(this)"></th>
+                        <th>이미지</th>
+                        <th>상품명</th>
+                        <th>가격</th>
+                        <th>수량</th>
+                        <th>총 가격</th>
+                        <th>판매자</th>
+                        <th>삭제</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cart : ${cartList}">
+                        <td><input type="checkbox" class="select-item" data-prod-id="${cart.prod_id}"></td>
+                        <td><img th:src="@{'images/' + ${cart.prod_img}}" alt="Product Image"></td>
+                        <td th:text="${cart.prod_title}"></td>
+                        <td class="price" th:text="${cart.prod_price_disp} + '원'"></td>
+                        <td><input type="number" class="quantity" th:value="${cart.prod_amount}" min="1" onchange="updateCart(this)"></td>
+                        <td class="total-price">0원</td>
+                        <td th:text="${cart.seller_name}"></td>
+                        <td><button type="button" th:onclick="'deleteCartItem(' + ${cart.prod_id} + ')'">삭제</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <input type="hidden" name="prodIds" id="prodIds">
+        </form>
 
         <div class="cart-summary">
             <p>결제해야 할 금액: <span id="totalPrice">0</span> 원</p>
@@ -162,7 +186,7 @@
 
         <div class="checkout-button">
             <form action="/order" method="get">
-                <button type="submit">결제하기</button>
+                <button type="submit">전체상품 결제하기</button>
             </form>
         </div>
     </div>
@@ -191,7 +215,24 @@
                 total += parseFloat(price.innerText.replace(/,/g, '').replace('원', ''));
             });
 
-            totalPriceElement.innerText = formatNumber(total); // '원'을 여기서 제거
+            totalPriceElement.innerText = formatNumber(total);
+        }
+
+        function toggleAllCheckboxes(source) {
+            const checkboxes = document.querySelectorAll('.select-item');
+            checkboxes.forEach(checkbox => checkbox.checked = source.checked);
+        }
+
+        function deleteSelectedItems() {
+            const selectedItems = document.querySelectorAll('.select-item:checked');
+            const prodIds = Array.from(selectedItems).map(item => item.getAttribute('data-prod-id'));
+
+            if (prodIds.length > 0) {
+                document.getElementById('prodIds').value = prodIds.join(',');
+                document.getElementById('delete-form').submit();
+            } else {
+                alert('삭제할 항목을 선택하세요.');
+            }
         }
 
         // 초기 총 가격 계산
@@ -206,7 +247,7 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: new URLSearchParams({ prodId: prodId }),
+                body: new URLSearchParams({ prodId: prodId })
             })
             .then(response => {
                 if (response.ok) {

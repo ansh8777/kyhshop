@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import com.project.kyhshop.dao.*;
 
 @Controller
@@ -439,6 +441,25 @@ public class UserController {
             return "redirect:/login";
         }
         ud.cartDelete(userId, prodId);
+        return "redirect:/cart";
+    }
+
+    // 장바구니 여러개 삭제
+    @PostMapping("cart/deleteselect")
+    public String cartDeleteSelect(@RequestParam("prodIds") String ids,
+                                   HttpSession session,
+                                   Model model)
+    {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || temp != "user") {
+            return "redirect:/login";
+        }
+
+        List<Long> prodIds = Arrays.stream(ids.split(","))
+                               .map(Long::valueOf)
+                               .collect(Collectors.toList());
+        ud.cartDeleteAll(userId, prodIds);
         return "redirect:/cart";
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserDao {
@@ -179,6 +180,13 @@ public class UserDao {
     public void cartDelete(String userId, String prodId) {
         String sqlStmt = "DELETE FROM tb_cart_mst WHERE user_id = ? AND prod_id = ?";
         jt.update(sqlStmt, userId, prodId);
+    }
+
+    // 장바구니 여러개 DELETE
+    public void cartDeleteAll(String userId, List<Long> prodId) {
+        String sql = "DELETE FROM tb_cart_mst WHERE user_id = ? AND prod_id IN (" + 
+                      prodId.stream().map(String::valueOf).collect(Collectors.joining(",")) + ")";
+        jt.update(sql, userId);
     }
 
     // 주문내역 SELECT
