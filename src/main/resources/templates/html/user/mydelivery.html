@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>운송장 정보</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .delivery-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .delivery-table th, .delivery-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .delivery-table th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        .delivery-table td {
+            background-color: #fcfcfc;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px 0;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>운송장 정보</h2>
+        <table class="delivery-table">
+            <tr>
+                <th>운송장 번호</th>
+                <input type="hidden" name="seq" id="seq" th:value="${orderList['seq']}">
+                <td th:text="${orderList['delivery_number']}"></td>
+            </tr>
+            <tr>
+                <th>배송 상태</th>
+                <td th:switch="${orderList['state']}">
+                    <span th:case="'0'">상품 준비중</span>
+                    <span th:case="'1'">배송중</span>
+                    <span th:case="'2'">배송 완료</span>
+                    <span th:case="*">알 수 없음</span>
+                    <button class="confirm-button" onclick="confirmDelivery()">수취확인</button>
+                </td>
+            </tr>
+        </table>
+        <button onclick="window.close();">닫기</button>
+    </div>
+    <form id="confirmForm" method="post" action="/my/delivery/complete" style="display: none;">
+        <input type="hidden" name="seq" id="confirmSeq">
+    </form>
+    <script>
+        function confirmDelivery() {
+            const seq = document.getElementById('seq').value;
+            const confirmSeqInput = document.getElementById('confirmSeq');
+            confirmSeqInput.value = seq;
+            document.getElementById('confirmForm').submit();
+        }
+    </script>
+</body>
+</html>

@@ -266,5 +266,19 @@ public class UserDao {
         }
     }
 
+    // 배송 팝업 내용 SELECT (유저전용)
+    public Map<String, Object> deliSelect(String seq)
+    {
+        String sqlStmt = "SELECT seq, delivery_number, state FROM tb_order_mst WHERE seq = ?";
+        return jt.queryForMap(sqlStmt, seq);
+    }
+
+    // 수취확인
+    public void deliComplete(String seq)
+    {
+        String sqlStmt = "UPDATE tb_order_mst SET state = 2 WHERE seq = ?";
+        jt.update(sqlStmt, seq);
+    }
+
 
 }

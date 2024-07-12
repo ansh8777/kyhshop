@@ -566,4 +566,40 @@ public class UserController {
 
         return "redirect:/cart";
     }
+
+    // 운송장 팝업
+    @GetMapping("my/delivery")
+    public String myDeliveryPage(@RequestParam String seq,
+                                 HttpSession session,
+                                 Model model)
+    {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || !temp.equals("user")) {
+            return "redirect:/login";
+        }
+
+        Map<String, Object> orderList = ud.deliSelect(seq);
+
+        model.addAttribute("orderList", orderList);
+
+        return "/html/user/mydelivery";
+    }
+
+    // 수취확인
+    @PostMapping("my/delivery/complete")
+    @ResponseBody
+    public String deliveryComplete(@RequestParam String seq,
+                                   HttpSession session,
+                                   Model model)
+    {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || !temp.equals("user")) {
+            return "redirect:/login";
+        }
+        ud.deliComplete(seq);
+        
+        return "<script>window.opener.location.reload(); window.close();</script>";
+    }
 }

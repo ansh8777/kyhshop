@@ -59,12 +59,13 @@ h1 {
   display: flex;
   justify-content: center;
   margin: 20px 0;
+  margin-left: 100px;
 }
 
 .search-container form {
   display: flex;
   width: 100%;
-  max-width: 400px;
+  max-width: 1000px;
 }
 
 .search-wrapper {
@@ -84,7 +85,7 @@ h1 {
 }
 
 .search-container button {
-  width: 20%;
+  width: 80px;
   padding: 10px;
   background-color: #c7c4c4d9;
   border: none;
@@ -159,9 +160,6 @@ h1 {
   transition: all 0.3s ease;
   text-decoration: none; /* 하이퍼링크 밑줄 제거 */
   font-family: Arial, sans-serif;
-}
-
-#quickmenu li:hover {
 }
 
 #quickMenuWrapper {
@@ -459,8 +457,6 @@ h1 {
 }
 
 
-
-
 /* 기본 메뉴 스타일 */
 .menubars {
   list-style-type: none;
@@ -487,7 +483,7 @@ h1 {
 
 /* 서브 메뉴 스타일 */
 .subMenu {
-  display: block;
+  display: none; /* 기본적으로 숨김 */
   position: absolute;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

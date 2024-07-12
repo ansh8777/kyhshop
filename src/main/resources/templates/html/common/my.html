@@ -154,7 +154,7 @@
                             <p th:text="'가격: ' + ${order.price_disp} + '원'"></p>
                             <p th:text="'주문 일시: ' + ${order.reg_dt}"></p>
                         </div>
-                        <a href="#" class="delivery-state-button" th:switch="${order.state}">
+                        <a href="#" class="delivery-state-button" th:switch="${order.state}" th:onclick="'openPopup2(\'/my/delivery?seq=' + ${order.seq} + '\')'">
                             <span th:case="0">상품 준비중</span>
                             <span th:case="1">배송중</span>
                             <span th:case="2">배송완료</span>
@@ -167,6 +167,11 @@
     <script>
         function openPopup(url) {
             window.open(url, '_blank', 'width=800,height=1000');
+            return false;
+        }
+
+        function openPopup2(url) {
+            window.open(url, '_blank', 'width=800,height=400');
             return false;
         }
     </script>
