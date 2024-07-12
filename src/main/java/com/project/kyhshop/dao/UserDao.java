@@ -41,7 +41,7 @@ public class UserDao {
 
     // 로그인
     public Map<String, Object> login(String id, String pw) {
-        String sqlStmt = "SELECT id, nm, grade, del_fg FROM tb_user_mst WHERE id = ? AND pw = ?";
+        String sqlStmt = "SELECT id, nm, grade, del_fg FROM tb_user_mst WHERE id = ? AND BINARY(pw) = ?";
         try {   // 결과가 없으면 null 반환
             return jt.queryForMap(sqlStmt, id, pw);
         } catch (EmptyResultDataAccessException e) {
@@ -166,6 +166,7 @@ public class UserDao {
                          "          PD.prod_title                   AS prod_title, " +
                          "          PD.prod_price                   AS prod_price, " +
                          "          CM.prod_amount                  AS prod_amount, " +
+                         "          CM.seq                          AS seq, " +
                          "         (PD.prod_price * CM.prod_amount) AS total_price, " +
                          "          PM.seller_id                    AS seller_id, " +
                          "          SM.nm                           AS seller_name " +
@@ -181,6 +182,8 @@ public class UserDao {
     public List<Map<String, Object>> cartSelect2(String userId)
     {
         String sqlStmt = "SELECT PM.prod_nm AS prod_nm, " +
+                        "PM.seq AS seq, " +
+                        "PM.prod_img AS prod_img, " +
                         "PD.prod_price AS prod_price, " +
                         "CM.prod_amount AS amount, " +
                         "(PD.prod_price * CM.prod_amount) AS total_price " +
@@ -206,7 +209,7 @@ public class UserDao {
 
     // 주문내역 SELECT
     public List<Map<String, Object>> orderSelect(String userId) {
-        String sqlStmt = "SELECT OM.seq AS seq, PM.prod_nm AS prod_nm, OM.prod_amount AS prod_amount, " +
+        String sqlStmt = "SELECT OM.seq AS seq, PM.prod_nm AS prod_nm, OM.prod_amount AS prod_amount, OM.state AS state, " +
                      "(PD.prod_price * OM.prod_amount) AS price, OM.reg_dt AS reg_dt, PM.prod_img AS prod_img " +
                      "FROM tb_order_mst OM " +
                      "JOIN tb_product_mst PM ON OM.prod_id = PM.seq " +
@@ -225,8 +228,8 @@ public class UserDao {
 
     // 오더마스터 INSERT 장바구니, product_detail 있는건 DELETE
     public void cartToOrder(Map<String, Object> item) {
-        String sqlStmt1 = "INSERT INTO tb_order_mst (prod_id, prod_amount, user_id, state) VALUES (?, ?, ?, 1)";
-        jt.update(sqlStmt1, item.get("prod_id"), item.get("prod_amount"), item.get("user_id"));
+        String sqlStmt1 = "INSERT INTO tb_order_mst (prod_id, prod_amount, user_id, address_id) VALUES (?, ?, ?, ?)";
+        jt.update(sqlStmt1, item.get("prod_id"), item.get("prod_amount"), item.get("user_id"), item.get("address_id"));
 
         String sqlStmt2 = "DELETE FROM tb_cart_mst WHERE user_id = ? AND prod_id = ?";
         jt.update(sqlStmt2, item.get("user_id"), item.get("prod_id"));
@@ -234,4 +237,34 @@ public class UserDao {
         String sqlStmt3 = "UPDATE tb_product_detail SET prod_amount = prod_amount - ? WHERE seq = ?";
         jt.update(sqlStmt3, item.get("prod_amount"), item.get("prod_id"));
     }
+
+    // product_detail 수량 가져오기
+    public int getProductAmount(String prodId) {
+        String sqlStmt = "SELECT prod_amount FROM tb_product_detail WHERE seq = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, prodId);
+    }
+
+    // product_detail
+    public String getProductNm(String prodId) {
+        String sqlStmt = "SELECT prod_nm FROM tb_product_mst WHERE seq = ?";
+        return jt.queryForObject(sqlStmt, String.class, prodId);
+    }
+
+    // 장바구니 수량 변경
+    public void changeCartAmount(String seq, int amount, String userId) {
+        String sqlStmt = "UPDATE tb_cart_mst SET prod_amount = ? WHERE seq = ? AND user_id = ?";
+        jt.update(sqlStmt, amount, seq, userId);
+    }
+
+    //개인정보 중복체크
+    public List<Map<String, Object>> userprofileCheck(String userId,String pw,String nm,String birthDate,String email,String phone,String address,String addressDetail) {
+        String sqlStmt = "SELECT seq FROM tb_user_mst WHERE id = ? AND pw = ? AND nm = ? AND birth_date = ? AND email = ? AND phone = ? AND address = ? AND address_detail = ?";
+        try {
+            return jt.queryForList(sqlStmt, userId, pw, nm, birthDate, email, phone, address, addressDetail);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+
 }

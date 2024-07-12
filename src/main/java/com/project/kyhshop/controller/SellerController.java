@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import com.project.kyhshop.dao.*;
 
@@ -361,5 +363,77 @@ public class SellerController {
         model.addAttribute("Gradeview", Gradeview);
         model.addAttribute("Varietyview", Varietyview);
         return "html/seller/chart";
+    }
+
+    @GetMapping("seller/order/manage")
+    public String sellerOrderManage(HttpSession session,
+                                    Model model) {
+        String id = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(id);
+        // 셀러가 아니면 로그인 페이지로
+        if (ox == 0) {
+            return "redirect:/login";
+        } 
+        List<Map<String, Object>> saleProduct= sd.saleProduct(id);
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+
+        for (Map<String, Object> product : saleProduct) {
+            // prod_price 값을 가져와서 문자열로 변환합니다.
+            String priceString = product.get("total_price").toString();
+
+            // 문자열 형태의 가격을 정수로 변환하여 포맷팅합니다.
+            long price = Long.parseLong(priceString);
+            product.put("total_price_disp", decimalFormat.format(price));
+        }
+        model.addAttribute("saleProduct", saleProduct);
+        return "html/seller/order_manage";
+    }
+
+    public class SaleProduct {
+        private LocalDateTime dt;
+
+        public String getFormattedDate() {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초");
+            return dt.format(formatter);
+        }
+    }
+
+    // 배송 상태 변경 페이지
+    @GetMapping("seller/delivery")
+    public String sellerDelivery(@RequestParam String seq,
+                                 HttpSession session,
+                                 Model model)
+    {
+        String id = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(id);
+        // 셀러가 아니면 로그인 페이지로
+        if (ox == 0) {
+            return "redirect:/login";
+        }
+
+        Map<String, Object> stateList = sd.selectDelivery(seq);
+
+        model.addAttribute("stateList", stateList);
+
+        return "html/seller/delivery";
+    }
+    
+    // 송장 등록
+    @PostMapping("seller/delivery/action")
+    @ResponseBody
+    public String sellerDeliveryAction(@RequestParam String seq,
+                                       @RequestParam String deliveryNumber,
+                                       HttpSession session,
+                                       Model model)
+    {
+        String id = (String)session.getAttribute("id");
+        int ox = sd.sellerOX(id);
+        // 셀러가 아니면 로그인 페이지로
+        if (ox == 0) {
+            return "redirect:/login";
+        }
+        sd.changeDeliveryState(seq, deliveryNumber);
+
+        return "<script>window.close(); alert('배송상태가 수정되었습니다.');</script>";
     }
 }

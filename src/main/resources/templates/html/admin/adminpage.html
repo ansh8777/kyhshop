@@ -5,7 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자페이지</title>
 </head>
+<style>
+    
+   
+    .navbar {
+            height: 60px;
+            padding-left: 30px;
+        }
+        
+        .logo {
+            line-height: 60px;
+            float: left;
+        }
+        
+        .logo img {
+            vertical-align: middle;
+        }
+        
+        .navbar ul {
+            float: right;
+        }
+        
+        .navbar li {
+            list-style-type: none;
+            float: left;
+            margin-right: 30px;
+        }
+        
+        .navbar a {
+            text-decoration: none;
+            color: black;
+            font-style: bold;
+            font-size: 13px;
+        }
+</style>
 <body>
+    <div class="navbar">
+        <a class="logo" href="/">
+            <img src="/images/kyhlogo.png" height="50px">
+        </a>
+        <ul>
+            <li><a href="/allproduct">Product</a></li>
+            <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
+            <li th:if="${session.id == null}"><a href="/login">Login</a></li>
+            <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
+            <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+            <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+        </ul>
+    </div>
+    <br><br><br>
     <div class="sidebar">
         <h2>관리자 메뉴</h2>
         <ul>

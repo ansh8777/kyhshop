@@ -67,11 +67,52 @@ public class AdminDao {
         return jt.queryForList(sqlStmt);
     }
 
-    // 상품 삭제 메소드
-    public void deleteProduct(String prodId) {
-        String sqlDetail = "DELETE FROM tb_product_detail WHERE prod_id = ?";
-        String sqlMst = "DELETE FROM tb_product_mst WHERE prod_id = ?";
-        jt.update(sqlDetail, prodId);
-        jt.update(sqlMst, prodId);
+    // // 상품 삭제 메소드
+    // public void deleteProduct(String prodId) {
+    //     String sqlDetail = "DELETE FROM tb_product_detail WHERE prod_id = ?";
+    //     String sqlMst = "DELETE FROM tb_product_mst WHERE prod_id = ?";
+    //     jt.update(sqlDetail, prodId);
+    //     jt.update(sqlMst, prodId);
+    // }
+
+    public void deleteUser(String seq) {
+        String sqlStmt = "DELETE FROM tb_user_mst WHERE seq = ? ";
+        jt.update(sqlStmt,seq);
     }
+
+    public void deleteSeller(String seq) {
+        String sqlStmt = "DELETE FROM tb_seller_mst WHERE seq = ? ";
+        jt.update(sqlStmt,seq);
+    }
+
+    public void userUpdate(String seq,
+                              String id,
+                              String pw,
+                              String nm,
+                              String birthDate,
+                              String email,
+                              String phone,
+                              String address,
+                              String addressDetail,
+                              String grade,
+                              String delFg) {
+          String sqlStmt = "UPDATE tb_user_mst SET id = ?, pw = ?, nm = ?, birth_date = ?, email = ?, phone = ?, address = ?, address_detail = ?, grade = ?, del_fg = ? WHERE seq = ?";
+          jt.update(sqlStmt, id, pw, nm, birthDate, email, phone, address, addressDetail, grade, delFg, seq);
+   }
+
+    public void sellerUpdate(String seq,
+                              String id,
+                              String pw,
+                              String nm,
+                              String email,
+                              String phone,
+                              String compNm,
+                              String bizId,
+                              String address,
+                              String addressDetail,
+                              String grade,
+                              String delFg) {
+          String sqlStmt = "UPDATE tb_seller_mst SET id = ?, pw = ?, nm = ?, email = ?, phone = ?,comp_nm = ?,biz_id = ?, address = ?, address_detail = ?, grade = ?, del_fg = ? WHERE seq = ?";
+          jt.update(sqlStmt, id, pw, nm, email, phone, compNm, bizId, address, addressDetail, grade, delFg, seq);
+   }
 }

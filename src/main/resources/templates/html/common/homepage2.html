@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>KYH SHOP</title>
+    <meta charset="utf-8" />
+    <link href="css/homepage2.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="banner1">
+      <div class="banner__content">
+        <div class="banner__text">
+          <strong>쇼핑몰 오픈! 7월 15일 판매 시작!</strong>
+        </div>
+        <button class="banner__close" type="button">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+    </div>
+    <div class="navbar">
+      <a class="logo" href="/">
+        <img src="/images/kyhlogo.png" height="80px" />
+      </a>
+      <div class="moveBottomBtn">▼</div>
+      <script>
+        const $bottomBtn = document.querySelector(".moveBottomBtn");
+
+        // 버튼 클릭 시 페이지 하단으로 이동
+        $bottomBtn.onclick = () => {
+          window.scrollTo({
+            top: document.body.scrollHeight, // <- 페이지 총 Height
+            behavior: "smooth",
+          });
+        };
+      </script>
+      <nav class="category-menu">
+        <ul>
+          <li><a href="/category">전체카테고리</a></li>
+          <li><a href="/category">홍로</a></li>
+          <li><a href="/category">후지</a></li>
+          <li><a href="/category">아오리</a></li>
+          <li><a href="/">BEST</a></li>
+          <li><a href="/">NEW</a></li>
+          <li><a href="/">SALE</a></li>
+        </ul>
+      </nav>
+      <ul class="menubars" id="menuList">
+        <li><a href="/allproduct">Product</a></li>
+        <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
+        <li th:if="${session.id == null}"><a href="/login">Login</a></li>
+        <li th:if="${session.id == 'user'}"><a href="/logout">Logout</a></li>
+        <li th:if="${session.id == null}">
+          <a href="/regiselect">Register</a>
+        </li>
+        <li th:if="${session.id != null}" id="userMenu">
+          <a href="/my">[[${session.nm}]]님</a>
+          <ul class="subMenu">
+            <li><a href="/order-history">주문내역</a></li>
+            <li><a href="/my/address">주소록 관리</a></li>
+            <li><a href="/my/passcheck">개인정보 설정</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <script>
+        // 마우스 오버 및 클릭 이벤트 처리
+        document.addEventListener("DOMContentLoaded", function () {
+          const userMenu = document.getElementById("userMenu");
+          const subMenu = userMenu.querySelector(".subMenu");
+
+          // 마우스 오버 시 서브 메뉴 표시
+          userMenu.addEventListener("mouseover", function () {
+            subMenu.style.display = "block";
+          });
+
+          // 마우스가 벗어날 때 서브 메뉴 숨김
+          userMenu.addEventListener("mouseout", function () {
+            subMenu.style.display = "none";
+          });
+
+          // 클릭 시 서브 메뉴 토글
+          userMenu.addEventListener("click", function (event) {
+            event.stopPropagation(); // 클릭 이벤트 전파 방지
+
+            if (subMenu.style.display === "block") {
+              subMenu.style.display = "none";
+            } else {
+              subMenu.style.display = "block";
+            }
+          });
+
+          // 문서의 다른 곳을 클릭하면 서브 메뉴 숨김
+          document.addEventListener("click", function (event) {
+            if (!userMenu.contains(event.target)) {
+              subMenu.style.display = "none";
+            }
+          });
+        });
+      </script>
+    </div>
+    <div class="messenger-icons">
+      <a href="https://blog.naver.com/m1nbr0412" target="_blank">
+        <img
+          src="https://littledeep.com/wp-content/uploads/2020/09/naver-icon-style.png"
+          alt="네이버"
+        />
+      </a>
+      <a href="https://www.kakaocorp.com/page/detail/7813" target="_blank">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/3984/3984330.png"
+          alt="카카오톡"
+        />
+      </a>
+      <a
+        href="https://www.instagram.com/078n40/?igsh=OHpkOWF6bm5xbDJj"
+        target="_blank"
+      >
+        <img
+          src="https://i.namu.wiki/i/PpCUHjc8PoAlAWoSip-m3KtgYMq7Ft1sI2BiCioMrclYCFdnjCEVKdPyXJ3yqXgHjgboqOp-8Q9z71WTisQy_A.svg"
+          alt="인스타그램"
+        />
+      </a>
+    </div>
+    <div class="search-container">
+      <form action="/search" method="get">
+        <div class="search-wrapper">
+          <input type="text" placeholder="검색어를 입력해주세요." name="query" />
+        </div>
+        <button type="submit">Search</button>
+      </form>
+    </div>
+
+    <div class="outer">
+      <div class="inner-list">
+        <div class="inner">
+          <h2>
+            <a href="/allproduct">
+              <img src="https://previews.123rf.com/images/ylivdesign/ylivdesign1801/ylivdesign180102256/93322410-%EA%B3%BC%EC%9D%BC-%EA%B0%80%EB%A1%9C-%EB%B0%B0%EB%84%88-%EA%B0%9C%EB%85%90-%EC%86%90-%EC%8B%A0%EC%84%A0%ED%95%9C-%EC%84%A0%ED%83%9D%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%9B%B9%EC%97%90-%EB%8C%80-%ED%95%9C-%EA%B3%BC%EC%9D%BC-%EC%86%90-%EC%8B%A0%EC%84%A0%ED%95%9C-%EC%84%A0%ED%83%9D-%EB%B2%A1%ED%84%B0-%EB%B2%A1%ED%84%B0-%EB%B0%B0%EB%84%88%EC%9D%98-%EB%A7%8C%ED%99%94.jpg" alt="대체 텍스트" />
+            </a>
+          </h2>
+        </div>
+        <div class="inner">
+          <h2>
+            <a href="/allproduct">
+              <img src="https://www.shutterstock.com/shutterstock/photos/1953994765/display_1500/stock-vector-colorful-summer-background-layout-banners-design-horizontal-poster-greeting-card-header-for-1953994765.jpg" alt="대체 텍스트" />
+            </a>
+          </h2>
+        </div>
+        <div class="inner">
+          <h2>
+            <a href="/allproduct">
+              <img src="https://vrthumb.clipartkorea.co.kr/2022/04/07/ti375a34814.jpg" alt="대체 텍스트" />
+          </h2>
+        </div>
+        <div class="inner">
+          <h2>
+            <a href="/allproduct">
+              <img src="https://vrthumb.clipartkorea.co.kr/2020/06/04/ti375a21911.jpg" alt="대체 텍스트" />
+            </a>
+          </h2>
+        </div>
+        <div class="inner">
+          <h2>
+            <a href="/allproduct">
+              <img
+                src="https://t4.ftcdn.net/jpg/02/28/47/83/360_F_228478395_FAv0CGxviydSuTO91m4Fz1huKF3TUKTa.jpg"
+                alt="대체 텍스트"
+              />
+            </a>
+          </h2>
+        </div>
+        <div class="inner">
+          <h2>
+            <a href="/allproduct">
+              <img
+                src="https://imgscf.slidemembers.com/docs/1/1/603/fresh_fruits_presentations_ppt_602687.jpg"
+                alt="대체 텍스트"
+              />
+            </a>
+          </h2>
+        </div>
+        <div class="inner">
+          <h2>
+            <a href="/allproduct">
+              <img
+                src="https://ygzone.kr/upfiles/files/2356612583."
+                alt="대체 텍스트"
+              />
+            </a>
+          </h2>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="button-list">
+      <button class="button-left">❮</button>
+      <button class="button-right">❯</button>
+    </div>
+    <script>
+      /*
+  div사이즈 동적으로 구하기
+*/
+      const outer = document.querySelector(".outer");
+      const innerList = document.querySelector(".inner-list");
+      const inners = document.querySelectorAll(".inner");
+      let currentIndex = 0; // 현재 슬라이드 화면 인덱스
+
+      inners.forEach((inner) => {
+        inner.style.width = `${outer.clientWidth}px`; // inner의 width를 모두 outer의 width로 만들기
+      });
+
+      innerList.style.width = `${outer.clientWidth * inners.length}px`; // innerList의 width를 inner의 width * inner의 개수로 만들기
+
+      /*
+  버튼에 이벤트 등록하기
+*/
+      const buttonLeft = document.querySelector(".button-left");
+      const buttonRight = document.querySelector(".button-right");
+
+      buttonLeft.addEventListener("click", () => {
+        currentIndex--;
+        currentIndex = currentIndex < 0 ? 0 : currentIndex; // index값이 0보다 작아질 경우 0으로 변경
+        innerList.style.marginLeft = `-${outer.clientWidth * currentIndex}px`; // index만큼 margin을 주어 옆으로 밀기
+        clearInterval(interval); // 기존 동작되던 interval 제거
+        interval = getInterval(); // 새로운 interval 등록
+      });
+
+      buttonRight.addEventListener("click", () => {
+        currentIndex++;
+        currentIndex =
+          currentIndex >= inners.length ? inners.length - 1 : currentIndex; // index값이 inner의 총 개수보다 많아질 경우 마지막 인덱스값으로 변경
+        innerList.style.marginLeft = `-${outer.clientWidth * currentIndex}px`; // index만큼 margin을 주어 옆으로 밀기
+        clearInterval(interval); // 기존 동작되던 interval 제거
+        interval = getInterval(); // 새로운 interval 등록
+      });
+
+      /*
+  주기적으로 화면 넘기기
+*/
+      const getInterval = () => {
+        return setInterval(() => {
+          currentIndex++;
+          currentIndex = currentIndex >= inners.length ? 0 : currentIndex;
+          innerList.style.marginLeft = `-${outer.clientWidth * currentIndex}px`;
+        }, 2000);
+      };
+
+      let interval = getInterval(); // interval 등록
+    </script>
+    <h1>Our new Products</h1>
+    <div class="products">
+      <div th:each="product : ${prodSel}">
+        <a th:href="@{/product(seq=${product.seq})}">
+          <img
+            th:src="@{'images/' + ${product.prod_img}}"
+            alt="Product Image"
+          />
+          <p th:text="${product.prod_title}">Product Name</p>
+          <hr class="divider" />
+          <p
+            class="price"
+            th:text="'가격: ' + ${product.prod_price_disp} + '원'"
+          >
+            가격
+          </p>
+        </a>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+    <button id="toggleButton">Quick Menu</button>
+    <div id="quickMenuWrapper">
+      <div id="quickmenu">
+        <nav>
+          <ul id="quickmenu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/allproduct">Product</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var toggleButton = document.getElementById("toggleButton");
+        var quickMenuWrapper = document.getElementById("quickMenuWrapper");
+
+        toggleButton.addEventListener("click", function () {
+          quickMenuWrapper.classList.toggle("open");
+        });
+      });
+    </script>
+    <script>
+      document
+        .querySelector(".banner__close")
+        .addEventListener("click", function () {
+          document.querySelector(".banner1").classList.add("hidden");
+        });
+    </script>
+    <div class="moveTopBtn">▲</div>
+    <script>
+      const $topBtn = document.querySelector(".moveTopBtn");
+
+      // 버튼 클릭 시 맨 위로 이동
+      $topBtn.onclick = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+    </script>
+    <div class="footer">
+      <div class="section promotions">
+        <h3>프로모션</h3>
+        <ul>
+          <li><a href="/">홈</a></li>
+          <li><a href="/about">회사소개</a></li>
+          <li><a href="/privacy">개인정보취급방침</a></li>
+          <li><a href="/guide">이용안내</a></li>
+        </ul>
+      </div>
+
+      <div class="section contact-info">
+        <h3>고객센터</h3>
+        <ul>
+          <li>1544-1544, 010-1234-5678</li>
+          <li>상담시간: 08:50 ~ 17:50</li>
+          <li>점심시간: 13:00 ~ 14:00</li>
+          <li>토요일/일요일, 공휴일 휴무</li>
+        </ul>
+        <br>
+        <div class="section account-info">
+          <h3>입금계좌정보</h3>
+          <ul>
+            <li>광주은행: 062-2024-0502-1031</li>
+            <li>예금주: 김연형</li>
+          </ul>
+          <a href="https://www.kjbank.com/" target="_blank" class="btn"
+            >인터넷 뱅킹 바로가기</a
+          >
+        </div>
+      </div>
+
+      <div class="section logistics-center">
+        <h3>물류센터</h3>
+        <ul>
+          <li>출고/교환/반품</li>
+          <li>광주광역시 광산구 소촌로152번길 37 CAD/CAM 강의실</li>
+        </ul>
+        <br>
+        <h3>택배업체</h3>
+        <ul>
+          <li>정연택배 062-111-1111</li>
+          <li>동연배송 062-222-2222</li>
+          <li>시형배달 062-333-3333</li>
+          <li>민형물류 062-444-4444</li>
+        </ul>
+        <a href="/delivery-tracking" class="btn">배송조회</a>
+      </div>
+      <div class="section company-info">
+        <h3>사업자 정보</h3>
+        <p>법인명(상호): KYH SHOP</p>
+        <p>개인명(상호): 김연형</p>
+        <p>대표자: 김연형</p>
+        <p>사업자등록번호: 123-45-67890</p>
+        <p>전화: 062-123-4567</p>
+        <p>팩스: 062-123-4568</p>
+        <p>주소: 광주광역시 광산구 소촌로152번길 37</p>
+        <p>개인정보관리책임자: 김연형</p>
+        <br>
+        <p>법인통신판매업 신고: 제2024-광산구-00001호</p>
+        <p>개인통신판매업 신고: 제2024-광산구-00002호</p>
+        <p class="email">
+          Contact: <a href="mailto:kyh@kyh.com">kyh@kyh.com</a>
+        </p>
+        <p class="copyright">Copyright: kyh (All rights reserved)</p>
+      </div>
+    </div>
+  </body>
+</html>

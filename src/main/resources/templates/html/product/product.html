@@ -155,12 +155,12 @@
           <img src="/images/kyhlogo.png" height="50px">
         </a>
         <ul>
-          <li><a href="/allproduct">제품</a></li>
-          <li th:if="${session.temp == 'user'}"><a href="/cart">장바구니</a></li>
-          <li th:if="${session.id == null}"><a href="/login">로그인</a></li>
-          <li th:if="${session.id == null}"><a href="/regiselect">회원가입</a></li>
-          <li th:if="${session.id != null}"><a href="/logout">로그아웃</a></li>
-          <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+            <li><a href="/allproduct">Product</a></li>
+            <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
+            <li th:if="${session.id == null}"><a href="/login">Login</a></li>
+            <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
+            <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
+            <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
         </ul>
     </div>
 

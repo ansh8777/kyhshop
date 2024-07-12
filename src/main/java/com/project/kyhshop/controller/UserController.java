@@ -40,7 +40,7 @@ public class UserController {
             product.put("prod_price_disp", decimalFormat.format(price));
         }
         model.addAttribute("prodSel", prodSel);
-        return "html/common/homepage";
+        return "html/common/homepage2";
     }
 
     // 로그인 페이지 (유저, 셀러 공통)
@@ -305,6 +305,11 @@ public class UserController {
             // 폰 번호 합치기 010-0000-0000
             String phone = String.format("%s-%s-%s", phone1, phone2, phone3);
             ud.userProfileChange(userId, pw, nm, birthDate, email, phone, address, addressDetail);
+
+            List<Map<String, Object>> duplicateprofile = ud.userprofileCheck(userId, pw, nm, birthDate, email, phone, address, addressDetail);
+            if (duplicateprofile != null && !duplicateprofile.isEmpty()) {
+                return "<script>window.history.back(); alert('변경된 정보가 없습니다.');</script>";
+            }
         } else {
             return "<script>window.close();</script>";
         }
@@ -513,7 +518,8 @@ public class UserController {
 
     // 장바구니 결제 액션
     @PostMapping("/cart/order/action")
-    public String cartOrderAction(HttpSession session,
+    public String cartOrderAction(@RequestParam String addressId,
+                                  HttpSession session,
                                   Model model) {
 
         String userId = (String)session.getAttribute("id");
@@ -523,12 +529,41 @@ public class UserController {
         }
 
         List<Map<String, Object>> cartItems = ud.getCartItems(userId);
+
         for (Map<String, Object> item : cartItems) {
+            String prodId = item.get("prod_id").toString();
+            int cartAmount = Integer.parseInt(item.get("prod_amount").toString());
+            int availableAmount = ud.getProductAmount(prodId);
+
+            if (cartAmount > availableAmount) {
+                model.addAttribute("link", "/my");
+                model.addAttribute("msg", "상품의 재고가 부족합니다.");
+                return "/html/alert";
+            }
+            item.put("address_id", addressId);
             ud.cartToOrder(item);
         }
         
         model.addAttribute("link", "/my");
         model.addAttribute("msg", "구매가 완료되었습니다.");
         return "/html/alert";
+    }
+
+    // 장바구니에서 수량 변경
+    @PostMapping("cart/change/amount")
+    public String changeCartAmount(@RequestParam String seq,
+                                   @RequestParam int amount,
+                                   HttpSession session,
+                                   Model model)
+    {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || !temp.equals("user")) {
+            return "redirect:/login";
+        }
+
+        ud.changeCartAmount(seq, amount, userId);
+
+        return "redirect:/cart";
     }
 }

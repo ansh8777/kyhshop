@@ -174,4 +174,50 @@ public class SellerDao {
         String sqlStmt = "SELECT AVG(price) as price, year FROM tb_apple_mst where grade = ? and variety = ? group by year";
         return jt.queryForList(sqlStmt,grade,variety);
     }
+
+    public List<Map<String, Object>> sellerprofileCheck(String sellerId, String pw, String nm, String email, String phone, String address, String addressDetail,String compNm,String bizId) {
+        String sqlStmt = "SELECT seq FROM tb_seller_mst WHERE id = ? AND pw = ? AND nm = ? AND email = ? AND phone = ? AND address = ? AND address_detail = ? AND comp_nm = ? AND biz_id = ?";
+        try {
+            return jt.queryForList(sqlStmt, sellerId, pw, nm, email, phone,address,addressDetail,compNm, bizId);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    public List<Map<String, Object>> saleProduct(String id) {
+        String sqlStmt = "SELECT OM.seq AS seq, " +
+                 "UM.nm AS nm, " +
+                 "PM.prod_img AS prod_img, " +
+                 "PM.prod_nm AS prod_nm, " +
+                 "OM.prod_amount AS prod_amount, " +
+                 "(PD.prod_price * OM.prod_amount) AS total_price, " +
+                 "PD.prod_grade AS prod_grade, " +
+                 "PD.prod_variety AS prod_variety, " +
+                 "OM.reg_dt AS reg_dt, " +
+                 "AM.NAME AS delivery_name, " +
+                 "AM.address AS address, " +
+                 "AM.address_detail AS address_detail, " +
+                 "OM.state AS state " +
+                 "FROM tb_order_mst OM " +
+                 "JOIN tb_product_mst PM ON OM.prod_id = PM.seq " +
+                 "JOIN tb_product_detail PD ON PM.seq = PD.seq " +
+                 "JOIN tb_user_mst UM ON OM.user_id = UM.id " +
+                 "JOIN tb_address_mst AM ON OM.address_id = AM.seq " +
+                 "JOIN tb_seller_mst SM ON PM.seller_id = SM.id " +
+                 "WHERE SM.id = ? " +
+                 "ORDER BY OM.reg_dt DESC;";
+        return jt.queryForList(sqlStmt, id);
+    }
+
+    // 배송 상태 값 가져오기
+    public Map<String, Object> selectDelivery(String seq) {
+        String sqlStmt = "SELECT seq, delivery_number, state FROM tb_order_mst WHERE seq = ?";
+        return jt.queryForMap(sqlStmt, seq);
+    }
+
+    // 배송 상태 변경
+    public void changeDeliveryState(String seq, String deliveryNumber) {
+        String sqlStmt = "UPDATE tb_order_mst SET delivery_number = ?, state = 1 WHERE seq = ?";
+        jt.update(sqlStmt, deliveryNumber, seq);
+    }
 }

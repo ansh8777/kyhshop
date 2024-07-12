@@ -9,8 +9,7 @@
 
 <body>
     
-    <div class="container">
-        <h2>Member List</h2>
+        <h2>Seller List</h2>
         <a href="/admin">목록으로</a>
         <!-- <a href="javascript:addNewMemberRow()">회원등록</a> -->
         <hr>
@@ -23,7 +22,8 @@
                     <th>이름</th>
                     <th>생년월일</th>
                     <th>이메일</th>
-                    <th>전화번호</th>
+                    <th>법인명</th>
+                    <th>법인번호</th>
                     <th>주소</th>
                     <th>등급</th>
                     <th>생성일자</th>
@@ -33,8 +33,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="result, iterStat : ${userList}">
-                    <form action="/admin/userlist/update" method="post">
+                <tr th:each="result, iterStat : ${sellerList}">
+                    <form action="/admin/sellerlist/update" method="post">
                         <td th:text="${result.seq}"></td>
                         <input type="hidden" name="seq" th:value="${result.seq}">
                         <td>
@@ -42,9 +42,10 @@
                             <div><input type="text" name="pw" th:value="${result.pw}"></div> 
                         </td>
                         <td><input type="text" name="nm" th:value="${result.nm}"></td>
-                        <td><input type="text" name="birthDate" th:value="${result.birth_date}"></td>
                         <td><input type="email" name="email" th:value="${result.email}"></td>
                         <td><input type="text" name="phone" th:value="${result.phone}"></td>
+                        <td><input type="text" name="compNm" th:value="${result.comp_nm}"></td>
+                        <td><input type="text" name="bizId" th:value="${result.biz_id}"></td>
                         <td>
                             <div class="address-container">
                                 <input type="text" name="address" th:value="${result.address}" placeholder="주소" th:id="${iterStat.index}">
@@ -76,8 +77,8 @@
                                 <option th:value="1" th:selected="${result.del_fg == 1}">O</option>
                             </select>
                         </td>
-                        <td><button type="submit" onclick="showMessage('수정되었습니다')">수정</button></td>
-                        <td><button type="submit" formaction="/admin/user/delete" formmethod="post" th:value="${result.seq}" onclick="showMessage('삭제되었습니다')">삭제</button></td>
+                        <td><button type="submit">수정</button></td>
+                        <td><button type="submit" formaction="/admin/seller/delete" formmethod="post" th:value="${result.seq}">삭제</button></td>
                     </form>
                 </tr>
             </tbody>
@@ -96,50 +97,50 @@
         //     const tableBody = document.querySelector("tbody");
         //     const newRow = document.createElement("tr");
 
-        //      newRow.innerHTML = `
-        //          <td></td>
-        //          <td>
-        //              <div><input type="text" name="id_" placeholder="아이디" required></div>
-        //              <div><input type="password" name="pw_" placeholder="비밀번호" required></div>
-        //          </td>
-        //          <td><input type="text" name="name_" placeholder="이름" required></td>
-        //          <td><input type="text" name="birthDate_" placeholder="생년월일" required></td>
-        //          <td><input type="email" name="email_" placeholder="이메일" required></td>
-        //          <td><input type="text" name="phone_" placeholder="전화번호" required></td>
-        //          <td>
-        //              <div class="address-container">
-        //                  <input type="text" name="address_" placeholder="주소" id="newAddress" required>
-        //                  <button type="button" onclick="openDaumPostcode('newAddress')">주소 찾기</button>
-        //              </div>
-        //              <div class="detail-address">
-        //                  <input type="text" name="addressDetail_" placeholder="상세주소" required>
-        //              </div>
-        //          </td>
-        //          <td>
-        //              <select name="grade_" required>
-        //                  <option value="0">아이언</option>
-        //                  <option value="1">브론즈</option>
-        //                  <option value="2">실버</option>
-        //                  <option value="3">골드</option>
-        //                  <option value="4">플레티넘</option>
-        //                  <option value="5">에메랄드</option>
-        //                  <option value="6">다이아몬드</option>
-        //                  <option value="7">마스터</option>
-        //                  <option value="8">그랜드마스터</option>
-        //                  <option value="9">챌린저</option>
-        //                  <option value="99">관리자</option>
-        //              </select>
-        //          </td>
-        //          <td></td>
-        //          <td>
-        //              <select name="delFg_" required>
-        //                  <option value="0">X</option>
-        //                  <option value="1">O</option>
-        //              </select>
-        //          </td>
-        //          <td><button type="button" onclick="submitForm(this)">등록</button></td>
-        //          <td><button type="button" onclick="removeRow(this)">취소</button></td>
-        //      `;
+        //     newRow.innerHTML = `
+        //         <td></td>
+        //         <td>
+        //             <div><input type="text" name="id_" placeholder="아이디" required></div>
+        //             <div><input type="password" name="pw_" placeholder="비밀번호" required></div>
+        //         </td>
+        //         <td><input type="text" name="name_" placeholder="이름" required></td>
+        //         <td><input type="text" name="birthDate_" placeholder="생년월일" required></td>
+        //         <td><input type="email" name="email_" placeholder="이메일" required></td>
+        //         <td><input type="text" name="phone_" placeholder="전화번호" required></td>
+        //         <td>
+        //             <div class="address-container">
+        //                 <input type="text" name="address_" placeholder="주소" id="newAddress" required>
+        //                 <button type="button" onclick="openDaumPostcode('newAddress')">주소 찾기</button>
+        //             </div>
+        //             <div class="detail-address">
+        //                 <input type="text" name="addressDetail_" placeholder="상세주소" required>
+        //             </div>
+        //         </td>
+        //         <td>
+        //             <select name="grade_" required>
+        //                 <option value="0">아이언</option>
+        //                 <option value="1">브론즈</option>
+        //                 <option value="2">실버</option>
+        //                 <option value="3">골드</option>
+        //                 <option value="4">플레티넘</option>
+        //                 <option value="5">에메랄드</option>
+        //                 <option value="6">다이아몬드</option>
+        //                 <option value="7">마스터</option>
+        //                 <option value="8">그랜드마스터</option>
+        //                 <option value="9">챌린저</option>
+        //                 <option value="99">관리자</option>
+        //             </select>
+        //         </td>
+        //         <td></td>
+        //         <td>
+        //             <select name="delFg_" required>
+        //                 <option value="0">X</option>
+        //                 <option value="1">O</option>
+        //             </select>
+        //         </td>
+        //         <td><button type="button" onclick="submitForm(this)">등록</button></td>
+        //         <td><button type="button" onclick="removeRow(this)">취소</button></td>
+        //     `;
 
         //     tableBody.appendChild(newRow);
         // }

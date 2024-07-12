@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>배송 상태 변경</title>
+</head>
+<body>
+    <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px;">
+        <h2>배송 상태 변경</h2>
+        <form action="/seller/delivery/action" method="POST">
+            <input type="hidden" name="seq" th:value="${stateList['seq']}">
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label for="deliveryNumber" style="display: block; margin-bottom: 5px;">송장번호:</label>
+                <input type="text" id="deliveryNumber" name="deliveryNumber" th:value="${stateList['delivery_number']}" required style="width: 100%; padding: 8px; box-sizing: border-box;">
+            </div>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label for="deliveryState" style="display: block; margin-bottom: 5px;">배송 상태:</label>
+                <div id="deliveryState" name="deliveryState" style="width: 100%; padding: 8px; box-sizing: border-box;">
+                    <span th:if="${stateList['state'] == '0'}" style="margin-right: 10px;">상품준비중</span>
+                    <span th:if="${stateList['state'] == '1'}" style="margin-right: 10px;">배송중</span>
+                    <span th:if="${stateList['state'] == '2'}" style="margin-right: 10px;">배송완료</span>
+                </div>
+            </div>
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">변경하기</button>
+        </form>
+    </div>
+</body>
+</html>

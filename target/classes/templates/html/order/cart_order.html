@@ -129,6 +129,11 @@
             text-align: right;
             margin-top: 20px;
         }
+
+        .product-image {
+            width: 80px;
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -164,6 +169,7 @@
                 <table>
                     <thead>
                         <tr>
+                            <th>이미지</th>
                             <th>상품명</th>
                             <th>판매가</th>
                             <th>수량</th>
@@ -171,7 +177,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="order : ${orderList}">
+                        <tr th:each="order : ${orderList}" th:onclick="'window.location.href=\'/product?seq=' + ${order.seq} + '\''" style="cursor: pointer;">
+                            <td><img class="product-image" th:src="@{'/images/' + ${order.prod_img}}" alt="Product Image"></td>
                             <td th:text="${order.prod_nm}"></td>
                             <td th:text="${order.prod_price_disp} + '원'">0원</td>
                             <td th:text="${order.amount}">0</td>
@@ -197,6 +204,7 @@
             </div>
             <div class="payment-button">
                 <form action="/cart/order/action" method="post">
+                    <input type="hidden" name="addressId" th:value="${address.address_seq}">
                     <button type="submit">결제하기</button>
                 </form>
             </div>

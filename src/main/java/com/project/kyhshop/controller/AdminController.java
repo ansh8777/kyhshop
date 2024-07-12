@@ -79,17 +79,68 @@ public class AdminController {
         return "html/admin/product";
     }
 
-    @PostMapping("/admin/product/delete")
-    public String deleteProduct(@RequestParam String prodId, HttpSession session) {
-        // 로그인 안되어 있으면
-        if (session.getAttribute("id") == null) {
-            return "redirect:/login";
-        } 
-        else if ((int)session.getAttribute("grade") != 99) {  // 등급이 99가 아니면
-            return "redirect:/";
-        }
+    // @PostMapping("/admin/product/delete")
+    // public String deleteProduct(@RequestParam String prodId, HttpSession session) {
+    //     // 로그인 안되어 있으면
+    //     if (session.getAttribute("id") == null) {
+    //         return "redirect:/login";
+    //     } 
+    //     else if ((int)session.getAttribute("grade") != 99) {  // 등급이 99가 아니면
+    //         return "redirect:/";
+    //     }
 
-        ad.deleteProduct(prodId);
-        return "redirect:/admin/product";
+    //     ad.deleteProduct(prodId);
+    //     return "redirect:/admin/product";
+    // }
+
+    @PostMapping("admin/user/delete")
+    public String deleteUser(@RequestParam String seq) {
+        
+        ad.deleteUser(seq);
+        return "redirect:/admin/userlist";
+    }
+
+    @PostMapping("admin/seller/delete")
+    public String deleteSeller(@RequestParam String seq) {
+        
+        ad.deleteSeller(seq);
+        return "redirect:/admin/sellerlist";
+    }
+
+    @PostMapping("admin/userlist/update")
+    public String updateUser(@RequestParam String seq,
+                             @RequestParam String id,
+                             @RequestParam String pw,
+                             @RequestParam String nm,
+                             @RequestParam String birthDate,
+                             @RequestParam String email,
+                             @RequestParam String phone,
+                             @RequestParam String address,
+                             @RequestParam String addressDetail,
+                             @RequestParam String grade,
+                             @RequestParam String delFg
+                             ) {
+        
+        ad.userUpdate(seq,id,pw,nm,birthDate,email,phone,address,addressDetail,grade,delFg);
+        return "redirect:/admin/userlist";
+    }
+
+    @PostMapping("admin/sellerlist/update")
+    public String updateUser(@RequestParam String seq,
+                             @RequestParam String id,
+                             @RequestParam String pw,
+                             @RequestParam String nm,
+                             @RequestParam String email,
+                             @RequestParam String phone,
+                             @RequestParam String compNm,
+                             @RequestParam String bizId,
+                             @RequestParam String address,
+                             @RequestParam String addressDetail,
+                             @RequestParam String grade,
+                             @RequestParam String delFg
+                             ) {
+        
+        ad.sellerUpdate(seq,id,pw,nm,email,phone,compNm,bizId,address,addressDetail,grade,delFg);
+        return "redirect:/admin/sellerlist";
     }
 }

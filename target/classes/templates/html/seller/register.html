@@ -11,7 +11,7 @@
         <h2>판매자 회원가입</h2>
         <form action="/register/seller/action" method="POST" id="signupForm">
             <div class="row">
-                <input type="text" id="id" name="id" placeholder="아이디" autofocus>
+                <input type="text" id="id" name="id" placeholder="아이디" pattern="[a-z0-9]+" title="아이디는 소문자와 숫자만 가능합니다" autofocus>
                 <button type="button" onclick="dupIdCheck()">중복 확인</button>
             </div>
             <input type="password" id="password" name="pw" placeholder="비밀번호" required>
@@ -30,11 +30,11 @@
             </div>
             <input type="text" id="comp_nm" name="comp_nm" placeholder="회사명" required>
             <div class="c-container">
-                <input type="text" id="biz_id_1" name="biz_id_1" placeholder="***" pattern="[0-9]{3}" required>
+                <input type="text" id="biz_id_1" name="biz_id_1" maxlength="3" placeholder="***" pattern="[0-9]{3}" required>
                 <span>-</span>
-                <input type="text" id="biz_id_2" name="biz_id_2" placeholder="**" pattern="[0-9]{2}" required>
+                <input type="text" id="biz_id_2" name="biz_id_2" maxlength="2" placeholder="**" pattern="[0-9]{2}" required>
                 <span>-</span>
-                <input type="text" id="biz_id_3" name="biz_id_3" placeholder="*****" pattern="[0-9]{5}" required>
+                <input type="text" id="biz_id_3" name="biz_id_3" maxlength="5" placeholder="*****" pattern="[0-9]{5}" required>
             </div>
             <div class="address-container">
                 <input type="text" id="address" name="address" placeholder="주소" required>

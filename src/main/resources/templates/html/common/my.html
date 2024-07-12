@@ -88,7 +88,22 @@
 
         .order-details {
             display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .order-info {
+            display: flex;
             flex-direction: column;
+        }
+
+        .delivery-state-button {
+            font-weight: bold;
+            font-size: 30px;
+            color: black;
+            text-decoration: none;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -119,24 +134,31 @@
     <div class="sidebar" th:if="${session.temp} == 'seller'">
         <ul>
             <li><a href="/seller/product">상품 관리</a></li>
-            <li><a href="/address">주문 관리</a></li>
+            <li><a href="/seller/order/manage">주문 관리</a></li>
             <li><a onclick="openPopup('/my/seller/passcheck')">개인 정보 설정</a></li>
             <li th:if="${session.grade == 99}"><a href="/admin">관리자 페이지</a></li>
         </ul>
     </div>
 
     <div class="main-content">
-        <div id="order-history" class="user-section">
+        <div id="order-history" class="user-section" th:if="${session.temp} == 'user'">
             <h2>최근 주문 내역</h2>
             <div class="order-list">
                 <div th:each="order : ${orderList}" class="order-list-item">
                     <img th:src="@{'images/' + ${order.prod_img}}" alt="Product Image">
                     <div class="order-details">
-                        <h3 th:text="'주문 번호: #' + ${order.seq}"></h3>
-                        <p th:text="'상품: ' + ${order.prod_nm}"></p>
-                        <p th:text="'수량: ' + ${order.prod_amount} + '개'"></p>
-                        <p th:text="'가격: ' + ${order.price_disp} + '원'"></p>
-                        <p th:text="'주문 일시: ' + ${order.reg_dt}"></p>
+                        <div class="order-info">
+                            <h3 th:text="'주문 번호: #' + ${order.seq}"></h3>
+                            <p th:text="'상품: ' + ${order.prod_nm}"></p>
+                            <p th:text="'수량: ' + ${order.prod_amount} + '개'"></p>
+                            <p th:text="'가격: ' + ${order.price_disp} + '원'"></p>
+                            <p th:text="'주문 일시: ' + ${order.reg_dt}"></p>
+                        </div>
+                        <a href="#" class="delivery-state-button" th:switch="${order.state}">
+                            <span th:case="0">상품 준비중</span>
+                            <span th:case="1">배송중</span>
+                            <span th:case="2">배송완료</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -144,7 +166,7 @@
     </div>
     <script>
         function openPopup(url) {
-            window.open(url, '_blank', 'width=600,height=1000');
+            window.open(url, '_blank', 'width=800,height=1000');
             return false;
         }
     </script>

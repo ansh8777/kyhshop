@@ -40,6 +40,15 @@
             <button type="button" id="deleteButton" onclick="confirmAndNavigateToDelete()">탈퇴하기</button>
         </form>
     </div>
+    <div class="password-requirements2">
+        <p>비밀번호 규칙</p>
+        <p id="length" class="invalid">8자 이상</p>
+        <p id="uppercase" class="invalid">대문자 최소 1개 포함</p>
+        <p id="lowercase" class="invalid">소문자 최소 1개 포함</p>
+        <p id="number" class="invalid">숫자 최소 1개 포함</p>
+        <p id="special" class="invalid">특수문자 최소 1개 포함</p>
+        <p id="match" class="invalid">비밀번호가 일치해야 합니다</p>
+    </div>
 
     <!-- 다음 주소 API 스크립트 -->
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -119,6 +128,85 @@
                 // 폼 제출
                 form.submit();
             }
+        }
+
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const length = document.getElementById('length');
+        const uppercase = document.getElementById('uppercase');
+        const lowercase = document.getElementById('lowercase');
+        const number = document.getElementById('number');
+        const special = document.getElementById('special');
+        const match = document.getElementById('match');
+
+        password.addEventListener('input', validatePassword);
+        confirmPassword.addEventListener('input', validatePassword);
+
+        function validatePassword() {
+            const passwordValue = password.value;
+            const confirmPasswordValue = confirmPassword.value;
+
+            // Validate length
+            if (passwordValue.length >= 8) {
+                length.classList.remove('invalid');
+                length.classList.add('valid');
+            } else {
+                length.classList.remove('valid');
+                length.classList.add('invalid');
+            }
+
+            // Validate uppercase
+            if (/[A-Z]/.test(passwordValue)) {
+                uppercase.classList.remove('invalid');
+                uppercase.classList.add('valid');
+            } else {
+                uppercase.classList.remove('valid');
+                uppercase.classList.add('invalid');
+            }
+
+            // Validate lowercase
+            if (/[a-z]/.test(passwordValue)) {
+                lowercase.classList.remove('invalid');
+                lowercase.classList.add('valid');
+            } else {
+                lowercase.classList.remove('valid');
+                lowercase.classList.add('invalid');
+            }
+
+            // Validate number
+            if (/\d/.test(passwordValue)) {
+                number.classList.remove('invalid');
+                number.classList.add('valid');
+            } else {
+                number.classList.remove('valid');
+                number.classList.add('invalid');
+            }
+
+            // Validate special character
+            if (/[^A-Za-z0-9]/.test(passwordValue)) {
+                special.classList.remove('invalid');
+                special.classList.add('valid');
+            } else {
+                special.classList.remove('valid');
+                special.classList.add('invalid');
+            }
+
+            // Validate match
+            if (passwordValue === confirmPasswordValue && passwordValue !== "") {
+                match.classList.remove('invalid');
+                match.classList.add('valid');
+            } else {
+                match.classList.remove('valid');
+                match.classList.add('invalid');
+            }
+
+            // Return overall validation status
+            return length.classList.contains('valid') &&
+                uppercase.classList.contains('valid') &&
+                lowercase.classList.contains('valid') &&
+                number.classList.contains('valid') &&
+                special.classList.contains('valid') &&
+                match.classList.contains('valid');
         }
     </script>
 </body>

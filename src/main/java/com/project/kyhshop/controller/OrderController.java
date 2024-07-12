@@ -23,6 +23,9 @@ public class OrderController {
     @Autowired
     OrderDao od;
 
+    @Autowired
+    UserDao ud;
+
     // 구매 페이지
     @GetMapping("order")
     public String orderPage(@RequestParam String seq,
@@ -81,6 +84,7 @@ public class OrderController {
     @PostMapping("order/action")
     public String orderAction(@RequestParam String seq,
                               @RequestParam int amount,
+                              @RequestParam String address,
                               HttpSession session,
                               Model model)
     {
@@ -96,9 +100,11 @@ public class OrderController {
             return "/html/alert";
         }
 
-        od.orderInsert(userId, seq, amount);
+        od.orderInsert(userId, seq, amount, address);
 
-        return "/html/order/complete";
+        model.addAttribute("link", "/my");
+        model.addAttribute("msg", "구매가 완료되었습니다.");
+        return "/html/alert";
     }
 
     // 장바구니 상품 추가
@@ -111,6 +117,12 @@ public class OrderController {
         String userId = (String)session.getAttribute("id");
         if (userId == null) {
             return "redirect:/login";
+        }
+        int dbAmount = od.getAmount(seq);
+        if (amount > dbAmount) {
+            model.addAttribute("link", "/product?seq=" + seq);
+            model.addAttribute("msg", "구매하려는 수량이 재고를 초과합니다.");
+            return "/html/alert";
         }
 
         Map<String, Object> findProd = od.findCartProduct(userId, seq);
