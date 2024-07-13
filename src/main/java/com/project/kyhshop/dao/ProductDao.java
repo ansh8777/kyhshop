@@ -58,7 +58,7 @@ public class ProductDao {
     }
 
     // 상품 모두 가져오기
-    public List<Map<String, Object>> productSelect() {
+    public List<Map<String, Object>> productSelect(String search) {
         String sqlStmt = "SELECT    PM.seq AS SEQ, " +
                          "          PM.PROD_nm AS PROD_NM, " +
                          "          PM.PROD_IMG AS PROD_IMG, " +
@@ -71,9 +71,18 @@ public class ProductDao {
                          "          SM.nm AS SELLER_NM " +
                          "FROM      tb_product_mst PM   LEFT JOIN tb_product_detail PD ON PM.seq = PD.seq " +
                          "                              LEFT JOIN tb_seller_mst SM ON PM.seller_id = SM.id " +
-                         "WHERE     PD.PROD_AMOUNT <> 0 " +
-                         "ORDER BY PM.SEQ DESC";
-        return jt.queryForList(sqlStmt);
+                         "WHERE     PD.PROD_AMOUNT <> 0 ";
+
+        if (search != null && !search.isEmpty()) {
+            sqlStmt += "AND PD.PROD_title LIKE ? ";
+        }
+        sqlStmt += "ORDER BY PM.SEQ DESC";
+
+        if (search != null && !search.isEmpty()) {
+            return jt.queryForList(sqlStmt, "%" + search + "%");
+        } else {
+            return jt.queryForList(sqlStmt);
+        }
     }
 
     public List<Map<String, Object>> gradevariety(String seq) {

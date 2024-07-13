@@ -150,13 +150,14 @@ public class ProductController {
     // 모든 상품 페이지
     @GetMapping("/allproduct")
     public String allProductPage(@RequestParam(defaultValue = "1") int page,
+                                 @RequestParam(defaultValue = "") String search,
                                  Model model)
     {
         int pageSize = 10;
         int pageIndex = page - 1;
 
         
-        List<Map<String, Object>> productSelectList = pd.productSelect();
+        List<Map<String, Object>> productSelectList = pd.productSelect(search);
 
         // 총 페이지 수 계산
         int totalPages = (int) Math.ceil((double) productSelectList.size() / pageSize);
