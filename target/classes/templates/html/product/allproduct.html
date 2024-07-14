@@ -388,10 +388,12 @@
           <li th:if="${session.id != null}" id="userMenu">
             <a href="/my">[[${session.nm}]]님</a>
             <ul class="subMenu">
-              <li><a href="/order-history">주문내역</a></li>
-              <li><a href="/my/address">주소록 관리</a></li>
-              <li><a href="/my/passcheck">개인정보 설정</a></li>
-            </ul>
+                <li><a th:if="${session.temp == 'user'}" onclick="openPopup('/my/address')">주소록 관리</a></li>
+                <li><a th:if="${session.temp == 'user'}" onclick="openPopup2('/my/passcheck')">개인정보 설정</a></li>
+                <li><a th:if="${session.temp == 'seller'}" onclick="openPopup2('/my/seller/passcheck')">개인정보 설정</a></li>
+                <li><a th:if="${session.temp == 'seller'}" href="/seller/product">상품 관리</a></li>
+                <li><a th:if="${session.temp == 'seller'}" href="/seller/order/manage">주문 관리</a></li>
+              </ul>
           </li>
         </ul>
     </div>

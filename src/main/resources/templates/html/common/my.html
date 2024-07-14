@@ -261,9 +261,11 @@
             <li th:if="${session.id != null}" id="userMenu">
               <a href="/my">[[${session.nm}]]님</a>
               <ul class="subMenu">
-                <li><a href="/order-history">주문내역</a></li>
-                <li><a href="/my/address">주소록 관리</a></li>
-                <li><a href="/my/passcheck">개인정보 설정</a></li>
+                <li><a th:if="${session.temp == 'user'}" onclick="openPopup('/my/address')">주소록 관리</a></li>
+                <li><a th:if="${session.temp == 'user'}" onclick="openPopup2('/my/passcheck')">개인정보 설정</a></li>
+                <li><a th:if="${session.temp == 'seller'}" onclick="openPopup2('/my/seller/passcheck')">개인정보 설정</a></li>
+                <li><a th:if="${session.temp == 'seller'}" href="/seller/product">상품 관리</a></li>
+                <li><a th:if="${session.temp == 'seller'}" href="/seller/order/manage">주문 관리</a></li>
               </ul>
             </li>
         </ul>
@@ -271,7 +273,6 @@
 
     <div class="sidebar" th:if="${session.temp == 'user'}">
         <ul>
-            <li><a href="/order-history">주문 내역</a></li>
             <li><a href="/my/address" onclick="window.open('/my/address', '주소록 관리', 'width=600,height=1000'); return false;">주소록 관리</a></li>
             <li><a onclick="openPopup('/my/passcheck')">개인 정보 설정</a></li>
             <li th:if="${session.grade == 99}"><a href="/admin">관리자 페이지</a></li>
@@ -309,68 +310,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="footer">
-        <div class="section promotions">
-            <h3>프로모션</h3>
-            <ul>
-                <li><a href="/">홈</a></li>
-                <li><a href="/about">회사소개</a></li>
-                <li><a href="/privacy">개인정보취급방침</a></li>
-                <li><a href="/guide">이용안내</a></li>
-            </ul>
-        </div>
-        <div class="section contact-info">
-            <h3>고객센터</h3>
-            <ul>
-                <li>1544-1544, 010-1234-5678</li>
-                <li>상담시간: 08:50 ~ 17:50</li>
-                <li>점심시간: 13:00 ~ 14:00</li>
-                <li>토요일/일요일, 공휴일 휴무</li>
-            </ul>
-            <br>
-            <div class="section account-info">
-                <h3>입금계좌정보</h3>
-                <ul>
-                    <li>광주은행: 062-2024-0502-1031</li>
-                    <li>예금주: 김연형</li>
-                </ul>
-                <a href="https://www.kjbank.com/" target="_blank" class="btn">인터넷 뱅킹 바로가기</a>
-            </div>
-        </div>
-        <div class="section logistics-center">
-            <h3>물류센터</h3>
-            <ul>
-                <li>출고/교환/반품</li>
-                <li>광주광역시 광산구 소촌로152번길 37 CAD/CAM 강의실</li>
-            </ul>
-            <br>
-            <h3>택배업체</h3>
-            <ul>
-                <li>정연택배 062-111-1111</li>
-                <li>동연배송 062-222-2222</li>
-                <li>시형배달 062-333-3333</li>
-                <li>민형물류 062-444-4444</li>
-            </ul>
-            <a href="/delivery-tracking" class="btn">배송조회</a>
-        </div>
-        <div class="section company-info">
-            <h3>사업자 정보</h3>
-            <p>법인명(상호): KYH SHOP</p>
-            <p>개인명(상호): 김연형</p>
-            <p>대표자: 김연형</p>
-            <p>사업자등록번호: 123-45-67890</p>
-            <p>전화: 062-123-4567</p>
-            <p>팩스: 062-123-4568</p>
-            <p>주소: 광주광역시 광산구 소촌로152번길 37</p>
-            <p>개인정보관리책임자: 김연형</p>
-            <br>
-            <p>법인통신판매업 신고: 제2024-광산구-00001호</p>
-            <p>개인통신판매업 신고: 제2024-광산구-00002호</p>
-            <p class="email">Contact: <a href="mailto:kyh@kyh.com">kyh@kyh.com</a></p>
-            <p class="copyright">Copyright: kyh (All rights reserved)</p>
         </div>
     </div>
 

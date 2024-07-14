@@ -40,19 +40,8 @@ public class UserController {
             long price = Long.parseLong(priceString);
             product.put("prod_price_disp", decimalFormat.format(price));
         }
-        Object idObj = session.getAttribute("id");
-        //셀러가 아니면
-         if (idObj == null) {
-             return "html/common/homepage2";
-         } 
-         else {
-         String id = idObj.toString();
-         int sellerOX = ud.sellerOX(id);
-
-        model.addAttribute("sellerOX", sellerOX);
         model.addAttribute("prodSel", prodSel);
         return "html/common/homepage2";
-         }
     }
 
     // 로그인 페이지 (유저, 셀러 공통)

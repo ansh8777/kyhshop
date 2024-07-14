@@ -43,9 +43,11 @@
         <li th:if="${session.id != null}" id="userMenu">
           <a href="/my">[[${session.nm}]]님</a>
           <ul class="subMenu">
-            <li><a th:if="${sellerOX == 0}" href="/order-history">주문내역</a></li>
-            <li><a th:if="${sellerOX == 0}" href="/my/address">주소록 관리</a></li>
-            <li><a th:if="${sellerOX == 0}" href="/my/passcheck">개인정보 설정</a></li>
+            <li><a th:if="${session.temp == 'user'}" onclick="openPopup('/my/address')">주소록 관리</a></li>
+            <li><a th:if="${session.temp == 'user'}" onclick="openPopup2('/my/passcheck')">개인정보 설정</a></li>
+            <li><a th:if="${session.temp == 'seller'}" onclick="openPopup2('/my/seller/passcheck')">개인정보 설정</a></li>
+            <li><a th:if="${session.temp == 'seller'}" href="/seller/product">상품 관리</a></li>
+            <li><a th:if="${session.temp == 'seller'}" href="/seller/order/manage">주문 관리</a></li>
           </ul>
         </li>
       </ul>
@@ -209,6 +211,16 @@
 
     <!-- 스크립트 이동 -->
     <script>
+      function openPopup(url) {
+            window.open(url, '_blank', 'width=600,height=1000');
+            return false;
+      }
+
+      function openPopup2(url) {
+            window.open(url, '_blank', 'width=800,height=1000');
+            return false;
+      }
+
       // 버튼 클릭 시 페이지 하단으로 이동
       const $bottomBtn = document.querySelector(".moveBottomBtn");
       $bottomBtn.onclick = () => {

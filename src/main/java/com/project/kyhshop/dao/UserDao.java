@@ -279,15 +279,4 @@ public class UserDao {
         String sqlStmt = "UPDATE tb_order_mst SET state = 2 WHERE seq = ?";
         jt.update(sqlStmt, seq);
     }
-
-    public int sellerOX(String id) {
-        String sqlStmt = "SELECT count(*) as CNT FROM tb_seller_mst WHERE id = ?";
-        try {   // 결과가 없으면 0 반환
-            return jt.queryForObject(sqlStmt, Integer.class, id);
-        } catch (EmptyResultDataAccessException e) {
-            return 0;
-        }
-    }
-
-
 }
