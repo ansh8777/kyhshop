@@ -38,13 +38,14 @@
         <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
         <li th:if="${session.id == null}"><a href="/login">Login</a></li>
         <li th:if="${session.temp == 'user'}"><a href="/logout">Logout</a></li>
+        <li th:if="${sellerOX == 1}"><a href="/logout">Logout</a></li>
         <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
         <li th:if="${session.id != null}" id="userMenu">
           <a href="/my">[[${session.nm}]]님</a>
           <ul class="subMenu">
-            <li><a href="/order-history">주문내역</a></li>
-            <li><a href="/my/address">주소록 관리</a></li>
-            <li><a href="/my/passcheck">개인정보 설정</a></li>
+            <li><a th:if="${sellerOX == 0}" href="/order-history">주문내역</a></li>
+            <li><a th:if="${sellerOX == 0}" href="/my/address">주소록 관리</a></li>
+            <li><a th:if="${sellerOX == 0}" href="/my/passcheck">개인정보 설정</a></li>
           </ul>
         </li>
       </ul>
@@ -135,7 +136,7 @@
         <nav>
           <ul id="quickmenu">
             <li><a href="/">Home</a></li>
-            <li><a href="/cart">Cart</a></li>
+            <li th:if="${sellerOX == 0}"><a href="/cart">Cart</a></li>
             <li><a href="/allproduct">Product</a></li>
           </ul>
         </nav>
