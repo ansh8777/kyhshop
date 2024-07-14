@@ -348,6 +348,7 @@ public class SellerController {
         List<Map<String,Object>> salesData = sd.testViewByGradeVariety(grade,variety);
         List<Map<String,Object>> Gradeview = sd.Gradeview();
         List<Map<String,Object>> Varietyview = sd.Varietyview();
+
         model.addAttribute("salesData", salesData);
         model.addAttribute("Gradeview", Gradeview);
         model.addAttribute("Varietyview", Varietyview);
@@ -365,7 +366,7 @@ public class SellerController {
         List<Map<String,Object>> Gradeview = sd.Gradeview();
         List<Map<String,Object>> Varietyview = sd.Varietyview();
         List<Map<String,Object>> yearView = sd.YearView();
-        
+
         model.addAttribute("salesData", salesData);
         model.addAttribute("Gradeview", Gradeview);
         model.addAttribute("Varietyview", Varietyview);
@@ -373,7 +374,7 @@ public class SellerController {
         model.addAttribute("selectedYear", year);
         model.addAttribute("selectedGrade", grade);
         model.addAttribute("selectedVariety", variety);
-        return "html/seller/chart";
+        return "html/seller/monthchart";
     }
 
     @GetMapping("seller/order/manage")

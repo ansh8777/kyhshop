@@ -40,6 +40,7 @@
         
         <button type="submit">검색</button>
     </form>
+    <a href="/chart/year">연도별 시세 보기</a>
     <p>이 상품의 가격의 기준은 10개 기준입니다.</p>
     <canvas id="priceChart" width="800" height="400"></canvas>
 
@@ -47,9 +48,15 @@
         /* Thymeleaf에서 데이터를 JavaScript로 전달 */
         var salesData = /*[[${salesData}]]*/ [];
 
+        // 누락된 월 데이터를 처리하기 위해 초기화
+        const prices = new Array(12).fill(0);
+        const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
         // 데이터 추출 및 변환
-        const prices = salesData.map(entry => entry['price']);
-        const months = salesData.map(entry => entry['month']);
+        salesData.forEach(entry => {
+            const month = entry['month'];
+            prices[month - 1] = entry['price'];
+        });
 
         // 차트 생성
         const ctx = document.getElementById('priceChart').getContext('2d');
@@ -58,8 +65,8 @@
             data: {
                 labels: months,
                 datasets: [{
-                    label: 'month',
-                    data: months,
+                    label: '평균가격',
+                    data: prices,
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1,

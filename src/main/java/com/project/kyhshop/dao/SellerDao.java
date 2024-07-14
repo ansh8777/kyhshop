@@ -159,7 +159,7 @@ public class SellerDao {
     }
 
     public List<Map<String,Object>> YearView() {
-        String sqlStmt = "SELECT year FROM tb_apple_mst group by YEAR ORDER BY YEAR";
+        String sqlStmt = "SELECT year FROM tb_apple_mst group by YEAR ORDER BY YEAR desc";
         return jt.queryForList(sqlStmt);    
     }
   
@@ -169,8 +169,8 @@ public class SellerDao {
     }
 
     public List<Map<String,Object>> monthChart(String variety, String grade, String year) {
-        String sqlStmt = "SELECT    month, " +
-                         "          AVG(price) AS price " +
+        String sqlStmt = "SELECT    AVG(price) AS price, " +
+                         "          month " +
                          "FROM      tb_apple_mst " +
                          "WHERE     variety = ? " +
                          "AND       grade = ? " +
