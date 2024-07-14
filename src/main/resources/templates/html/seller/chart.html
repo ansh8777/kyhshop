@@ -10,26 +10,27 @@
 <body>
     <h2>Apple Prices</h2>
 
-    <form action="/chart/filter" method="get">
+    <form action="/chart/year" method="get">
         <label for="grade">등급 :</label>
         <select id="grade" name="grade">
             <option th:each="Gradeview : ${Gradeview}"
                     th:value="${Gradeview.grade}"
-                    th:text="${Gradeview.grade}">
-                </option>
-            <!-- Add more options or years as needed -->
+                    th:text="${Gradeview.grade}"
+                    th:selected="${Gradeview.grade} == ${selectedGrade}">
+            </option>
         </select>
         
         <label for="variety">품종 :</label>
         <select id="variety" name="variety">
             <option th:each="Varietyview : ${Varietyview}"
             th:value="${Varietyview.variety}"
-            th:text="${Varietyview.variety}">
+            th:text="${Varietyview.variety}"
+            th:selected="${Varietyview.variety} == ${selectedVariety}">
         </option>
         </select>
-        
         <button type="submit">검색</button>
     </form>
+    <a href="/chart/month">월별 시세 보기</a>
     <p>이 상품의 가격의 기준은 10개 기준입니다.</p>
     <canvas id="priceChart" width="800" height="400"></canvas>
 

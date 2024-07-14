@@ -489,6 +489,7 @@ h1 {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   font-size: 5px;
   z-index: 1;
+  white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 설정 */
 }
 
 .subMenu li {

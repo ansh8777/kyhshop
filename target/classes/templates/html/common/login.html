@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인 선택</title>
-    <link href="css/homepage.css" rel="stylesheet" />
+    <link href="css/homepage2.css" rel="stylesheet" />
     <style>
         .container {
             text-align: center;
@@ -31,7 +31,7 @@
         }
 
         .container button {
-            display: inline-block; /* 텍스트를 가로로 배치 */
+            display: inline-block;
             text-decoration: none;
             color: black;
             background-color: #d3d3d3;
@@ -42,7 +42,7 @@
             width: 45%;
             border: none;
             cursor: pointer;
-            white-space: nowrap; /* 텍스트가 줄바꿈 없이 한 줄에 나오도록 설정 */
+            white-space: nowrap;
         }
 
         .container button.active {
@@ -94,18 +94,6 @@
             display: block;
         }
 
-        .container input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-        .container .form-group {
-            display: none;
-        }
-
-        .container .form-group.active {
-            display: block;
-        }
-
         .container .find-links {
             display: flex;
             justify-content: flex-end;
@@ -123,6 +111,86 @@
         .container .find-links a:hover {
             text-decoration: underline;
         }
+
+        .navbar {
+            height: 60px;
+            padding-left: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            line-height: 50px;
+        }
+
+        .logo img {
+            vertical-align: middle;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar li {
+            margin-right: 30px;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: #3E2723;
+            font-size: 20px;
+        }
+
+        .menubars {
+            list-style-type: none;
+            font-size: 10px;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menubars li {
+            display: inline-block;
+            margin-right: 10px; /* 메뉴 아이템 사이 간격 */
+        }
+
+        .menubars li a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .menubars li a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .subMenu {
+            display: none; /* 기본적으로 숨김 */
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-size: 5px;
+            z-index: 1;
+        }
+
+        .subMenu li {
+            display: block;
+        }
+
+        .subMenu li a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 15px;
+            color: gray;
+        }
+
+        .subMenu li a:hover {
+            background-color: #f1f1f1;
+        }
     </style>
 </head>
 <body>
@@ -130,13 +198,20 @@
         <a class="logo" href="/">
             <img src="images/kyhlogo.png" height="50px">
         </a>
-        <ul>
+        <ul class="menubars" id="menuList">
             <li><a href="/allproduct">Product</a></li>
             <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
             <li th:if="${session.id == null}"><a href="/login">Login</a></li>
+            <li th:if="${session.temp == 'user'}"><a href="/logout">Logout</a></li>
             <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
-            <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
-            <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+            <li th:if="${session.id != null}" id="userMenu">
+              <a href="/my">[[${session.nm}]]님</a>
+              <ul class="subMenu">
+                <li><a href="/order-history">주문내역</a></li>
+                <li><a href="/my/address">주소록 관리</a></li>
+                <li><a href="/my/passcheck">개인정보 설정</a></li>
+              </ul>
+            </li>
         </ul>
     </div>
 
@@ -156,7 +231,7 @@
                     <a href="#" onclick="openPopup('/find/id')">아이디 찾기</a>
                     <a href="#" onclick="openPopup('/find/pw')">비밀번호 찾기</a>
                 </div>
-                <pre></pre>
+                <br>
                 <button type="submit">로그인</button>
             </form>
         </div>
@@ -170,7 +245,6 @@
                     <a href="#" onclick="openPopup('/find/seller/id')">아이디 찾기</a>
                     <a href="#" onclick="openPopup('/find/seller/pw')">비밀번호 찾기</a>
                 </div>
-                <pre></pre>
                 <button type="submit">로그인</button>
             </form>
         </div>

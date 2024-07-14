@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>KYH SHOP - 전체 상품</title>
     <style>
         * {
             box-sizing: border-box;
@@ -18,11 +18,13 @@
         .navbar {
             height: 60px;
             padding-left: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .logo {
             line-height: 60px;
-            float: left;
         }
         
         .logo img {
@@ -30,29 +32,58 @@
         }
         
         .navbar ul {
-            float: right;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
         }
         
         .navbar li {
-            list-style-type: none;
-            float: left;
             margin-right: 30px;
         }
         
         .navbar a {
             text-decoration: none;
-            color: black;
-            font-size: 13px;
+            color: #3E2723;
+            font-size: 20px;
         }
         
-        .hero_header {
-            height: 450px;
-            width: 100%;
+        .category-menu {
+            background-color: #f8f8f8;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            align-items: center;
+            align-content: center;
+            margin-left: 15%;
+            margin-top: 20px;
+        }
+
+        .category-menu ul {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0;
+            list-style-type: none;
+        }
+
+        .category-menu li {
+            margin: 0 15px;
+        }
+
+        .category-menu a {
+            font-size: 16px;
+            font-weight: bold;
+            color: #3E2723;
+            transition: color 0.3s ease;
+        }
+
+        .category-menu a:hover {
+            color: #007bff;
         }
         
-        body h1 {
+        h1 {
             text-align: center;
-            margin-top: 60px;
+            margin-top: 20px;
             margin-bottom: 60px;
             font-size: 24px;
             font-weight: bold;
@@ -119,40 +150,40 @@
         }
 
         .search-container {
-        display: flex;
-        justify-content: center;
-        margin: 20px 0; /* 상단 및 하단 여백 추가 */
-      }
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
 
-      .search-container form {
-        display: flex;
-        width: 100%;
-        max-width: 400px;
-      }
+        .search-container form {
+            display: flex;
+            width: 100%;
+            max-width: 400px;
+        }
 
-      .search-container input[type="text"] {
-        width: 80%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px 0 0 5px;
-        outline: none;
-      }
+        .search-container input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+        }
 
-      .search-container button {
-        width: 20%;
-        padding: 10px;
-        background-color: #d3d3d3; /* 회색 */
-        border: none;
-        border-radius: 0 5px 5px 0;
-        color: white;
-        cursor: pointer;
-      }
-      
-      .search-container button:hover {
-        background-color: #a9a9a9; /* 어두운 회색 */
-      }
+        .search-container button {
+            width: 20%;
+            padding: 10px;
+            background-color: #d3d3d3; /* 회색 */
+            border: none;
+            border-radius: 0 5px 5px 0;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .search-container button:hover {
+            background-color: #a9a9a9; /* 어두운 회색 */
+        }
 
-      .pagination {
+        .pagination {
             text-align: center;
             margin-top: 20px;
         }
@@ -184,25 +215,189 @@
         .pagination a:hover {
             background-color: #ddd;
         }
+
+        .moveBottomBtn, .moveTopBtn {
+            cursor: pointer;
+            position: fixed;
+            right: 1rem;
+            width: 2rem;
+            height: 2rem;
+            background-color: #bebebe;
+            color: #fff;
+            text-align: center;
+            line-height: 2rem;
+            font-size: 1.5rem;
+            z-index: 1000;
+        }
+
+        .moveBottomBtn {
+            bottom: 1rem;
+        }
+
+        .moveTopBtn {
+            bottom: 5rem;
+        }
+
+        .footer {
+            background-color: #f1f1f1;
+            padding: 20px;
+            font-size: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .footer .section {
+            flex: 0 1 calc(25% - 20px);
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        .footer .section h3 {
+            margin-bottom: 10px;
+            font-size: 25px;
+            color: #333;
+        }
+
+        .footer .section ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer .section ul li {
+            margin-bottom: 5px;
+        }
+
+        .footer .section .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #408f00;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+
+        .footer .section .btn:hover {
+            background-color: #555;
+        }
+
+        .footer .company-info {
+            text-align: center;
+        }
+
+        .footer .company-info img {
+            margin-bottom: 20px;
+        }
+
+        .footer .company-info p {
+            margin-bottom: 5px;
+        }
+
+        .footer .company-info .email {
+            margin-bottom: 10px;
+        }
+
+        .footer .company-info .copyright {
+            margin-top: 10px;
+        }
+
+        .menubars {
+            list-style-type: none;
+            font-size: 10px;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menubars li {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .menubars li a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .menubars li a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .subMenu {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            z-index: 1;
+            transition: visibility 0s, opacity 0.5s linear;
+            flex-direction: column;
+            padding: 10px 0;
+            white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 설정 */
+        }
+
+        .subMenu li {
+            display: block;
+            padding: 5px 0;
+        }
+
+        .subMenu li a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 15px;
+            color: gray;
+        }
+
+        .subMenu li a:hover {
+            background-color: #f1f1f1;
+        }
+
+        #userMenu:hover .subMenu {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
         <a class="logo" href="/">
-          <img src="/images/kyhlogo.png" height="50px">
+          <img src="/images/kyhlogo.png" height="80px">
         </a>
-        <ul>
+        <div class="moveBottomBtn">▼</div>
+        <nav class="category-menu">
+          <ul>
+            <li><a href="/category">전체카테고리</a></li>
+            <li><a href="/category">홍로</a></li>
+            <li><a href="/category">후지</a></li>
+            <li><a href="/category">아오리</a></li>
+            <li><a href="/">BEST</a></li>
+            <li><a href="/">NEW</a></li>
+            <li><a href="/">SALE</a></li>
+          </ul>
+        </nav>
+        <ul class="menubars" id="menuList">
           <li><a href="/allproduct">Product</a></li>
           <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
           <li th:if="${session.id == null}"><a href="/login">Login</a></li>
           <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
           <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
-          <li th:if="${session.id != null}"><a href="/my">[[${session.nm}]]님</a></li>
+          <li th:if="${session.id != null}" id="userMenu">
+            <a href="/my">[[${session.nm}]]님</a>
+            <ul class="subMenu">
+              <li><a href="/order-history">주문내역</a></li>
+              <li><a href="/my/address">주소록 관리</a></li>
+              <li><a href="/my/passcheck">개인정보 설정</a></li>
+            </ul>
+          </li>
         </ul>
     </div>
     <div class="search-container">
         <form action="/allproduct" method="get">
-          <input type="text" placeholder="..." name="search">
+          <input type="text" placeholder="검색어를 입력해주세요." name="search">
           <button type="submit">Search</button>
         </form>
     </div>
@@ -223,5 +418,95 @@
             </li>
         </ul>
     </div>
+    <div class="footer">
+        <div class="section promotions">
+          <h3>프로모션</h3>
+          <ul>
+            <li><a href="/">홈</a></li>
+            <li><a href="/about">회사소개</a></li>
+            <li><a href="/privacy">개인정보취급방침</a></li>
+            <li><a href="/guide">이용안내</a></li>
+          </ul>
+        </div>
+        <div class="section contact-info">
+          <h3>고객센터</h3>
+          <ul>
+            <li>1544-1544, 010-1234-5678</li>
+            <li>상담시간: 08:50 ~ 17:50</li>
+            <li>점심시간: 13:00 ~ 14:00</li>
+            <li>토요일/일요일, 공휴일 휴무</li>
+          </ul>
+          <br>
+          <div class="section account-info">
+            <h3>입금계좌정보</h3>
+            <ul>
+              <li>광주은행: 062-2024-0502-1031</li>
+              <li>예금주: 김연형</li>
+            </ul>
+            <a href="https://www.kjbank.com/" target="_blank" class="btn">인터넷 뱅킹 바로가기</a>
+          </div>
+        </div>
+        <div class="section logistics-center">
+          <h3>물류센터</h3>
+          <ul>
+            <li>출고/교환/반품</li>
+            <li>광주광역시 광산구 소촌로152번길 37 CAD/CAM 강의실</li>
+          </ul>
+          <br>
+          <h3>택배업체</h3>
+          <ul>
+            <li>정연택배 062-111-1111</li>
+            <li>동연배송 062-222-2222</li>
+            <li>시형배달 062-333-3333</li>
+            <li>민형물류 062-444-4444</li>
+          </ul>
+          <a href="/delivery-tracking" class="btn">배송조회</a>
+        </div>
+        <div class="section company-info">
+          <h3>사업자 정보</h3>
+          <p>법인명(상호): KYH SHOP</p>
+          <p>개인명(상호): 김연형</p>
+          <p>대표자: 김연형</p>
+          <p>사업자등록번호: 123-45-67890</p>
+          <p>전화: 062-123-4567</p>
+          <p>팩스: 062-123-4568</p>
+          <p>주소: 광주광역시 광산구 소촌로152번길 37</p>
+          <p>개인정보관리책임자: 김연형</p>
+          <br>
+          <p>법인통신판매업 신고: 제2024-광산구-00001호</p>
+          <p>개인통신판매업 신고: 제2024-광산구-00002호</p>
+          <p class="email">Contact: <a href="mailto:kyh@kyh.com">kyh@kyh.com</a></p>
+          <p class="copyright">Copyright: kyh (All rights reserved)</p>
+        </div>
+    </div>
+    <script>
+        // 페이지 하단 이동 버튼
+        const moveBottomBtn = document.querySelector(".moveBottomBtn");
+        moveBottomBtn.onclick = () => {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+        };
+
+        // 페이지 상단 이동 버튼
+        const moveTopBtn = document.querySelector(".moveTopBtn");
+        moveTopBtn.onclick = () => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        // 사용자 메뉴 서브메뉴 토글
+        document.addEventListener("DOMContentLoaded", function () {
+            const userMenu = document.getElementById("userMenu");
+            const subMenu = userMenu.querySelector(".subMenu");
+
+            userMenu.addEventListener("mouseover", function () {
+                subMenu.style.visibility = "visible";
+                subMenu.style.opacity = "1";
+            });
+
+            userMenu.addEventListener("mouseout", function () {
+                subMenu.style.visibility = "hidden";
+                subMenu.style.opacity = "0";
+            });
+        });
+    </script>
 </body>
 </html>

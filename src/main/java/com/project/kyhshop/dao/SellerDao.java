@@ -148,31 +148,42 @@ public class SellerDao {
         return jt.queryForList(sqlStmt);
     }
 
-    public List<Map<String, Object>> priceView() {
-        String sqlStmt1 = "SELECT min(prod_price) FROM tb_product_detail where prod_grade = '상' and prod_variety = '아오리'";
-        String sqlStmt2 = "SELECT min(prod_price) FROM tb_product_detail where prod_grade = '상' and prod_variety = '아오리'";
-        return jt.queryForList(sqlStmt1,sqlStmt2);
-    }
-
     public List<Map<String,Object>> Gradeview() {
         String sqlStmt = "SELECT grade FROM tb_apple_mst group by grade";
         return jt.queryForList(sqlStmt);    
-      }
+    }
   
     public List<Map<String,Object>> Varietyview() {
         String sqlStmt = "SELECT variety FROM tb_apple_mst group by variety";
         return jt.queryForList(sqlStmt);    
     }
-  
-    public List<Map<String,Object>> testViewPrice() {
-        // 특정 년도와 월에 해당하는 데이터 조회 쿼리
-        String sqlStmt = "SELECT AVG(price) as price, year FROM tb_apple_mst group by year";
-        return jt.queryForList(sqlStmt);
+
+    public List<Map<String,Object>> YearView() {
+        String sqlStmt = "SELECT year FROM tb_apple_mst group by YEAR ORDER BY YEAR";
+        return jt.queryForList(sqlStmt);    
     }
   
     public List<Map<String,Object>> testViewByGradeVariety(String grade, String variety) {
         String sqlStmt = "SELECT AVG(price) as price, year FROM tb_apple_mst where grade = ? and variety = ? group by year";
         return jt.queryForList(sqlStmt,grade,variety);
+    }
+
+    public List<Map<String,Object>> monthChart(String variety, String grade, String year) {
+        String sqlStmt = "SELECT    month, " +
+                         "          AVG(price) AS price " +
+                         "FROM      tb_apple_mst " +
+                         "WHERE     variety = ? " +
+                         "AND       grade = ? " +
+                         "AND       year = ? " +
+                         "GROUP BY  variety, " +
+                         "          grade, " +
+                         "          year, " +
+                         "          month " +
+                         "ORDER BY  variety, " +
+                         "          grade, " +
+                         "          year, " +
+                         "          month";
+        return jt.queryForList(sqlStmt, variety, grade, year);
     }
 
     public List<Map<String, Object>> sellerprofileCheck(String sellerId, String pw, String nm, String email, String phone, String address, String addressDetail,String compNm,String bizId) {

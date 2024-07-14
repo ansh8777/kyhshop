@@ -10,7 +10,7 @@
 <body>
     <h2>Apple Prices</h2>
 
-    <form action="/chart/year" method="get">
+    <form action="/chart/month" method="get">
         <label for="grade">등급 :</label>
         <select id="grade" name="grade">
             <option th:each="Gradeview : ${Gradeview}"
@@ -28,9 +28,18 @@
             th:selected="${Varietyview.variety} == ${selectedVariety}">
         </option>
         </select>
+
+        <label for="year">연도 :</label>
+        <select id="year" name="year">
+            <option th:each="year : ${yearView}"
+            th:value="${year.year}"
+            th:text="${year.year}"
+            th:selected="${year.year} == ${selectedYear}">
+        </option>
+        </select>
+        
         <button type="submit">검색</button>
     </form>
-    <a href="/chart/month">월별 시세 보기</a>
     <p>이 상품의 가격의 기준은 10개 기준입니다.</p>
     <canvas id="priceChart" width="800" height="400"></canvas>
 
@@ -40,17 +49,17 @@
 
         // 데이터 추출 및 변환
         const prices = salesData.map(entry => entry['price']);
-        const years = salesData.map(entry => entry['year']);
+        const months = salesData.map(entry => entry['month']);
 
         // 차트 생성
         const ctx = document.getElementById('priceChart').getContext('2d');
         const priceChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: years,
+                labels: months,
                 datasets: [{
-                    label: 'price',
-                    data: prices,
+                    label: 'month',
+                    data: months,
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1,

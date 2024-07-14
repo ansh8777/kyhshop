@@ -341,27 +341,38 @@ public class SellerController {
         return "redirect:/seller/product";
     }
 
-    @GetMapping("/chart")
-    public String chart(Model model) {
-        List<Map<String,Object>> salesData = sd.testViewPrice();
-        List<Map<String,Object>> Gradeview = sd.Gradeview();
-        List<Map<String,Object>> Varietyview = sd.Varietyview();
-        model.addAttribute("salesData", salesData);
-        model.addAttribute("Gradeview", Gradeview);
-        model.addAttribute("Varietyview", Varietyview);
-        return "html/seller/chart";
-    }
-
-    @GetMapping("chart/filter")
-    public String filter(@RequestParam String grade,
-                         @RequestParam String variety,
-                         Model model) {
+    @GetMapping("/chart/year")
+    public String yearChart(@RequestParam(defaultValue = "상품") String grade,
+                            @RequestParam(defaultValue = "후지") String variety,
+                            Model model) {
         List<Map<String,Object>> salesData = sd.testViewByGradeVariety(grade,variety);
         List<Map<String,Object>> Gradeview = sd.Gradeview();
         List<Map<String,Object>> Varietyview = sd.Varietyview();
         model.addAttribute("salesData", salesData);
         model.addAttribute("Gradeview", Gradeview);
         model.addAttribute("Varietyview", Varietyview);
+        model.addAttribute("selectedGrade", grade);
+        model.addAttribute("selectedVariety", variety);
+        return "html/seller/chart";
+    }
+
+    @GetMapping("/chart/month")
+    public String monthChart(@RequestParam(defaultValue = "2023") String year,
+                             @RequestParam(defaultValue = "상품") String grade,
+                             @RequestParam(defaultValue = "후지") String variety,
+                             Model model) {
+        List<Map<String,Object>> salesData = sd.monthChart(variety, grade, year);
+        List<Map<String,Object>> Gradeview = sd.Gradeview();
+        List<Map<String,Object>> Varietyview = sd.Varietyview();
+        List<Map<String,Object>> yearView = sd.YearView();
+        
+        model.addAttribute("salesData", salesData);
+        model.addAttribute("Gradeview", Gradeview);
+        model.addAttribute("Varietyview", Varietyview);
+        model.addAttribute("yearView", yearView);
+        model.addAttribute("selectedYear", year);
+        model.addAttribute("selectedGrade", grade);
+        model.addAttribute("selectedVariety", variety);
         return "html/seller/chart";
     }
 
