@@ -603,4 +603,21 @@ public class UserController {
         
         return "<script>window.opener.location.reload(); window.close();</script>";
     }
+
+    // 포인트 충전
+    @GetMapping("my/point")
+    public String pointPage(HttpSession session,
+                            Model model)
+    {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || !temp.equals("user")) {
+            return "redirect:/login";
+        }
+        Map<String, Object> point = ud.getPoint(userId);
+
+        model.addAttribute("pointList", point);
+
+        return "/html/user/point";
+    }
 }

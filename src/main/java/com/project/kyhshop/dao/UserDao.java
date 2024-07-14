@@ -279,4 +279,16 @@ public class UserDao {
         String sqlStmt = "UPDATE tb_order_mst SET state = 2 WHERE seq = ?";
         jt.update(sqlStmt, seq);
     }
+
+    // 포인트 가져오기
+    public Map<String, Object> getPoint(String userId)
+    {
+        String sqlStmt = "SELECT    UM.nm    AS nm, "                        +
+                         "          PM.point AS point "                      +
+                         "FROM      tb_user_mst UM "                         +
+                         "JOIN      tb_point_mst PM ON UM.id = PM.user_id "  +
+                         "WHERE     UM.id = ?";
+        return jt.queryForMap(sqlStmt, userId);
+    }
+
 }
