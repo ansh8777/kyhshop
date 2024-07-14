@@ -102,7 +102,7 @@ h1 {
   margin-left: auto;
   margin-right: auto;
   padding: 0;
-  width: 740px;
+  width: 800px;
   text-align: center;
 }
 
@@ -285,17 +285,54 @@ h1 {
   margin: 0 auto;
   overflow-x: hidden;
 }
-
 .inner-list {
   display: flex;
+  justify-content: space-between;
   transition: .6s ease-out;
-  height: auto;
+  height: 300px;
 }
-
 .inner {
   border: 20px solid rgb(239, 239, 136);
-  padding: 0 16px;
-  flex: 1;
+  padding: 0;
+  flex: 1; /* Flexbox에서 각 .inner 요소에 동일한 공간을 할당 */
+  display: flex; /* 내부 이미지를 수직 중앙에 배치하기 위해 부모 요소도 Flexbox로 설정 */
+  justify-content: center; /* 수직 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+.inner img {
+  max-width: 100%; /* 이미지가 부모 요소(.inner)의 너비를 넘지 않도록 */
+}
+.inner:nth-child(1) img {
+  width: 100%;
+  height: auto;
+}
+.inner:nth-child(2) img {
+  width: 100%;
+  height: auto;
+}
+.inner:nth-child(3) img {
+  width: 100%;
+  height: auto;
+}
+.inner:nth-child(4) img {
+  width: 1100px;
+  height: auto;
+}
+.inner:nth-child(5) img {
+  width: 120%;
+  height: auto;
+}
+.inner:nth-child(6) img {
+  width: 100%;
+  height: auto;
+}
+.inner:nth-child(6) img {
+  width: 100%;
+  height: auto;
+}
+.inner:nth-child(7) img {
+  width: 100%;
+  height: auto;
 }
 
 .button-list {
