@@ -306,6 +306,7 @@
                         <img th:unless="${i <= T(java.lang.Math).round(avg)}" th:src="@{'/images/emptystar.png'}" alt="빈 별">
                     </span>
                     <span class="avg-score" th:text="${T(java.lang.String).format('%.1f', avg)}"></span>점
+                    <button class="btn" style="position: absolute; right: 200px;" th:if="${cnt == 0}" th:onclick="'location.href=\'/review?seq=' + ${product.seq} + '\''">리뷰 작성하기</button>
                 </div>
             </div>
             <div class="review-list">

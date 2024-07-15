@@ -24,6 +24,9 @@ public class ProductController {
     @Autowired
     SellerDao sd;
 
+    @Autowired
+    UserDao ud;
+
     // 상품 페이지
     @GetMapping("/product")
     public String productPage(@RequestParam String seq,
@@ -60,6 +63,11 @@ public class ProductController {
 
         model.addAttribute("reviewList", reviewList);
         model.addAttribute("avg", avg);
+
+        String userId = (String)session.getAttribute("id");
+        int cnt = ud.getReviewCnt(userId, seq);
+
+        model.addAttribute("cnt", cnt);
 
         return "/html/product/product";
     }
