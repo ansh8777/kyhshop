@@ -1,0 +1,119 @@
+<!-- updateReview.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리뷰 수정</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+        }
+        label {
+            font-weight: bold;
+        }
+        textarea, input[type=file] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .star-rating img {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+        button[type=submit] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button[type=submit]:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        function setRating(rating) {
+            const stars = document.querySelectorAll('.star-rating img');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.src = '/images/star.png';
+                } else {
+                    star.src = '/images/emptystar.png';
+                }
+            });
+            document.getElementById('score').value = rating;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const stars = document.querySelectorAll('.star-rating img');
+            const currentRating = parseInt(document.getElementById('score').value);
+            setRating(currentRating);
+            stars.forEach((star, index) => {
+                star.addEventListener('click', () => {
+                    setRating(index + 1);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>리뷰 수정</h2>
+        <form action="/review/edit/action" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="seq" th:value="${reviews['seq']}">
+            <label for="current-image">현재 이미지:</label><br>
+            <img th:src="@{'/images/' + ${reviews['img']}}" alt="현재 이미지" style="max-width: 100%; height: auto;"><br><br>
+            <label for="image">새 이미지 업로드 (선택 사항):</label><br>
+            <input type="file" id="image" name="file"><br><br>
+            <label for="score">평점:</label><br>
+            <div class="star-rating">
+                <img src="/images/emptystar.png" alt="1 star">
+                <img src="/images/emptystar.png" alt="2 stars">
+                <img src="/images/emptystar.png" alt="3 stars">
+                <img src="/images/emptystar.png" alt="4 stars">
+                <img src="/images/emptystar.png" alt="5 stars">
+            </div>
+            <input type="hidden" id="score" name="score" th:value="${reviews['score']}">
+            <label for="review">리뷰 내용:</label><br>
+            <textarea id="review" name="review" rows="4" cols="50" th:text="${reviews['review']}"></textarea><br><br>
+            <button type="submit">리뷰 수정 완료</button>
+        </form>
+    </div>
+</body>
+</html>

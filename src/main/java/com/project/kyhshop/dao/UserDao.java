@@ -209,7 +209,7 @@ public class UserDao {
 
     // 주문내역 SELECT
     public List<Map<String, Object>> orderSelect(String userId) {
-        String sqlStmt = "SELECT OM.seq AS seq, PM.prod_nm AS prod_nm, OM.prod_amount AS prod_amount, OM.state AS state, " +
+        String sqlStmt = "SELECT OM.seq AS seq, OM.prod_id AS prod_id, PM.prod_nm AS prod_nm, OM.prod_amount AS prod_amount, OM.state AS state, " +
                      "(PD.prod_price * OM.prod_amount) AS price, OM.reg_dt AS reg_dt, PM.prod_img AS prod_img " +
                      "FROM tb_order_mst OM " +
                      "JOIN tb_product_mst PM ON OM.prod_id = PM.seq " +
@@ -256,7 +256,7 @@ public class UserDao {
         jt.update(sqlStmt, amount, seq, userId);
     }
 
-    // 판매자 회원정보 수정할 때 중복확인
+    // 유저 회원정보 수정할 때 중복확인
     public int userSelect(String id, String pw, String birthDate, String email, String phone, String address, String address_detail) {
         String sqlStmt = "SELECT count(*) " +
                          "FROM tb_user_mst " +
@@ -295,4 +295,58 @@ public class UserDao {
         return jt.queryForMap(sqlStmt, userId);
     }
 
+    // 오더 배송완료상태 가져오기
+    public Map<String, Object> getOrder(String userId)
+    {
+        String sqlStmt = "SELECT prod_id FROM tb_order_mst WHERE user_id = ? AND state = 2";
+        return jt.queryForMap(sqlStmt, userId);
+    }
+
+    // 오더 상품에 대한 자신 리뷰개수 가져오기
+    public int getReviewCnt(String userId, String prodId)
+    {
+        String sqlStmt = "SELECT COUNT(*) AS review_count " +
+                         "FROM tb_review_mst RM " +
+                         "LEFT JOIN tb_order_mst OM ON RM.prod_id = OM.prod_id AND RM.USER_ID = OM.USER_ID " +
+                         "WHERE OM.STATE = 2 " +
+                         "AND RM.PROD_ID = ? " +
+                         "AND RM.USER_ID = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, prodId, userId);
+    }
+
+    // 리뷰 작성하기
+    public void reviewInsert(String userId, String prodId, String img, String review, double score) {
+        String sqlStmt = "INSERT INTO tb_review_mst (prod_id, user_id, img, review, score) VALUES (?, ?, ?, ?, ?)";
+        jt.update(sqlStmt, prodId, userId, img, review, score);
+    }
+
+    // 리뷰 수정하기
+    public void reviewEdit(String userId, String seq, String img, String review, double score) {
+        String sqlStmt = "UPDATE tb_review_mst SET review = ?, score = ?, img = ? WHERE seq = ? AND user_id = ?";
+        jt.update(sqlStmt, review, score, img, seq, userId);
+    }
+
+    // 기존 이미지 가져오기
+    public String getOriginImg(String seq) {
+        String sqlStmt = "SELECT img FROM tb_review_mst WHERE seq = ?";
+        return jt.queryForObject(sqlStmt, String.class, seq);
+    }
+
+    // 리뷰 가져오기
+    public Map<String, Object> getReview(String seq) {
+        String sqlStmt = "SELECT seq, img, review, score FROM tb_review_mst WHERE seq = ?";
+        return jt.queryForMap(sqlStmt, seq);
+    }
+
+    // 리뷰가 등록된 페이지 가져오기
+    public String getPage(String seq) {
+        String sqlStmt = "SELECT prod_id FROM tb_review_mst WHERE seq = ?";
+        return jt.queryForObject(sqlStmt, String.class, seq);
+    }
+
+    // 리뷰 삭제하기
+    public void deleteReview(String seq) {
+        String sqlStmt = "DELETE FROM tb_review_mst WHERE seq = ?";
+        jt.update(sqlStmt, seq);
+    }
 }

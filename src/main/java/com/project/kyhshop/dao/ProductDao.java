@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -98,5 +99,38 @@ public class ProductDao {
         "FROM      tb_product_detail " +
         "WHERE     prod_grade = ? and prod_variety = ?";
         return jt.queryForList(sqlstmt,garde,variety);
+    }   
+
+    // 리뷰 가져오기
+    public List<Map<String, Object>> reviewList(String prodId) {
+        String sqlStmt = "SELECT UM.nm AS nm, " +
+                         "RM.seq AS seq, " +
+                         "RM.user_id AS id, " +
+                         "RM.score AS score, " +
+                         "RM.img AS img, " +
+                         "RM.review AS review " +
+                         "FROM tb_review_mst RM " +
+                         "JOIN tb_user_mst UM ON RM.USER_ID = UM.ID " +
+                         "WHERE RM.PROD_ID = ?";
+        return jt.queryForList(sqlStmt, prodId);
+    }
+
+    // 평균점수
+    public double avgScore(String prodId) {
+        String sqlStmt = "SELECT avg(score) " +
+                 "FROM tb_review_mst " +
+                 "WHERE PROD_ID = ?";
+        Double avgs = jt.queryForObject(sqlStmt, double.class, prodId);
+        return avgs != null ? avgs : 0.0;
+    }
+
+    // 리뷰 개수
+    public int reviewCnt(String prodId) {
+        String sqlStmt = "SELECT count(*) FROM tb_review_mst WHERE prod_id = ?";
+        try {
+            return jt.queryForObject(sqlStmt, Integer.class, prodId);
+        } catch (EmptyResultDataAccessException e) {
+            return 0;
+        }
     }
 }

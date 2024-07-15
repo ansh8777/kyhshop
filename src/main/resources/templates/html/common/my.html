@@ -181,6 +181,13 @@
             margin-left: 10px;
         }
 
+        .review-button {
+            font-size: 25px;
+            color: black;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
         .footer {
             background-color: #f1f1f1;
             padding: 20px;
@@ -245,6 +252,15 @@
         .footer .company-info .copyright {
             margin-top: 10px;
         }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .delivery-state-button {
+            margin-bottom: 10px; /* 버튼 간격을 조정합니다 */
+        }
     </style>
 </head>
 <body>
@@ -302,11 +318,14 @@
                             <p th:text="'가격: ' + ${order.price_disp} + '원'"></p>
                             <p th:text="'주문 일시: ' + ${order.reg_dt}"></p>
                         </div>
-                        <a href="#" class="delivery-state-button" th:switch="${order.state}" th:onclick="'openPopup2(\'/my/delivery?seq=' + ${order.seq} + '\')'">
-                            <span th:case="0">상품 준비중</span>
-                            <span th:case="1">배송중</span>
-                            <span th:case="2">배송완료</span>
-                        </a>
+                        <div class="button-container">
+                            <a href="#" class="delivery-state-button" th:switch="${order.state}" th:onclick="'openPopup2(\'/my/delivery?seq=' + ${order.seq} + '\')'">
+                                <span th:case="0">상품 준비중</span>
+                                <span th:case="1">배송중</span>
+                                <span th:case="2">배송완료</span>
+                            </a>
+                            <a th:if="${order.state == '2' and order.cnt == 0}" th:href="'/review?seq=' + ${order.prod_id}" class="review-button">리뷰작성하기</a>
+                        </div>
                     </div>
                 </div>
             </div>

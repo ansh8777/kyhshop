@@ -5,11 +5,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -230,6 +234,10 @@ public class UserController {
                 // 문자열 형태의 가격을 정수로 변환하여 포맷팅합니다.
                 long price = Long.parseLong(priceString);
                 order.put("price_disp", decimalFormat.format(price));
+
+                String prodId = order.get("prod_id").toString();
+                int cnt = ud.getReviewCnt(userId, prodId);
+                order.put("cnt", cnt);
             }
             model.addAttribute("orderList", orderList);
         }
@@ -621,5 +629,145 @@ public class UserController {
         model.addAttribute("pointList", point);
 
         return "/html/user/point";
+    }
+
+    // 리뷰작성하기
+    @GetMapping("review")
+    public String reviewPage(@RequestParam String seq,
+                             HttpSession session,
+                             Model model)
+    {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || !temp.equals("user")) {
+            return "redirect:/login";
+        }
+
+        int cnt = ud.getReviewCnt(userId, seq);
+        model.addAttribute("cnt", cnt);
+        model.addAttribute("seq", seq);
+        if (cnt >= 1) {
+            model.addAttribute("link", "/my");
+            model.addAttribute("msg", "리뷰를 이미 작성 하셨습니다.");
+            return "/html/alert";
+        }
+
+        return "/html/user/review";
+    }
+
+    // 리뷰 작성 액션
+    @PostMapping("review/action")
+    public String reviewAction(@RequestParam("seq") String seq,
+                               @RequestParam String review,
+                               @RequestParam double score,
+                               @RequestParam MultipartFile file,
+                               HttpSession session,
+                               Model model) throws IOException
+    {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || !temp.equals("user")) {
+            return "redirect:/login";
+        }
+
+        int cnt = ud.getReviewCnt(userId, seq);
+        model.addAttribute("cnt", cnt);
+        if (cnt >= 1) {
+            model.addAttribute("link", "/my");
+            model.addAttribute("msg", "리뷰를 이미 작성 하셨습니다.");
+            return "/html/alert";
+        }
+
+        String imgName = null;
+        // 파일이 업로드되었을 경우에만 처리
+        if (file != null && !file.isEmpty()) {
+            UUID uuid = UUID.randomUUID();
+            String imgPath = "C:/kyhshop/src/main/resources/static/images/";
+            String ogName = file.getOriginalFilename();
+            imgName = uuid + "_" + ogName;
+            String uploadImg = imgPath + imgName;
+
+            File img = new File(uploadImg);
+            file.transferTo(img);
+        } else {
+            imgName = "default_image.jpg";
+        }
+
+        ud.reviewInsert(userId, seq, imgName, review, score);
+
+        model.addAttribute("link", "/my");
+        model.addAttribute("msg", "리뷰를 등록하였습니다.");
+        return "/html/alert";
+    }
+
+    // 리뷰 수정 페이지
+    @GetMapping("review/edit")
+    public String reviewEditPage(@RequestParam String seq,
+                                 HttpSession session,
+                                 Model model)
+    {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || !temp.equals("user")) {
+            return "redirect:/login";
+        }
+
+        Map<String, Object> reviews = ud.getReview(seq);
+        model.addAttribute("reviews", reviews);
+
+        return "/html/user/reviewedit";
+    }
+
+    // 리뷰 수정 액션
+    @PostMapping("review/edit/action")
+    @ResponseBody
+    public String reviewEditAction(@RequestParam String seq,
+                                   @RequestParam MultipartFile file,
+                                   @RequestParam String review,
+                                   @RequestParam double score,
+                                   HttpSession session,
+                                   Model model) throws IOException
+    {
+        String userId = (String)session.getAttribute("id");
+        String temp = (String)session.getAttribute("temp");
+        if (userId == null || !temp.equals("user")) {
+            return "<script>alert('로그인이 필요합니다.'); window.location.href='/login';</script>";
+        }
+
+        // 기존 이미지 가져오기
+        String originImg = ud.getOriginImg(seq);
+
+        String imgName = null;
+        // 파일이 업로드되었을 경우에만 처리
+        if (file != null && !file.isEmpty()) {
+            UUID uuid = UUID.randomUUID();
+            String imgPath = "C:/kyhshop/src/main/resources/static/images/";
+            String ogName = file.getOriginalFilename();
+            imgName = uuid + "_" + ogName;
+            String uploadImg = imgPath + imgName;
+
+            File img = new File(uploadImg);
+            file.transferTo(img);
+        } else {
+            imgName = originImg;
+        }
+
+        ud.reviewEdit(userId, seq, imgName, review, score);
+
+        return "<script>alert('리뷰가 수정되었습니다.'); window.opener.location.reload(); window.close();</script>";
+    }
+
+    @PostMapping("review/delete/action")
+    @ResponseBody
+    public String reviewDeleteAction(@RequestParam String seq, HttpSession session) {
+        String userId = (String) session.getAttribute("id");
+        String temp = (String) session.getAttribute("temp");
+        if (userId == null || !temp.equals("user")) {
+            return "<script>alert('로그인이 필요합니다.'); window.location.href='/login';</script>";
+        }
+        String page = ud.getPage(seq);
+
+        ud.deleteReview(seq);
+        return "<script>alert('리뷰가 삭제되었습니다.'); window.location.href='/product?seq=" + page + "';</script>";
     }
 }

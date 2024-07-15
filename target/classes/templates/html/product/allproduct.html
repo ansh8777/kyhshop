@@ -360,6 +360,23 @@
             visibility: visible;
             opacity: 1;
         }
+
+        .star-rating {
+            display: flex;
+            align-items: center;
+        }
+
+        .star-rating img {
+            width: 30px; /* 별 크기 조절 */
+            height: 30px;
+            margin-right: 0px; /* 별 간격 */
+        }
+
+        .avg-score {
+            font-size: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -410,6 +427,17 @@
                 <p class="product-title" th:text="${product.prod_nm}">Product Title</p>
                 <p class="product-price" th:text="${product.prod_price_disp} + '원'">가격</p>
                 <p class="product-seller" th:text="${product.SELLER_NM}">Seller</p>
+            </div>
+            <div class="average-rating" th:if="${product.avg > 0}">
+                <div class="star-rating" style="display: flex; justify-content: center; align-items: center;">
+                    <span th:each="i : ${#numbers.sequence(1, 5)}">
+                        <img th:if="${i <= T(java.lang.Math).round(product.avg)}" th:src="@{'/images/star.png'}" alt="채워진 별">
+                        <img th:unless="${i <= T(java.lang.Math).round(product.avg)}" th:src="@{'/images/emptystar.png'}" alt="빈 별">
+                    </span>
+                    <span class="avg-score" th:text="${T(java.lang.String).format('%.1f', product.avg)}"></span>점
+                    <pre> </pre>
+                    <span th:text="'(리뷰 수: ' + ${product.cnt} + '개)'"></span>
+                </div>
             </div>
         </a>
     </div>

@@ -147,6 +147,107 @@
             height: 20px;
             margin: 10px;
         }
+        .reviews {
+            width: 100%;
+            margin-top: 40px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .review {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .review-info {
+            flex: 2;
+        }
+
+        .review-info p {
+            margin: 5px 0;
+        }
+
+        .review-info .star-rating {
+            display: flex;
+            align-items: center;
+        }
+
+        .star-rating img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+
+        .review-image {
+            flex: 1;
+            text-align: right;
+        }
+
+        .review-image img {
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .star-rating {
+            display: flex;
+            align-items: center;
+        }
+
+        .star-rating img {
+            width: 20px; /* 별 크기 조절 */
+            height: 20px;
+            margin-right: 2px; /* 별 간격 */
+        }
+
+        .star-rating2 img {
+            width: 50px; /* 별 크기 조절 */
+            height: 50px;
+            margin-right: 0px; /* 별 간격 */
+        }
+
+        .avg-score {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .review-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .review-buttons .btn {
+            padding: 5px 10px;
+            font-size: 12px;
+            color: white;
+            background-color: #000;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .review-buttons .btn:hover {
+            background-color: #555;
+        }
+
+        .review-buttons form {
+            margin: 0; /* form 요소의 기본 여백 제거 */
+        }
+
     </style>
 </head>
 <body>
@@ -196,6 +297,46 @@
             </div>
         </div>
         <div class="product-description" th:text="${product.prod_desc}" style="white-space: pre-wrap;"></div>
+        <div class="reviews">
+            <h2>제품 리뷰</h2>
+            <div class="average-rating" th:if="${avg > 0}">
+                <div class="star-rating2" style="display: flex; justify-content: center; align-items: center;">
+                    <span th:each="i : ${#numbers.sequence(1, 5)}">
+                        <img th:if="${i <= T(java.lang.Math).round(avg)}" th:src="@{'/images/star.png'}" alt="채워진 별">
+                        <img th:unless="${i <= T(java.lang.Math).round(avg)}" th:src="@{'/images/emptystar.png'}" alt="빈 별">
+                    </span>
+                    <span class="avg-score" th:text="${T(java.lang.String).format('%.1f', avg)}"></span>점
+                </div>
+            </div>
+            <div class="review-list">
+                <div class="review" th:each="review : ${reviewList}">
+                    <div class="review-info">
+                        <p><strong>작성자: </strong><span th:text="${review.nm}"></span></p>
+                        <div class="star-rating">
+                            <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                <img th:if="${i <= review.score}" th:src="@{'/images/star.png'}" alt="채워진 별">
+                                <img th:unless="${i <= review.score}" th:src="@{'/images/emptystar.png'}" alt="빈 별">
+                            </span>
+                            <span th:text="${review.score}"></span>
+                        </div>
+                        <p><span th:text="${review.review}" style="white-space: pre-wrap;"></span></p>
+                    </div>
+                    <div class="review-image">
+                        <img th:src="@{'/images/' + ${review.img}}" alt="리뷰 이미지">
+                        <div class="review-buttons" th:if="${session.id} == ${review.id}">
+                            <a class="btn" th:href="@{'/review/edit?seq=' + ${review.seq}}" onclick="openPopup(this.href); return false;">수정하기</a>
+                            <form th:action="@{/review/delete/action}" method="post" onsubmit="return confirmDelete()">
+                                <input type="hidden" th:name="seq" th:value="${review.seq}" />
+                                <button type="submit" class="btn">삭제하기</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${#lists.size(reviewList) == 0}">
+            <p>리뷰가 없습니다.</p>
+        </div>
     </div>
     <script th:inline="javascript">
         function confirmDelete() {
@@ -247,7 +388,9 @@
             // 폼 제출 후 팝업 창 포커스
             popupWindow.focus();
         }
-
+        function openPopup(url) {
+            window.open(url, 'popupWindow', 'width=800,height=1000,scrollbars=yes');
+        }
     </script>
 </body>
 </html>

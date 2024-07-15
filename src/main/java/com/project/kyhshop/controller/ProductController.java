@@ -55,6 +55,12 @@ public class ProductController {
         model.addAttribute("productSet", productSet);
         model.addAttribute("lowerPrice", lowerPrice);
 
+        List<Map<String, Object>> reviewList = pd.reviewList(seq);
+        double avg = pd.avgScore(seq);
+
+        model.addAttribute("reviewList", reviewList);
+        model.addAttribute("avg", avg);
+
         return "/html/product/product";
     }
 
@@ -171,6 +177,13 @@ public class ProductController {
         for (Map<String, Object> product : productSelectList) {
             // prod_price 값을 가져와서 문자열로 변환합니다.
             String priceString = product.get("prod_price").toString();
+            String prodId = product.get("seq").toString();
+
+            double avg = pd.avgScore(prodId);
+            product.put("avg", avg);
+
+            int cnt = pd.reviewCnt(prodId);
+            product.put("cnt", cnt);
 
             // 문자열 형태의 가격을 정수로 변환하여 포맷팅합니다.
             long price = Long.parseLong(priceString);
