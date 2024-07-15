@@ -37,7 +37,6 @@
         <li><a href="/allproduct">Product</a></li>
         <li th:if="${session.temp == 'user'}"><a href="/cart">Cart</a></li>
         <li th:if="${session.id == null}"><a href="/login">Login</a></li>
-        <li th:if="${session.temp == 'user'}"><a href="/logout">Logout</a></li>
         <li th:if="${session.id != null}"><a href="/logout">Logout</a></li>
         <li th:if="${session.id == null}"><a href="/regiselect">Register</a></li>
         <li th:if="${session.id != null}" id="userMenu">

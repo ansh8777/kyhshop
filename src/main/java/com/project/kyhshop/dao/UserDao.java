@@ -256,14 +256,18 @@ public class UserDao {
         jt.update(sqlStmt, amount, seq, userId);
     }
 
-    //개인정보 중복체크
-    public List<Map<String, Object>> userprofileCheck(String userId,String pw,String nm,String birthDate,String email,String phone,String address,String addressDetail) {
-        String sqlStmt = "SELECT seq FROM tb_user_mst WHERE id = ? AND pw = ? AND nm = ? AND birth_date = ? AND email = ? AND phone = ? AND address = ? AND address_detail = ?";
-        try {
-            return jt.queryForList(sqlStmt, userId, pw, nm, birthDate, email, phone, address, addressDetail);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+    // 판매자 회원정보 수정할 때 중복확인
+    public int userSelect(String id, String pw, String birthDate, String email, String phone, String address, String address_detail) {
+        String sqlStmt = "SELECT count(*) " +
+                         "FROM tb_user_mst " +
+                         "WHERE id = ? " +
+                         "and pw = ? " +
+                         "and birth_date = ? " +
+                         "and email = ? " +
+                         "and phone = ? " +
+                         "and address = ? " +
+                         "and address_detail = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, id, pw, birthDate, email, phone, address, address_detail);
     }
 
     // 배송 팝업 내용 SELECT (유저전용)

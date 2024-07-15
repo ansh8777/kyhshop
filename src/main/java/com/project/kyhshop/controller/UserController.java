@@ -305,12 +305,14 @@ public class UserController {
 
             // 폰 번호 합치기 010-0000-0000
             String phone = String.format("%s-%s-%s", phone1, phone2, phone3);
-            ud.userProfileChange(userId, pw, nm, birthDate, email, phone, address, addressDetail);
 
-            List<Map<String, Object>> duplicateprofile = ud.userprofileCheck(userId, pw, nm, birthDate, email, phone, address, addressDetail);
-            if (duplicateprofile != null && !duplicateprofile.isEmpty()) {
+            // 셀러 전 정보 중복확인
+            int userSelect = ud.userSelect(userId, pw, birthDate, email, phone, address, addressDetail);
+
+            if (userSelect == 1) {
                 return "<script>window.history.back(); alert('변경된 정보가 없습니다.');</script>";
             }
+            ud.userProfileChange(userId, pw, nm, birthDate, email, phone, address, addressDetail);
         } else {
             return "<script>window.close();</script>";
         }

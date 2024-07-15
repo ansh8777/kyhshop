@@ -231,4 +231,19 @@ public class SellerDao {
         String sqlStmt = "UPDATE tb_order_mst SET delivery_number = ?, state = 1 WHERE seq = ?";
         jt.update(sqlStmt, deliveryNumber, seq);
     }
+
+    // 판매자 회원정보 수정할 때 중복확인
+    public int sellerSelect(String id, String pw, String email, String phone, String address, String address_detail, String comp_nm, String biz_id) {
+        String sqlStmt = "SELECT count(*) " +
+                         "FROM tb_seller_mst " +
+                         "WHERE id = ? " +
+                         "and pw = ? " +
+                         "and email = ? " +
+                         "and phone = ? " +
+                         "and address = ? " +
+                         "and address_detail = ? " +
+                         "and comp_nm = ? " +
+                         "and biz_id = ?";
+        return jt.queryForObject(sqlStmt, Integer.class, id, pw, email, phone, address, address_detail, comp_nm, biz_id);
+    }
 }

@@ -219,6 +219,13 @@ public class SellerController {
             String phone = String.format("%s-%s-%s", phone1, phone2, phone3);
             // 사업자 등록 번호 합치기
             String bizId = String.format("%s-%s-%s", bizId1, bizId2, bizId3);
+            // 셀러 전 정보 중복확인
+            int sellerSelect = sd.sellerSelect(sellerId, pw, email, phone, address, addressDetail, compNm, bizId);
+
+            if (sellerSelect == 1) {
+                return "<script>window.history.back(); alert('변경된 정보가 없습니다.');</script>";
+            }
+
             sd.sellerProfileChange(sellerId, pw, nm, email, phone, addressDetail, address, compNm, bizId);
         } else {
             return "<script>window.close();</script>";
