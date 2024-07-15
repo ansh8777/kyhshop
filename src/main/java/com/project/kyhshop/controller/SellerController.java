@@ -348,6 +348,7 @@ public class SellerController {
         return "redirect:/seller/product";
     }
 
+    // 연도별 차트 페이지
     @GetMapping("/chart/year")
     public String yearChart(@RequestParam(defaultValue = "상품") String grade,
                             @RequestParam(defaultValue = "후지") String variety,
@@ -364,6 +365,7 @@ public class SellerController {
         return "html/seller/chart";
     }
 
+    // 월별 차트 페이지
     @GetMapping("/chart/month")
     public String monthChart(@RequestParam(defaultValue = "2023") String year,
                              @RequestParam(defaultValue = "상품") String grade,
@@ -384,6 +386,7 @@ public class SellerController {
         return "html/seller/monthchart";
     }
 
+    // 셀러 주문관리 페이지
     @GetMapping("seller/order/manage")
     public String sellerOrderManage(HttpSession session,
                                     Model model) {

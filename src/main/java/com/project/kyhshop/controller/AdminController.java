@@ -17,6 +17,7 @@ public class AdminController {
     @Autowired
     AdminDao ad;
 
+    // 어드민 페이지
     @GetMapping("/admin")
     public String adminPage(HttpSession session) {
         // 로그인 안되어 있으면
@@ -28,6 +29,7 @@ public class AdminController {
         return "html/admin/adminpage";
     }
 
+    // 어드민 유저 관리 페이지
     @GetMapping("admin/userlist")
     public String userList(HttpSession session,
                            Model model)
@@ -44,6 +46,7 @@ public class AdminController {
         return "html/admin/userlist";
     }
 
+    // 어드민 셀러 관리 페이지
     @GetMapping("admin/sellerlist")
     public String sellerList(HttpSession session,
                            Model model)
@@ -60,39 +63,7 @@ public class AdminController {
         return "html/admin/sellerlist";
     }
 
-    @GetMapping("/admin/product")
-    public String mangeProduct(@RequestParam(defaultValue = "1") String order, Model model) {
-        // order 파라미터에 따라 정렬 기준 설정
-        String orderString = "";
-        if (order.equals("1")) {
-            orderString = "productCategory";
-        } else if (order.equals("2")) {
-            orderString = "regDt";
-        } else {
-            orderString = "sellerId";
-        }
-        // 설정된 정렬 기준에 따라 상품 리스트 조회
-        List<Map<String, Object>> productList = ad.selectProductList(orderString);
-        // 조회된 상품 리스트를 모델에 추가
-        model.addAttribute("productList", productList);
-        // admin/product.html 페이지로 이동
-        return "html/admin/product";
-    }
-
-    // @PostMapping("/admin/product/delete")
-    // public String deleteProduct(@RequestParam String prodId, HttpSession session) {
-    //     // 로그인 안되어 있으면
-    //     if (session.getAttribute("id") == null) {
-    //         return "redirect:/login";
-    //     } 
-    //     else if ((int)session.getAttribute("grade") != 99) {  // 등급이 99가 아니면
-    //         return "redirect:/";
-    //     }
-
-    //     ad.deleteProduct(prodId);
-    //     return "redirect:/admin/product";
-    // }
-
+    // 어드민 유저 삭제 액션
     @PostMapping("admin/user/delete")
     public String deleteUser(@RequestParam String seq) {
         
@@ -100,6 +71,7 @@ public class AdminController {
         return "redirect:/admin/userlist";
     }
 
+    // 어드민 셀러 삭제 액션
     @PostMapping("admin/seller/delete")
     public String deleteSeller(@RequestParam String seq) {
         
@@ -107,6 +79,7 @@ public class AdminController {
         return "redirect:/admin/sellerlist";
     }
 
+    // 어드민 유저 수정 액션
     @PostMapping("admin/userlist/update")
     public String updateUser(@RequestParam String seq,
                              @RequestParam String id,
@@ -125,6 +98,7 @@ public class AdminController {
         return "redirect:/admin/userlist";
     }
 
+    // 어드민 셀러 수정 액션
     @PostMapping("admin/sellerlist/update")
     public String updateUser(@RequestParam String seq,
                              @RequestParam String id,

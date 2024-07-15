@@ -67,24 +67,19 @@ public class AdminDao {
         return jt.queryForList(sqlStmt);
     }
 
-    // // 상품 삭제 메소드
-    // public void deleteProduct(String prodId) {
-    //     String sqlDetail = "DELETE FROM tb_product_detail WHERE prod_id = ?";
-    //     String sqlMst = "DELETE FROM tb_product_mst WHERE prod_id = ?";
-    //     jt.update(sqlDetail, prodId);
-    //     jt.update(sqlMst, prodId);
-    // }
-
+    // 유저 삭제
     public void deleteUser(String seq) {
         String sqlStmt = "DELETE FROM tb_user_mst WHERE seq = ? ";
         jt.update(sqlStmt,seq);
     }
 
+    // 셀러 삭제
     public void deleteSeller(String seq) {
         String sqlStmt = "DELETE FROM tb_seller_mst WHERE seq = ? ";
         jt.update(sqlStmt,seq);
     }
 
+    // 유저 수정
     public void userUpdate(String seq,
                               String id,
                               String pw,
@@ -100,6 +95,7 @@ public class AdminDao {
           jt.update(sqlStmt, id, pw, nm, birthDate, email, phone, address, addressDetail, grade, delFg, seq);
    }
 
+   // 셀러 수정
     public void sellerUpdate(String seq,
                               String id,
                               String pw,

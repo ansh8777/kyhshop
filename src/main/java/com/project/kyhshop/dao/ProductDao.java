@@ -86,6 +86,7 @@ public class ProductDao {
         }
     }
 
+    // 사과 등급, 품종 가져오기
     public List<Map<String, Object>> gradevariety(String seq) {
         String sqlstmt = "SELECT    prod_grade AS grade, " +
                          "          prod_variety AS variety " +
@@ -94,6 +95,7 @@ public class ProductDao {
         return jt.queryForList(sqlstmt,seq);
     }
 
+    // 최저가 가져오기
     public List<Map<String, Object>> lowerPrice(String garde, String variety) {
         String sqlstmt = "SELECT    min(prod_price) as minprice " +
         "FROM      tb_product_detail " +

@@ -17,6 +17,7 @@ public class CategoryController {
     @Autowired
     CategoryDao categoryDao;
 
+    // 카테고리 페이지
     @GetMapping("/category")
     public String categoryList(Model model) {
         List<Map<String, Object>> categories = categoryDao.selectAllCategories();
@@ -24,6 +25,7 @@ public class CategoryController {
         return "/html/common/categorylist"; // 수정된 경로 적용
     }
 
+    // 카테고리 등록 액션
     @PostMapping("/category/insert")
     public String insertCategory(@RequestParam String categoryName) {
         categoryDao.insertCategory(categoryName);

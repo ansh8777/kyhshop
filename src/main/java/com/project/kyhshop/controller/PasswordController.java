@@ -22,11 +22,13 @@ public class PasswordController {
     @Autowired
     FindDao fd;
 
+    // 유저 비밀번호 찾기 페이지
     @GetMapping("/find/pw")
     public String findPwPage() {
         return "html/user/findpw";
     }
 
+    // 유저 비밀번호 찾기 액션
     @PostMapping("/find/pw/action")
     public String findPwAction(@RequestParam String id,
                                @RequestParam String email,
@@ -53,11 +55,13 @@ public class PasswordController {
         return "/html/alert";
     }
 
+    // 셀러 비밀번호 찾기 페이지
     @GetMapping("/find/seller/pw")
     public String findSellerPwPage() {
         return "html/seller/findpw";
     }
 
+    // 셀러 비밀번호 찾기 액션
     @PostMapping("/find/seller/pw/action")
     public String findSellerPwAction(@RequestParam String id,
                                      @RequestParam String email,

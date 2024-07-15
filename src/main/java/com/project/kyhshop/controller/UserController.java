@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -614,23 +613,6 @@ public class UserController {
         return "<script>window.opener.location.reload(); window.close();</script>";
     }
 
-    // 포인트 충전
-    @GetMapping("my/point")
-    public String pointPage(HttpSession session,
-                            Model model)
-    {
-        String userId = (String)session.getAttribute("id");
-        String temp = (String)session.getAttribute("temp");
-        if (userId == null || !temp.equals("user")) {
-            return "redirect:/login";
-        }
-        Map<String, Object> point = ud.getPoint(userId);
-
-        model.addAttribute("pointList", point);
-
-        return "/html/user/point";
-    }
-
     // 리뷰작성하기
     @GetMapping("review")
     public String reviewPage(@RequestParam String seq,
@@ -757,6 +739,7 @@ public class UserController {
         return "<script>alert('리뷰가 수정되었습니다.'); window.opener.location.reload(); window.close();</script>";
     }
 
+    // 리뷰 삭제 액션
     @PostMapping("review/delete/action")
     @ResponseBody
     public String reviewDeleteAction(@RequestParam String seq, HttpSession session) {

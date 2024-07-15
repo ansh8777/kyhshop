@@ -148,26 +148,31 @@ public class SellerDao {
         return jt.queryForList(sqlStmt);
     }
 
+    // 등급 종류 (상품, 중품 가져오기)
     public List<Map<String,Object>> Gradeview() {
         String sqlStmt = "SELECT grade FROM tb_apple_mst group by grade";
         return jt.queryForList(sqlStmt);    
     }
   
+    // 품종 종류 (아오리, 홍로, 후지 가져오기)
     public List<Map<String,Object>> Varietyview() {
         String sqlStmt = "SELECT variety FROM tb_apple_mst group by variety";
         return jt.queryForList(sqlStmt);    
     }
 
+    // year 그래프에 쓸 년도 가져오기
     public List<Map<String,Object>> YearView() {
         String sqlStmt = "SELECT year FROM tb_apple_mst group by YEAR ORDER BY YEAR desc";
         return jt.queryForList(sqlStmt);    
     }
   
+    // 연도별 값 가져오기
     public List<Map<String,Object>> testViewByGradeVariety(String grade, String variety) {
         String sqlStmt = "SELECT AVG(price) as price, year FROM tb_apple_mst where grade = ? and variety = ? group by year";
         return jt.queryForList(sqlStmt,grade,variety);
     }
 
+    // 월별 값 가져오기
     public List<Map<String,Object>> monthChart(String variety, String grade, String year) {
         String sqlStmt = "SELECT    AVG(price) AS price, " +
                          "          month " +
@@ -186,6 +191,7 @@ public class SellerDao {
         return jt.queryForList(sqlStmt, variety, grade, year);
     }
 
+    // 셀러 인지 체크
     public List<Map<String, Object>> sellerprofileCheck(String sellerId, String pw, String nm, String email, String phone, String address, String addressDetail,String compNm,String bizId) {
         String sqlStmt = "SELECT seq FROM tb_seller_mst WHERE id = ? AND pw = ? AND nm = ? AND email = ? AND phone = ? AND address = ? AND address_detail = ? AND comp_nm = ? AND biz_id = ?";
         try {
@@ -195,6 +201,7 @@ public class SellerDao {
         }
     }
 
+    // 판매한 물품 가져오기
     public List<Map<String, Object>> saleProduct(String id) {
         String sqlStmt = "SELECT OM.seq AS seq, " +
                  "UM.nm AS nm, " +
